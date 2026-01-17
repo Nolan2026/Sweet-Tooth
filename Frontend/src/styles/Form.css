@@ -1,0 +1,125 @@
+.login-container {
+  min-height: calc(100vh - 80px);
+  /* Adjust for header */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, #fffcf5 0%, #ffe8d6 100%);
+}
+
+.login-card {
+  background: white;
+  width: 100%;
+  max-width: 450px;
+  padding: 3rem;
+  border-radius: 30px;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+
+.login-header {
+  margin-bottom: 2.5rem;
+}
+
+.login-header h2 {
+  font-size: 2.5rem;
+  color: var(--text-dark);
+  margin-bottom: 0.5rem;
+}
+
+.login-header p {
+  color: var(--text-light);
+}
+
+.form-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.login-input {
+  width: 100%;
+  padding: 1.2rem;
+  border-radius: 15px;
+  border: 2px solid var(--bg-cream);
+  background: var(--bg-cream);
+  font-family: inherit;
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+.login-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: white;
+}
+
+.error-message {
+  color: var(--accent);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  background: #fff0f0;
+  padding: 0.8rem;
+  border-radius: 10px;
+}
+
+.login-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.primary-auth-btn {
+  width: 100%;
+  padding: 1.2rem;
+  border-radius: 15px;
+  background: var(--primary);
+  color: white;
+  font-weight: 700;
+  font-size: 1.1rem;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 10px 20px -10px rgba(255, 159, 28, 0.5);
+}
+
+.primary-auth-btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+.auth-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--text-light);
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  color: var(--primary-dark);
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0;
+}
+
+.toggle-btn:hover {
+  text-decoration: underline;
+}
+
+.forgot-pw {
+  color: var(--text-light);
+  font-size: 0.9rem;
+  text-decoration: none;
+  margin-top: 1rem;
+}
+
+.forgot-pw:hover {
+  color: var(--primary);
+}

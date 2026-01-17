@@ -1,0 +1,90 @@
+/* Header styling */
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #222;
+  color: white;
+  padding: 15px 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.head h2 {
+  font-size: 28px;
+  margin: 0;
+  letter-spacing: 2px;
+  background: linear-gradient(45deg, #ffa500, #ff6347);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  border-bottom: 1px solid #fbe7a1;
+}
+
+/* Navigation links */
+.nav-links {
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid whitesmoke;
+  background-color: #2f0909;
+  border-radius: 3px;
+  padding: 10px 5px;
+  transition: border-radius 0.5s ease;
+}
+.nav-links:hover {
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  padding-bottom: 10px;
+  margin: 0;
+  gap: 25px;
+}
+
+.nav-item {
+  text-decoration: none;
+  cursor: pointer;
+  position: relative;
+  font-weight: bold;
+  color: #ffe4e1;
+  padding: 9px 10px 0 10px;
+  transition: color 0.3s ease;
+}
+
+.nav-item::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0;
+  height: 2px;
+  background: orange;
+  transition: width 0.3s ease;
+}
+
+.nav-item:hover {
+  color: orange;
+}
+
+.nav-item:hover::after {
+  width: 100%;
+}
+
+/* Login button */
+.but button {
+  font-size: 16px;
+  background-color: orange;
+  padding: 8px 16px;
+  color: black;
+  width: 100%;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.but button:hover {
+  background-color: darkorange;
+}

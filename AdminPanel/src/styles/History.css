@@ -1,0 +1,156 @@
+/* Header Style */
+.billHead {
+  text-align: center;
+  font-size: 2rem;
+  margin: 20px 0;
+  color: #333;
+}
+ 
+/* Table Wrapper */
+.bill-table {
+  margin: 0 auto;
+  width: 98%;
+  max-width: 1200px;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+/* Table Style */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Header Cells */
+thead th {
+  background-color: darkseagreen;
+  padding: 12px;
+  font-weight: bold;
+  text-align: center;
+  border-bottom: 2px solid #ccc;
+}
+.today{
+  width: 100px;
+}
+/* Body Cells */
+tbody td {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Alternating Row Colors */
+tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Button Styling */
+button {
+  padding: 6px 12px;
+  margin: 4px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+button:first-child {
+  background-color: #3498db;
+  color: white;
+}
+
+button:last-child {
+  background-color: #e74c3c;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .bill-table {
+    padding: 0 5px;
+  }
+  
+  table {
+    font-size: 14px;
+  }
+  
+  thead th,
+  tbody td {
+    padding: 8px 4px;
+  }
+}
+
+ 
+/* View Bill Section */
+.bill-view {
+  position: absolute;
+  top: 13%;
+  right: 25%;
+  width: 40%;
+  max-width: 500px;
+  margin: 30px auto;
+  padding: 20px;
+  border: 1px solid darkgoldenrod;
+  border-radius: 12px;
+  background-color: #fafafa;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.bill-view h3 {
+  font-weight: bold;
+  font-size: 20px;
+  font-family: 'Times New Roman', Times, serif;
+  margin-bottom: 10px;
+  color: mediumseagreen;
+}
+.exit{
+  position: absolute;
+  top: 10px;
+  right: 30px;
+  color: black;
+  font-weight: bold;
+  font-size: 30px;
+  cursor: pointer;
+}
+span{
+  color: black;
+  margin-right: 20px;
+}
+.bill-view p {
+  margin: 6px 0;
+  color: #e74c3c;
+  font-weight: bold;
+  font-family: sans-serif;
+}
+
+/* Detailed Bill Table */
+.view-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  border-radius: 5px 5px 0 0;
+  overflow: hidden;
+}
+
+.view-table th, .view-table td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid black;
+}
+
+.view-table th {
+  background-color: lightblue;
+  color: #222;
+  font-weight: bold;
+  font-family: monospace;
+}
+
+.view-table tr:nth-child(even) {
+  background-color: gainsboro;
+}

@@ -1,0 +1,336 @@
+/* Container Styling */
+.bill-container {
+  font-family: Arial, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 10px;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}  
+
+.heading{
+  color: darkcyan;
+  font-size: 10;
+  font-weight: bold;
+  padding-top: 10px;
+  margin-left: 25px;
+}
+
+.input-section {
+  background-color: white;
+  padding: 24px 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Date Input */
+.date-section {
+  margin-bottom: 16px;
+  font-weight: bold;
+}
+
+.date-input {
+  font-weight: bold;
+  width: 200px;
+  padding: 10px;
+  background-color: darkseagreen;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+/* Customer Details */
+.customer-details {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.customer-input {
+  flex: 1;
+  font-weight: bold;
+  padding: 12px;
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+.payment-methods {
+  display: flex;
+  gap: 24px;
+  padding: 5px;
+  border-radius: 5px;
+  border: 2px solid black;
+  background-color: cadetblue;
+}
+
+.payment-methods label {
+  font-weight: bold;
+  font-family: serif;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+/* Item Selection Container */
+.item-selection-container {
+  background-color: #f0f0f0;
+  padding: 20px 16px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Select Inputs */
+.dropdowns{
+  display: flex;
+  gap: 10px;
+}
+.item-select {
+  font-weight: bold;
+  width: 95%;
+  padding: 12px;
+  border: 1.5px solid burlywood;
+  background-color: antiquewhite;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+/* Grams Section */
+.grams-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.grams-input {
+  font-weight: bold;
+  width: 95%;
+  padding: 10px;
+  border: 1.5px solid dimgray;
+  border-radius: 6px;
+  font-size: 16px;
+  background-color: lightcyan;
+}
+
+.quick-grams {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 10px;
+}
+
+.gram-btn {
+  text-align: center;
+  width: 65px;
+  padding: 8px 6px;
+  background-color: lightyellow;
+  border: 1.5px solid darkgoldenrod;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.gram-btn:hover {
+  background-color: #e9ecef;
+}
+
+/* Add Item Button */
+.add-item-btn {
+  width: 100%;
+  padding: 14px;
+  font-family: serif;
+  background-color: #28a745;
+  color: black;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.add-item-btn:hover:not(:disabled) {
+  background-color: #218838;
+}
+
+.add-item-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Bill Section */
+#billSection {
+  font-weight: bold;
+  margin-top: 30px;
+  background-color: white;
+  padding: 24px 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.bill-header {
+  font-size: 13px;
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  font-family: serif;
+  border-bottom: 2px solid #eee;
+}
+
+.bill-header h1 {
+  color: lightseagreen;
+  font-family: monospace;
+  margin: 0 0 10px 0;
+}
+
+.bill-header p {
+  margin: 5px 0;
+  color: #666;
+}
+
+.bill-details {
+  margin-bottom: 20px;
+}
+
+.bill-details p {
+  margin: 5px 0;
+  color: #666;
+}
+.billno{
+  margin-left: 40%;
+}
+.bill-details{
+  font-family:  'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: 13px;
+}
+/* Table Styling */
+.billTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+.billTable th,
+.billTable td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.billTable th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Bill Footer */
+.bill-footer {
+  text-align: center;
+  margin-top: 30px;
+  font-family: serif;
+  padding-top: 20px;
+  border-top: 2px solid #eee;
+}
+
+.bill-footer p {
+  margin: 5px 0;
+  color: #666;
+}
+
+/* Print Button */
+.print-btn, .newbill, .undo, .history {
+  width: 200px;
+  margin: 10px 5px;
+  padding: 12px 20px;
+  background-color: #4299e1;
+  color: black;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: monospace;
+}
+.btns{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.newbill{
+  background-color: coral;
+}
+.newbill:disabled{
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.undo{
+  background-color: goldenrod;
+}
+.undo:disabled{
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.print-btn:hover {
+  background-color: #3182ce;
+}
+.history{
+  background-color: darkseagreen;
+}
+.newbill:hover:not(:disabled){
+  background-color: chocolate;
+}
+.undo:hover:not(:disabled){
+  background-color: darkgoldenrod;
+}
+.history:hover{
+  background-color: seagreen;
+}
+
+/* Print Styles */
+@media print {
+  .input-section,
+  .head, .heading, .btns{
+    display: none;
+  }
+
+  .bill-container {
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  #billSection {
+    margin-top: 0;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .bill-container {
+    margin: 0;
+    padding: 10px;
+  }
+  
+  .customer-details {
+    flex-direction: column;
+  }
+  
+  .gram-btn{
+    margin-right: 0;
+  }
+  
+  .payment-methods {
+    flex-wrap: wrap;
+  }
+}

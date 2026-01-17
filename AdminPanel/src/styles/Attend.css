@@ -1,0 +1,219 @@
+.attend-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 10px;
+}
+
+form {
+  background-color: white;
+  padding: 24px 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+.date-picker {
+  width: 50%;
+}
+.date-picker input {
+  width: 100%;
+  padding: 10px 0;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  background-color: whitesmoke;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.work-select {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.worker {
+  width: 50%;
+  padding: 10px 0;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  background-color: whitesmoke;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+}
+.radio-group {
+  margin-left: 20%;
+  margin-bottom: 10px;
+  display: flex;
+  width: 60%;
+  background-color: cornsilk;
+  border: 1px solid black;
+  gap: 20px;
+  font-weight: bold;
+  font-family: monospace;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.time-inputs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.time-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.time-group label {
+  margin-left: 10px;
+  font-weight: bold;
+  color: #444;
+}
+
+.time-group input {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 14px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+  background-color: #45a049;
+}
+
+.records-section {
+  background-color: white;
+  padding: 24px 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.records-section h2, .Heading{
+  margin-bottom: 15px;
+  font-weight: bold;
+  font-size: 30px;
+  margin-left: 15px;
+  color: mediumslateblue;
+}
+
+.date-range {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.date-range input {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-weight: bold;
+}
+.records-section .worker{
+  width: 200px;
+}
+.fetch-btn {
+  width: 200px;
+  padding: 12px 24px;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.fetch-btn:hover:not(:disabled) {
+  background-color: #1976d2;
+}
+
+.fetch-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.records-table {
+  width: 100%;
+  color: black;
+  gap: 5px;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+.date-column {
+  width: 150px;
+  min-width: 120px;
+  max-width: 200px;
+  border-radius: 10px 0 0 0 ;
+}
+.night-column{
+  border-radius: 0 10px 0 0;
+}
+.records-table th,
+.records-table td {
+  padding: 15px;
+  font-weight: bold;
+  text-align: left;
+  border-bottom: 2px solid goldenrod;
+}
+
+.records-table th {
+  background-color: darkcyan;
+  font-weight: bold;
+  color: #333;
+}
+.records-table tr {
+  background-color: lightcyan;
+}
+.records-table tr:hover {
+  background-color: lightsteelblue;
+}
+
+@media print {
+  .head {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .attend-container {
+    padding: 10px;
+  }
+
+  .time-inputs {
+    grid-template-columns: 1fr;
+  }
+
+  .date-range {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .radio-group {
+    margin-left: 0;
+    width: 100%;
+  }
+}
