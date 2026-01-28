@@ -1,25 +1,47 @@
-import React from 'react';
-import { Regular, MilkSweets, DryFruitSweets, Snacks, CoolSweets } from '../Store/Cost';
+import React, { useEffect, useState } from 'react';
+import axios from "axios";
 import '../styles/Home.css';
 
 function Home() {
   const formatPrice = (price) => `₹${price}`;
+  const [data, setData] = useState([]);
 
-  const renderCategory = (title, items) => (
-    <div className="category-group">
+  useEffect(() => {
+    const allitems = async () => {
+      try {
+        const res = await axios.get("http://localhost:5016/items");
+        setData(res.data);
+        console.log(res.data);
+      } catch (error) {
+        console.error("Error in fetching", error);
+      }
+    };
+
+    allitems();
+  }, []);
+
+  const groupByCategory = (items = []) =>
+    items.reduce((acc, item) => {
+      acc[item.category] = acc[item.category] || [];
+      acc[item.category].push(item);
+      return acc;
+    }, {});
+
+  const renderCategory = (title, items = []) => (
+    <div className="category-group" key={title}>
       <div className="category-title-container">
         <h3 className="category-title">{title}</h3>
         <div className="category-line"></div>
       </div>
       <div className="items-grid">
-        {Object.entries(items).map(([name, price]) => (
-          <div key={name} className="product-card">
+        {items.map((item) => (
+          <div key={item.id} className="product-card">
             <div className="product-image-container">
               <span className="product-image-placeholder">🍬</span>
             </div>
             <div className="product-info">
-              <h4 className="product-name">{name.replace(/_/g, ' ')}</h4>
-              <p className="product-price">{formatPrice(price)}<small>/kg</small></p>
+              <h4 className="product-name">{item.item_name}</h4>
+              <p className="product-price">{formatPrice(item.price)}<small>/kg</small></p>
               <button className="add-to-cart-btn">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="9" cy="21" r="1"></circle>
@@ -34,6 +56,8 @@ function Home() {
       </div>
     </div>
   );
+
+  const groupedData = groupByCategory(data);
 
   return (
     <div className="home-page">
@@ -56,11 +80,11 @@ function Home() {
           <p>Carefully curated sweets and snacks for every occasion</p>
         </div>
 
-        {renderCategory('Ghee Sweets', Regular)}
-        {renderCategory('Milk Delicacies', MilkSweets)}
-        {renderCategory('Premium Dry Fruit', DryFruitSweets)}
-        {renderCategory('Artisanal Snacks', Snacks)}
-        {renderCategory('Chilled Favorites', CoolSweets)}
+        <div className="home-page">
+          {Object.entries(groupedData).map(([category, items]) =>
+            renderCategory(category, items)
+          )}
+        </div>
       </main>
     </div>
   );

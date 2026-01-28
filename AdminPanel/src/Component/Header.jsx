@@ -16,6 +16,7 @@ function Header() {
         <Link to="/admin/attend" className="nav-item">Attendence</Link>
         <Link to='/admin/label' className="nav-item">Labels</Link>
         <Link to="/admin/history" className="nav-item">History</Link>
+        <Link to="/admin/add-item" className="nav-item">Add Item</Link>
       </div>
     </div>
   );

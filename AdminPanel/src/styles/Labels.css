@@ -1,167 +1,114 @@
-.lab {
-  background-color: antiquewhite; 
-  width: 100%;
-  min-height: 100vh;
-  padding: 0;
-  margin: 0;
+/* =========================
+   PAGE WRAPPER
+========================= */
+.label-page {
+  padding: 24px;
+  background: #fffaf0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.card {
-  width: 100%; 
-  margin: 0;
-  padding: 30px 10px;
-  background-color: darkseagreen;
+/* =========================
+   LABEL GRID LAYOUT
+========================= */
+.label-grid {
   display: grid;
-  gap: 20px;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  box-sizing: border-box;
-} 
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 18px;
+}
 
-.labels {
-  width: 100%;
-  max-width: 220px;
-  height: 150px;
-  background-color: #fff8dc;
-  border: 1.5px solid tomato;
+/* =========================
+   INDIVIDUAL LABEL CARD
+========================= */
+.label-card {
+  background: linear-gradient(135deg, #fde68a, #fca5a5);
+  border-radius: 16px;
+  padding: 18px 14px;
+  text-align: center;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  page-break-inside: avoid;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.label-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.18);
+}
+
+/* =========================
+   LABEL TEXT
+========================= */
+.label-name {
+  font-size: 18px;
+  font-weight: 800;
+  color: #3f1d0b;
+  margin-bottom: 6px;
+  letter-spacing: 0.4px;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7);
+}
+
+.label-price {
+  font-size: 16px;
+  font-weight: 700;
+  color: #14532d;
+}
+
+/* =========================
+   PRINT BUTTON
+========================= */
+.print-btn-container {
+  margin-top: 28px;
+  text-align: center;
+}
+
+.print-btn {
+  background: linear-gradient(135deg, #92400e, #7c2d12);
+  color: #fff;
+  border: none;
+  padding: 12px 28px;
+  font-size: 16px;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  padding: 10px;
-  overflow: hidden;
-  word-wrap: break-word;
-  white-space: normal;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-sizing: border-box;
-  margin: 0 auto;
 }
 
-.labels:hover {
-  transform: scale(1.03);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+.print-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.3);
 }
 
-.labels h2 {
-  text-align: center;
-  margin: 0;
-  height: 90px;
-  font-size: 22px;
-  padding: 8px 5px;
-  background: linear-gradient(to right, #f0e68c, #ffd700);
-  border-radius: 5px;
-  color: #007bff;
-  overflow-wrap: break-word;
-}
-
-.labels p {
-  margin: 10px auto 0;
-  font-size: 23px;
-  color: darkgoldenrod;
-  font-weight: bold;
-  text-align: center;
-}
-
-.printer {
-  margin-top: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 30px 10px;
-  background-color: bisque;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.btn {
-  font-size: 20px;
-  font-weight: bold;
-  width: 130px;
-}
-
+/* =========================
+   PRINT STYLES
+========================= */
 @media print {
   body {
-    background-color: white !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-    margin: 0;
+    background: white;
+  }
+
+  .print-btn-container {
+    display: none;
+  }
+
+  .label-page {
     padding: 0;
   }
 
-  .btn, .printer {
-    display: none !important;
+  .label-grid {
+    gap: 10px;
   }
 
-  .lab {
-    background-color: white;
-    width: 100%;
-    margin: 0;
-    padding: 0;
+  .label-card {
+    background: linear-gradient(135deg, #ffffff, #f5f5f5);
+    box-shadow: none;
+    border: 1px solid #000;
+    border-radius: 8px;
   }
 
-  .card {
-    background-color: white;
-    border: none;
-    gap: 15px;
-    padding: 10px;
-    margin: 0;
-    width: 100%;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  }
-
-  .labels {
-    width: 100%;
-    max-width: 220px;
-    height: 150px;
-    background-color: #fff8dc !important;
-    border: 1.5px solid tomato;
-    border-radius: 10px;
-    box-shadow: none; 
-    text-align: center;
-    padding: 10px;
-    overflow: hidden;
-    word-wrap: break-word;
-    white-space: normal;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    margin: 0 auto;
-    page-break-inside: avoid;
-  }
-
-  .labels h2 {
-    margin: 0;
-    font-size: 22px;
-    padding: 8px 5px;
-    background: linear-gradient(to right, #f0e68c, #ffd700) !important;
-    border-radius: 5px;
-    color: #007bff;
-    overflow-wrap: break-word;
-  }
-
-  .labels p {
-    margin-top: 12px;
-    font-size: 20px;
-    color: darkgoldenrod;
-    font-weight: bold;
-    text-align: center;
-  }
-}
-
-@media (max-width: 768px) {
-  .card {
-    padding: 20px 5px;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 15px;
-  }
-  
-  .labels {
-    max-width: 100%;
-    min-width: 180px;
-  }
-  
-  .printer {
-    padding: 20px 5px;
+  .label-name,
+  .label-price {
+    color: #000;
+    text-shadow: none;
   }
 }

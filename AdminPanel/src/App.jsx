@@ -10,6 +10,7 @@ import { Regular, MilkSweets, DryFruitSweets, CoolSweets, Snacks } from './Store
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import History from './Pages/BillHistory';
 import Label from './Pages/Labels';
+import AddItem from './Pages/AddItem';
 
 function App() {
   const inventoryData = {
@@ -35,6 +36,7 @@ function App() {
           <Route path="attend" element={<Attend />} />
           <Route path="label" element={<Label />} />
           <Route path="history" element={<History />} />
+          <Route path="add-item" element={<AddItem />} />
         </Route>
         {/* Redirect root to /admin */}
         <Route path="/" element={<Navigate to="/admin" replace />} />
