@@ -6,8 +6,8 @@ function About() {
     <div className="about-page">
       <div className="about-hero">
         <img
-          src="https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&q=80&w=2000"
-          alt="Market"
+          src="https://images.unsplash.com/photo-1590089415225-401ed6f9db8e?auto=format&fit=crop&q=80&w=2000"
+          alt="Legacy Sweet Shop"
           className="about-hero-img"
         />
         <div className="about-hero-content">
@@ -15,6 +15,7 @@ function About() {
           <p>The Journey of Sweet Tooth</p>
         </div>
       </div>
+
 
       <main className="about-main">
         <section className="about-section">

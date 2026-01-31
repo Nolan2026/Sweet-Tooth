@@ -61,28 +61,43 @@ router.post("/", img.single("image"), async (req, res) => {
 
 // update a item 
 // Update item by ID
-router.put("/:id", async (req, res) => {
+router.put("/:id", img.single("image"), async (req, res) => {
     const { id } = req.params;
-    const { item_name, price, image_url, availability } = req.body;
+    const { item_name, price, availability } = req.body;
 
-    // 🔒 VALIDATION
-    if (price !== undefined && !Number.isInteger(price)) {
-        return res.status(400).json({
-            error: "Price must be an integer",
-        });
+    // 🔥 Build update object safely
+    const data = {};
+
+    if (item_name !== undefined) {
+        data.item_name = item_name;
+    }
+
+    if (price !== undefined) {
+        const parsedPrice = Number(price);
+
+        if (!Number.isInteger(parsedPrice)) {
+            return res.status(400).json({
+                error: "Price must be an integer",
+            });
+        }
+
+        data.price = parsedPrice;
+    }
+
+    if (availability !== undefined) {
+        data.availability =
+            availability === "true" || availability === true;
+    }
+
+    // ✅ Only update image if new file uploaded
+    if (req.file) {
+        data.image_url = `/uploads/${req.file.filename}`;
     }
 
     try {
         const updatedItem = await prisma.item.update({
-            where: {
-                id: Number(id),
-            },
-            data: {
-                ...(item_name && { item_name }),
-                ...(price !== undefined && { price }),
-                ...(image_url !== undefined && { image_url }),
-                ...(availability !== undefined && { availability }),
-            },
+            where: { id: Number(id) },
+            data,
         });
 
         console.log(
@@ -101,6 +116,7 @@ router.put("/:id", async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
 
 
 

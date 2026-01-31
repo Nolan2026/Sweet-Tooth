@@ -168,8 +168,8 @@ function AddItem() {
                                 type="file"
                                 accept="image/*"
                                 onChange={handleImageChange}
-                                required
                             />
+
                         </div>
                     </div>
 

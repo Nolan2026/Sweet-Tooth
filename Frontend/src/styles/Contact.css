@@ -98,12 +98,22 @@ textarea.form-input {
   box-shadow: var(--shadow-md);
 }
 
-@media (max-width: 900px) {
-  .contact-grid {
-    grid-template-columns: 1fr;
+@media (max-width: 768px) {
+  .contact-page {
+    padding: 2rem 4%;
+  }
+
+  .contact-info-card,
+  .contact-form-card {
+    padding: 1.5rem;
+  }
+
+  .contact-form-card h2 {
+    font-size: 1.8rem;
   }
 
   .form-row {
     grid-template-columns: 1fr;
+    gap: 0;
   }
 }

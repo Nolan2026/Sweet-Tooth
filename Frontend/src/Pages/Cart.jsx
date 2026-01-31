@@ -1,10 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useCart } from '../Context/CartContext';
 import '../styles/Cart.css';
 
 function Cart() {
-  // Placeholder cart state
-  const cartItems = [];
+  const { cartItems, removeFromCart, updateQuantity, getCartTotal } = useCart();
+
+  const formatPrice = (p) => `₹${p}`;
 
   return (
     <div className="cart-page">
@@ -28,7 +30,38 @@ function Cart() {
             </div>
           ) : (
             <div className="cart-list">
-              {/* Cart items would go here */}
+              {cartItems.map((item) => (
+                <div key={`${item.id}-${item.selectedWeight}`} className="cart-item">
+                  <div className="cart-item-image">
+                    {item.image_url ? (
+                      <img src={`http://localhost:5016${item.image_url}`} alt={item.item_name} />
+                    ) : (
+                      <div className="placeholder">🍬</div>
+                    )}
+                  </div>
+                  <div className="cart-item-info">
+                    <h3>{item.item_name}</h3>
+                    <p className="item-variant">Unit: {item.selectedWeight < 1 ? `${item.selectedWeight * 1000}g` : '1kg'}</p>
+                    <p className="item-price">{formatPrice(item.priceAtSelectedWeight)} each</p>
+                  </div>
+                  <div className="cart-item-actions">
+                    <div className="quantity-controls">
+                      <button onClick={() => updateQuantity(item.id, item.selectedWeight, -1)}>-</button>
+                      <span>{item.quantity}</span>
+                      <button onClick={() => updateQuantity(item.id, item.selectedWeight, 1)}>+</button>
+                    </div>
+                    <button
+                      className="remove-btn"
+                      onClick={() => removeFromCart(item.id, item.selectedWeight)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                  <div className="cart-item-total">
+                    {formatPrice(item.priceAtSelectedWeight * item.quantity)}
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </main>
@@ -37,19 +70,15 @@ function Cart() {
           <h2 className="summary-title">Order Summary</h2>
           <div className="summary-row">
             <span>Subtotal</span>
-            <span>₹0.00</span>
+            <span>{formatPrice(getCartTotal())}</span>
           </div>
           <div className="summary-row">
-            <span>Estimated Shipping</span>
-            <span>₹0.00</span>
-          </div>
-          <div className="summary-row">
-            <span>Taxes</span>
-            <span>₹0.00</span>
+            <span>Shipping</span>
+            <span>FREE</span>
           </div>
           <div className="summary-row total">
             <span>Total</span>
-            <span>₹0.00</span>
+            <span>{formatPrice(getCartTotal())}</span>
           </div>
 
           <button className="checkout-btn" disabled={cartItems.length === 0}>

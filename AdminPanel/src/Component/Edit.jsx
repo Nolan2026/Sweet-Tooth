@@ -9,9 +9,16 @@ function Edit() {
 
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
-  const [image, setImage] = useState("");
   const [availability, setAvailability] = useState(true);
+
+  const [existingImage, setExistingImage] = useState(""); // 🔥 string
+  const [newImage, setNewImage] = useState(null);          // 🔥 File
+
   const [loading, setLoading] = useState(true);
+
+  const handleImageChange = (e) => {
+    setNewImage(e.target.files[0]);
+  };
 
   useEffect(() => {
     const fetchItem = async () => {
@@ -20,8 +27,8 @@ function Edit() {
 
         setName(res.data.item_name);
         setPrice(res.data.price);
-        setImage(res.data.image_url || "");
         setAvailability(res.data.availability ?? true);
+        setExistingImage(res.data.image_url || "");
 
         setLoading(false);
       } catch (err) {
@@ -38,15 +45,21 @@ function Edit() {
     e.preventDefault();
 
     try {
-      const res = await api.put(`/items/${id}`, {
-        item_name: name,
-        price: Number(price),
-        image_url: image,
-        availability,
+      const formData = new FormData();
+      formData.append("item_name", name);
+      formData.append("price", Number(price));
+      formData.append("availability", availability);
+
+      // ✅ send image ONLY if user selected new one
+      if (newImage) {
+        formData.append("image", newImage);
+      }
+
+      const res = await api.put(`/items/${id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
       console.log(res.data);
-
       navigate("/admin/inventory");
     } catch (err) {
       console.error(err);
@@ -75,12 +88,39 @@ function Edit() {
           required
         />
 
-        <input
-          type="text"
-          placeholder="Image URL"
-          value={image}
-          onChange={(e) => setImage(e.target.value)}
-        />
+        {/* 🔥 Existing image preview */}
+        {existingImage && !newImage && (
+          <img
+            src={`http://localhost:5016${existingImage}`}
+            alt="Current"
+            className="edit-image-preview"
+          />
+        )}
+
+        {/* 🔥 New image preview */}
+        {newImage && (
+          <img
+            src={URL.createObjectURL(newImage)}
+            alt="Preview"
+            className="edit-image-preview"
+          />
+        )}
+
+        <div className="form-group">
+          <label>Change Image (optional)</label>
+
+          <div className="file-upload">
+            <label className="file-upload-label">
+              {newImage ? newImage.name : "Click to upload new image"}
+            </label>
+
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+          </div>
+        </div>
 
         <div className="radio-group">
           <label>
@@ -103,7 +143,9 @@ function Edit() {
         </div>
 
         <button type="submit">Update Item</button>
-        <button onClick={() => navigate("/inventory")}>Cancel</button>
+        <button type="button" onClick={() => navigate("/admin/inventory")}>
+          Cancel
+        </button>
       </form>
     </div>
   );
