@@ -1,0 +1,65 @@
+.edit-container {
+    max-width: 520px;
+    margin: 40px auto;
+    padding: 24px;
+    background: #fff7ed;
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    font-family: "Segoe UI", sans-serif;
+}
+
+.edit-container h3 {
+    text-align: center;
+    margin-bottom: 18px;
+    color: #7c2d12;
+}
+
+.edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.edit-form input[type="text"],
+.edit-form input[type="number"],
+.edit-form input[type="file"] {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #d97706;
+    font-size: 14px;
+}
+
+.radio-group {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+
+}
+
+.radio-group label {
+    font-weight: 600;
+    color: #92400e;
+    cursor: pointer;
+}
+
+.radio-group input {
+    margin-right: 2px;
+}
+
+.edit-form button {
+    margin-top: 16px;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #92400e, #7c2d12);
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.edit-form button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+}

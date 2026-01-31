@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import api from "../api/axios";
 import "../styles/Inv.css";
+import { Navigate, useNavigate } from "react-router-dom";
+import AddItem from "./AddItem";
 
 export default function Inventory() {
+  const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editedPrice, setEditedPrice] = useState("");
+  const [availability, setAvailability] = useState(true);
   const [newItem, setNewItem] = useState({
     category: "",
     item_name: "",
@@ -72,24 +76,6 @@ export default function Inventory() {
     })
   };
 
-
-  /* =========================
-     UPDATE PRICE
-  ========================= */
-  const handleSave = async (id) => {
-    try {
-     const res = await api.put(`/items/${id}`, {
-        price: Number(editedPrice),
-      });
-      console.log("BACKEND RESPONSE:", res.data);
-
-      setEditingId(null);
-      fetchItems();
-    } catch (err) {
-      console.error("Update error:", err);
-    }
-  };
-
   /* =========================
      DELETE ITEM
   ========================= */
@@ -107,59 +93,24 @@ export default function Inventory() {
 
   return (
     <div className="inventory-container">
-      {/* ADD ITEM */}
-      <div className="add-item-form">
-        <h2>Add New Item</h2>
-        <form onSubmit={handleAddItem}>
-          <input
-            placeholder="Category"
-            value={newItem.category}
-            onChange={(e) =>
-              setNewItem({ ...newItem, category: e.target.value })
-            }
-            required
-          />
-          <input
-            placeholder="Item Name"
-            value={newItem.item_name}
-            onChange={(e) =>
-              setNewItem({ ...newItem, item_name: e.target.value })
-            }
-            required
-          />
-          <input
-            type="number"
-            placeholder="Price"
-            value={newItem.price}
-            onChange={(e) =>
-              setNewItem({ ...newItem, price: e.target.value })
-            }
-            required
-          />
-          <input
-            placeholder="Img Url"
-            value={newItem.img_url}
-            onChange={(e) =>
-              setNewItem({ ...newItem, img_url: e.target.value })
-            }
-            required
-          />
-          <button type="submit">Add Item</button>
-          <button onClick={() => { clear }}>Clear</button>
-        </form>
-      </div>
-
-      {/* INVENTORY TABLES */}
       {Object.entries(groupedItems).map(([category, items]) => (
         <div key={category} className="category-table">
           <h2>{category}</h2>
 
           <table>
+            <colgroup>
+              <col style={{ width: "30%" }} />  {/* Item */}
+              <col style={{ width: "25%" }} />  {/* Price */}
+              <col style={{ width: "25%" }} />  {/* Actions */}
+              <col style={{ width: "25%" }} />  {/* Stock */}
+            </colgroup>
+            
             <thead>
               <tr>
                 <th>Item</th>
                 <th>Price (₹)</th>
                 <th>Actions</th>
+                <th>Stock</th>
               </tr>
             </thead>
 
@@ -167,36 +118,17 @@ export default function Inventory() {
               {items.map((item) => (
                 <tr key={item.id}>
                   <td>{item.item_name}</td>
+                  <td>{item.price}</td>
                   <td>
-                    {editingId === item.id ? (
-                      <input
-                        type="number"
-                        min="1"
-                        step="1"
-                        value={editedPrice}
-                        onChange={(e) => setEditedPrice(e.target.valueAsNumber || "")}
-                      />
-                    ) : (
-                      item.price
-                    )}
-                  </td>
-                  <td className="action-buttons">
-                    {editingId === item.id ? (
-                      <button onClick={() => handleSave(item.id)} disabled={editedPrice === "" || isNaN(editedPrice)}>Save</button>
-                      
-                    ) : (
-                      <button
-                        onClick={() => {
-                          setEditingId(item.id);
-                          setEditedPrice(item.price);
-                        }}
-                      >
-                        Edit
-                      </button>
-                    )}
+                    <button onClick={() => navigate(`/admin/edit/${item.id}`)} >Edit</button>
                     <button onClick={() => handleDelete(item.id)}>
                       Delete
                     </button>
+                  </td>
+                  <td>
+                    <span className={item.availability ? 'badge-yes' : 'badge-no'}>
+                      {item.availability ? 'Yes' : 'No'}
+                    </span>
                   </td>
                 </tr>
               ))}

@@ -4,12 +4,15 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Item {
-  id        Int    @id @default(autoincrement())
-  category  String @db.VarChar(20)
-  item_name String @db.VarChar(50)
-  price     Int
-  image_url String
+  id           Int     @id @default(autoincrement())
+  category     String  @db.VarChar(20)
+  item_name    String  @db.VarChar(50)
+  price        Int
+  image_url    String
+  availability Boolean @default(true)
 }
+

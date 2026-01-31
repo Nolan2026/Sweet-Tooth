@@ -11,19 +11,10 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import History from './Pages/BillHistory';
 import Label from './Pages/Labels';
 import AddItem from './Pages/AddItem';
+import Edit from './Component/Edit';
+import UploadTest from './Pages/UploadTest.jsx';
 
 function App() {
-  const inventoryData = {
-    Regular,
-    MilkSweets,
-    DryFruitSweets,
-    CoolSweets,
-    Snacks
-  };
-
-  const handleInventoryUpdate = (newData) => {
-    console.log('Inventory updated:', newData);
-  };
 
   return (
     <Router>
@@ -32,7 +23,9 @@ function App() {
         <Route path="/admin">
           <Route index element={<Bill />} />
           <Route path="bill" element={<Bill />} />
-          <Route path="inventory" element={<Inventory data={inventoryData} onUpdate={handleInventoryUpdate} />} />
+          <Route path="uploads" element={<UploadTest />} />
+          <Route path="inventory" element={<Inventory />} />
+          <Route path="edit/:id" element={<Edit/>} />
           <Route path="attend" element={<Attend />} />
           <Route path="label" element={<Label />} />
           <Route path="history" element={<History />} />
