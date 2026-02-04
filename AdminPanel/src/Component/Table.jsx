@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { saveBill } from '../Store/slices/billSlice.js';
+import api from '../api/axios';
+import { useToast } from '../Context/ToastContext';
 
 export default function Tab({ items, total, date, customerName, phoneNumber, paymentMethod, clear, setItemsList, setTotal }) {
 
-  const dispatch = useDispatch();
-  const data = useSelector((state) => state.bill);
   const his = useNavigate();
+  const [billNumber, setBillNumber] = useState(null);
+  const { showToast } = useToast();
 
   const getCurrentTime = () => {
     const now = new Date();
@@ -17,24 +17,30 @@ export default function Tab({ items, total, date, customerName, phoneNumber, pay
       hour12: true
     });
   };
-  const currentBillNum = useSelector((state) => state.bill.currentBillNo);
 
-  const clr = () => {
-    savedBill();
+  const clr = async () => {
+    await savedBill();
     clear();
   };
 
-  const savedBill = () => {
-    const now = new Date().toLocaleDateString();
+  const savedBill = async () => {
+    if (items.length === 0) {
+      showToast('No items to save', 'warning');
+      return;
+    }
 
-    dispatch(saveBill({
-      billdate: now,
-      name: customerName,
-      num: phoneNumber,
-      noItems: items.length,
-      total: total,
-      items: items,
-    }));
+    try {
+      const res = await api.post('/admin/billing/create', {
+        items: items,
+        paymentMode: paymentMethod
+      });
+
+      setBillNumber(res.data.bill.id);
+      showToast('Bill saved successfully!', 'success');
+    } catch (err) {
+      console.error('Save bill error:', err);
+      showToast('Failed to save bill: ' + (err.response?.data?.message || err.message), 'error');
+    }
   };
 
   const handlePrint = () => {
@@ -68,8 +74,8 @@ export default function Tab({ items, total, date, customerName, phoneNumber, pay
       </div>
 
       <div className="bill-details">
-        <p>Date: {date} | Time: {getCurrentTime()} <span className='billno'>Bill No: {currentBillNum}</span></p>
-        <p>Customer Details: {customerName} | {phoneNumber} | Payment: {paymentMethod.charAt(0).toUpperCase() + paymentMethod.slice(1)}</p>
+        <p>Date: {date} | Time: {getCurrentTime()} <span className='billno'>Bill No: {billNumber || 'Unsaved'}</span></p>
+        <p>Customer Details: {customerName || 'Walk-in'} | {phoneNumber || 'N/A'} | Payment: {paymentMethod}</p>
       </div>
 
       <table className="billTable">
@@ -83,9 +89,9 @@ export default function Tab({ items, total, date, customerName, phoneNumber, pay
         <tbody>
           {items.map((item, index) => (
             <tr key={index}>
-              <td>{item.name.replace(/_/g, ' ')}</td>
-              <td>{item.grams}</td>
-              <td>₹{item.price}</td>
+              <td>{item.itemName || item.name}</td>
+              <td>{item.quantity} kg</td>
+              <td>₹{item.subtotal || item.price}</td>
             </tr>
           ))}
         </tbody>
@@ -112,7 +118,7 @@ export default function Tab({ items, total, date, customerName, phoneNumber, pay
 
         <button className='history' onClick={Move}>History</button>
       </div>
-      {saveBill}
+
     </div>
   );
 }

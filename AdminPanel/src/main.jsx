@@ -2,13 +2,14 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { store } from './Store/index.js'
+import { ToastProvider } from './Context/ToastContext.jsx'
 import './index.css'
 import App from './App.jsx'
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <Provider store={store}>
+  <Provider store={store}>
+    <ToastProvider>
       <App />
-    </Provider>
-  </StrictMode>,
+    </ToastProvider>
+  </Provider>,
 )

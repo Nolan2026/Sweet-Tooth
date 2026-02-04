@@ -1,93 +1,174 @@
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import api from '../api/axios';
 import '../styles/History.css';
-import { useState } from 'react';
-import { deleteBill } from '../Store/slices/billSlice';
+import { useToast } from '../Context/ToastContext';
 
-function History() {
-  const dispatch = useDispatch();
-  const data = useSelector((state) => state.bill);
-
+function BillHistory() {
+  const { showToast } = useToast();
+  const [bills, setBills] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [viewItems, setViewItems] = useState(null);
+  const [filter, setFilter] = useState({
+    startDate: '',
+    endDate: '',
+    paymentMode: ''
+  });
 
-  const handleView = (items) => {
-    setViewItems(items);
+  const fetchBills = async () => {
+    try {
+      setLoading(true);
+      const params = new URLSearchParams();
+      if (filter.startDate) params.append('startDate', filter.startDate);
+      if (filter.endDate) params.append('endDate', filter.endDate);
+      if (filter.paymentMode) params.append('paymentMode', filter.paymentMode);
+
+      const res = await api.get(`/admin/billing/history?${params.toString()}`);
+      setBills(res.data);
+    } catch (err) {
+      console.error('Fetch bills error:', err);
+      showToast('Failed to fetch billing history', 'error');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDelete = (id) => {
-    dispatch(deleteBill(id));
+  useEffect(() => {
+    fetchBills();
+  }, []);
+
+  const handleView = (bill) => {
+    setViewItems(bill);
+  };
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-IN', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   };
 
   return (
-    <div>
+    <div className="history-container">
       <h2 className="billHead">Billing History of Sweet Tooth</h2>
-      <div className="bill-table">
-        <table>
-          <thead>
-            <tr>
-              <th>Bill No</th>
-              <th>Bill Date</th>
-              <th>Customer Name</th>
-              <th>Cell No</th>
-              <th>No oF Items</th>
-              <th>Total</th>
-              <th>Options</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.bills.map((his) => (
-              <tr key={his.billNo}>
-                <td>{his.billNo}</td>
-                <td className="today">{his.billdate}</td>
-                <td>{his.name}</td>
-                <td>{his.num}</td>
-                <td>{his.noItems}</td>
-                <td>{his.total}</td>
-                <td className="btns">
-                  <button onClick={() => handleView(his)}>View</button>
 
-                  <button onClick={() => handleDelete(his.billNo)}>
-                    Delete{' '}
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {/* Filters */}
+      <div className="filters-section">
+        <div className="filter-group">
+          <label>Payment Mode:</label>
+          <select
+            value={filter.paymentMode}
+            onChange={(e) => setFilter({ ...filter, paymentMode: e.target.value })}
+          >
+            <option value="">All</option>
+            <option value="Cash">Cash</option>
+            <option value="UPI">UPI</option>
+            <option value="Card">Card</option>
+          </select>
+        </div>
+
+        <div className="filter-group">
+          <label>From:</label>
+          <input
+            type="date"
+            value={filter.startDate}
+            onChange={(e) => setFilter({ ...filter, startDate: e.target.value })}
+          />
+        </div>
+
+        <div className="filter-group">
+          <label>To:</label>
+          <input
+            type="date"
+            value={filter.endDate}
+            onChange={(e) => setFilter({ ...filter, endDate: e.target.value })}
+          />
+        </div>
+
+        <button onClick={fetchBills} className="apply-filter-btn">
+          Apply Filters
+        </button>
       </div>
-      <div>
-        {viewItems && (
-          <div className="bill-view">
-            <h3>Bill No: {viewItems.billNo} <b className='exit'>x</b></h3>
-            <p><span>Date:</span>{viewItems.billdate}</p>
-            <p>
-              <span>Customer:</span> {viewItems.name} | <span>Phone:</span>{viewItems.num}
-            </p>
-            <p>
-              <span>Total Items:</span>{viewItems.noItems} | <span>Total:</span> ₹{viewItems.total}
-            </p>
-            <table className="view-table">
+
+      {loading ? (
+        <div className="loading">Loading bills...</div>
+      ) : (
+        <>
+          <div className="bill-table">
+            <table>
               <thead>
                 <tr>
-                  <th>Item</th>
-                  <th>Qty</th>
-                  <th>Price</th>
+                  <th>Bill No</th>
+                  <th>Bill Date</th>
+                  <th>Payment Mode</th>
+                  <th>No of Items</th>
+                  <th>Total</th>
+                  <th>Options</th>
                 </tr>
               </thead>
               <tbody>
-                {viewItems.items.map((item, index) => (
-                  <tr key={index}>
-                    <td>{item.name}</td>
-                    <td>{item.qty || item.grams}</td>
-                    <td>{item.price}</td>
+                {bills.length === 0 ? (
+                  <tr>
+                    <td colSpan="6" style={{ textAlign: 'center' }}>No bills found</td>
                   </tr>
-                ))}
+                ) : (
+                  bills.map((bill) => (
+                    <tr key={bill.id}>
+                      <td>{bill.id}</td>
+                      <td className="today">{formatDate(bill.createdAt)}</td>
+                      <td>{bill.paymentMode}</td>
+                      <td>{Array.isArray(bill.items) ? bill.items.length : 0}</td>
+                      <td>₹{bill.totalAmount}</td>
+                      <td className="btns">
+                        <button onClick={() => handleView(bill)}>View</button>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
-        )}
-      </div>
+
+          {viewItems && (
+            <div className="bill-view">
+              <h3>
+                Bill No: {viewItems.id}
+                <b className='exit' onClick={() => setViewItems(null)}>×</b>
+              </h3>
+              <p><span>Date:</span> {formatDate(viewItems.createdAt)}</p>
+              <p><span>Payment Mode:</span> {viewItems.paymentMode}</p>
+              <p>
+                <span>Total Items:</span> {Array.isArray(viewItems.items) ? viewItems.items.length : 0} |
+                <span> Total:</span> ₹{viewItems.totalAmount}
+              </p>
+              <table className="view-table">
+                <thead>
+                  <tr>
+                    <th>Item</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                    <th>Subtotal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Array.isArray(viewItems.items) && viewItems.items.map((item, index) => (
+                    <tr key={index}>
+                      <td>{item.itemName}</td>
+                      <td>{item.quantity}</td>
+                      <td>₹{item.price}</td>
+                      <td>₹{item.subtotal}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }
 
-export default History;
+export default BillHistory;

@@ -1,0 +1,345 @@
+.profile-container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 20px;
+    font-family: 'Outfit', sans-serif;
+    color: #333;
+}
+
+.profile-card {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    border-bottom: 2px solid #f8f9fa;
+    padding-bottom: 30px;
+}
+
+.profile-img {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid #fff5f5;
+    box-shadow: 0 8px 20px rgba(255, 107, 107, 0.15);
+}
+
+.profile-info h2 {
+    margin: 0;
+    font-size: 2.2rem;
+    color: #2d3436;
+    letter-spacing: -0.5px;
+}
+
+.profile-info p {
+    margin: 5px 0 0;
+    color: #888;
+    font-size: 1.1rem;
+}
+
+.profile-sections {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 40px;
+}
+
+@media (max-width: 992px) {
+    .profile-sections {
+        grid-template-columns: 1fr;
+    }
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    color: #2d3436;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+}
+
+.address-section,
+.orders-section {
+    background: #ffffff;
+}
+
+.add-addr-btn {
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 0.9rem;
+}
+
+.add-addr-btn:hover {
+    background: #ee5253;
+    transform: scale(1.05);
+}
+
+.address-form {
+    background: #fffafa;
+    padding: 30px;
+    border-radius: 20px;
+    border: 2px dashed #ffcccc;
+    margin-bottom: 30px;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.address-form h4 {
+    margin: 0 0 20px;
+    color: #ee5253;
+    font-size: 1.2rem;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.profile-input {
+    padding: 12px 18px;
+    border: 2px solid #eee;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: 0.3s;
+    background: white;
+}
+
+.profile-input:focus {
+    border-color: #ff6b6b;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.1);
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.update-btn {
+    width: 100%;
+    background: #2d3436;
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.update-btn:hover {
+    background: #000;
+    transform: translateY(-2px);
+}
+
+.addresses-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+.address-card {
+    border: 2px solid #f1f1f1;
+    border-radius: 18px;
+    padding: 20px;
+    transition: 0.3s;
+}
+
+.address-card:hover {
+    border-color: #ff6b6b;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+}
+
+.address-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.address-label {
+    background: #fff0f0;
+    color: #ff6b6b;
+    padding: 4px 14px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.address-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.edit-addr-icon,
+.delete-addr-icon {
+    background: none;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: #888;
+    text-decoration: underline;
+}
+
+.edit-addr-icon:hover {
+    color: #2d3436;
+}
+
+.delete-addr-icon:hover {
+    color: #e71d36;
+}
+
+.address-body p {
+    margin: 4px 0;
+    color: #555;
+    font-size: 1rem;
+}
+
+.order-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.order-item {
+    background: #fafafa;
+    padding: 20px;
+    border-radius: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #f1f1f1;
+}
+
+.order-details p {
+    margin: 3px 0;
+    font-size: 0.95rem;
+}
+
+.order-status {
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.order-status.pending {
+    background: #fff4e6;
+    color: #f08c00;
+}
+
+.order-status.cancelled {
+    background: #fff5f5;
+    color: #fa5252;
+}
+
+.order-status.delivered {
+    background: #ebfbee;
+    color: #40c057;
+}
+
+.order-actions-status {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+}
+
+.cancel-order-btn {
+    background: none;
+    border: 1px solid #fa5252;
+    color: #fa5252;
+    padding: 0.3rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cancel-order-btn:hover {
+    background: #fa5252;
+    color: white;
+}
+
+.no-data {
+    text-align: center;
+    color: #bbb;
+    padding: 40px 0;
+    font-style: italic;
+}
+
+.status-msg {
+    color: #2ec4b6;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--primary, #ff9f1c);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

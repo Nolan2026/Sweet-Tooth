@@ -1,11 +1,20 @@
 import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useToast } from "../Context/ToastContext";
 import "../styles/Form.css";
+import axios from "axios";
 
 export default function Login() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { showToast } = useToast();
+  const from = location.state?.from || "/";
+
   const [action, setAction] = useState("Login");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     password: ""
   });
   const [error, setError] = useState("");
@@ -18,6 +27,44 @@ export default function Login() {
     setError("");
   };
 
+  const register = async () => {
+    try {
+      const res = await axios.post("http://localhost:5016/auth/register", {
+        username: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        password: formData.password
+      });
+      showToast("Registration successful! You can now login.", "success");
+      setAction("Login");
+      setFormData({ name: "", email: "", phone: "", password: "" });
+    } catch (error) {
+      console.error("Registration error:", error);
+      const msg = error.response?.data?.message || "Registration failed";
+      const detail = error.response?.data?.error ? ` (${error.response.data.error})` : "";
+      setError(msg + detail);
+    }
+  };
+
+  const login = async () => {
+    try {
+      const res = await axios.post("http://localhost:5016/auth/login", {
+        email: formData.email,
+        password: formData.password
+      });
+      localStorage.setItem("userToken", res.data.token);
+      localStorage.setItem("userData", JSON.stringify(res.data.user));
+      window.dispatchEvent(new Event('authChange'));
+      showToast("Login successful!", "success");
+      navigate(from, { replace: true });
+    } catch (error) {
+      console.error("Login error:", error);
+      const msg = error.response?.data?.message || "Login failed";
+      const detail = error.response?.data?.error ? ` (${error.response.data.error})` : "";
+      setError(msg + detail);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (action === "Login") {
@@ -25,13 +72,13 @@ export default function Login() {
         setError("Please enter your credentials.");
         return;
       }
-      console.log("Logging in...");
+      login();
     } else {
-      if (!formData.name || !formData.email || !formData.password) {
+      if (!formData.name || !formData.email || !formData.password || !formData.phone) {
         setError("All fields are required.");
         return;
       }
-      console.log("Signing up...");
+      register();
     }
   };
 
@@ -64,6 +111,17 @@ export default function Login() {
               value={formData.email}
               onChange={handleChange}
             />
+
+            {action === "Sign up" && (
+              <input
+                type="text"
+                name="phone"
+                className="login-input"
+                placeholder="Mobile Number"
+                value={formData.phone}
+                onChange={handleChange}
+              />
+            )}
 
             <input
               type="password"

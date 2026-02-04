@@ -7,20 +7,39 @@ function Header() {
   const navigate = useNavigate();
   const { getCartCount } = useCart();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('userToken'));
+
+  console.log("Header rendering, isLoggedIn:", isLoggedIn);
+
+  const handleLogout = () => {
+    localStorage.removeItem('userToken');
+    localStorage.removeItem('userData');
+    setIsLoggedIn(false);
+    window.dispatchEvent(new Event('authChange'));
+    navigate('/');
+  };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  // Close menu when resizing to desktop
   useEffect(() => {
+    const handleStorageChange = () => {
+      setIsLoggedIn(!!localStorage.getItem('userToken'));
+    };
     const handleResize = () => {
       if (window.innerWidth > 768) {
         setIsMenuOpen(false);
       }
     };
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('authChange', handleStorageChange);
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('authChange', handleStorageChange);
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   return (
@@ -47,6 +66,7 @@ function Header() {
           <Link to="/" className="nav-item" onClick={() => setIsMenuOpen(false)}>Collections</Link>
           <Link to="/about" className="nav-item" onClick={() => setIsMenuOpen(false)}>Our Story</Link>
           <Link to="/contact" className="nav-item" onClick={() => setIsMenuOpen(false)}>Contact</Link>
+          {isLoggedIn && <Link to="/profile" className="nav-item mobile-only" onClick={() => setIsMenuOpen(false)}>My Profile</Link>}
         </nav>
 
         <div className="auth-buttons">
@@ -59,7 +79,14 @@ function Header() {
             </div>
             <span className="cart-text">Cart</span>
           </Link>
-          <Link to="/log" className="login-btn">Login</Link>
+          {isLoggedIn ? (
+            <div className="auth-user-links">
+              <Link to="/profile" className="login-btn profile-link-btn">Profile</Link>
+              <button onClick={handleLogout} className="logout-btn-nav">Logout</button>
+            </div>
+          ) : (
+            <Link to="/log" className="login-btn">Login</Link>
+          )}
         </div>
       </header>
 

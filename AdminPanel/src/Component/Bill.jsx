@@ -1,256 +1,201 @@
 import '../styles/App.css';
-import React, { useState } from 'react';
-import {
-  Regular,
-  Snacks,
-  DryFruitSweets,
-  CoolSweets,
-  MilkSweets,
-} from '../Store/Cost';
+import React, { useState, useEffect } from 'react';
+import api from '../api/axios';
 import Tab from './Table';
+import { useToast } from '../Context/ToastContext';
 
 const PRESET_GRAMS = [50, 100, 200, 250, 500, 1000];
 const Qty = [1, 2, 3, 4, 5, 10];
-const fixedPriceMap = { Rasmalai: 40 };
-
-const getPrice = (item, grams, category) => {
-  if (category === 'Snacks') return item.price*grams;
-  if (category === 'CoolSweets' && item.name === 'Rasmalai') {
-    return fixedPriceMap['Rasmalai'] * (grams / 100);
-  }
-  const pricePerKg = item.price;
-  return Math.round((pricePerKg / 1000) * grams);
-};
 
 export default function Bill() {
-  const [selectedItems, setSelectedItems] = useState({
-    Regular: '',
-    MilkSweets: '',
-    DryFruitSweets: '',
-    Snacks: '',
-  });
+  const { showToast } = useToast();
+  const [items, setItems] = useState([]);
+  const [selectedItem, setSelectedItem] = useState('');
+  const [quantity, setQuantity] = useState('');
+  const [itemsList, setItemsList] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [customerName, setCustomerName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('Cash');
+  const Current = new Date();
+  const [date, setDate] = useState(Current.toISOString().split('T')[0]);
 
-  const [billNo, setBillNo] = useState(1);
+  // Fetch all items from database
+  useEffect(() => {
+    fetchItems();
+  }, []);
+
+  const fetchItems = async () => {
+    try {
+      const res = await api.get('/admin/inventory/items');
+      if (Array.isArray(res.data)) {
+        setItems(res.data);
+      } else {
+        setItems([]);
+      }
+    } catch (err) {
+      console.error('Fetch items error:', err);
+      showToast('Failed to fetch items', 'error');
+    }
+  };
 
   const clearBill = () => {
     setItemsList([]);
     setTotal(0);
-    setBillNo((prev) => prev + 1);
-  };
-
-  const [grams, setGrams] = useState('');
-  const Current = new Date();
-  const [date, setDate] = useState(Current.toDateString());
-
-  const [itemsList, setItemsList] = useState([]);
-
-  const [total, setTotal] = useState(0);
-
-  const [customerName, setCustomerName] = useState('Nolan');
-
-  const [phoneNumber, setPhoneNumber] = useState(1234567899);
-
-  const [paymentMethod, setPaymentMethod] = useState('cash');
-
-  const categories = {
-    Regular,
-    MilkSweets,
-    DryFruitSweets,
-    CoolSweets,
-    Snacks,
-  };
-
-  const handleSelect = (category, item) => {
-    setSelectedItems((prev) => ({ ...prev, [category]: item }));
+    setCustomerName('');
+    setPhoneNumber('');
+    setSelectedItem('');
+    setQuantity('');
   };
 
   const handleAddItem = () => {
-    const selectedCategory = Object.keys(selectedItems).find(
-      (cat) => selectedItems[cat]
-    );
+    if (!selectedItem || !quantity) {
+      showToast('Please select an item and enter quantity', 'warning');
+      return;
+    }
 
-    const selectedItem = selectedItems[selectedCategory];
-    if (!selectedCategory || !selectedItem || !grams) return;
+    const item = items.find(i => i.id === parseInt(selectedItem));
+    if (!item) return;
 
-    const itemPrice = categories[selectedCategory][selectedItem];
-    const price = getPrice(
-      { name: selectedItem, price: itemPrice },
-      grams,
-      selectedCategory
-    );
+    const price = item.price;
+    const subtotal = price * quantity;
 
     const newItem = {
-      name: selectedItem,
-      grams,
-      price,
-      category: selectedCategory,
+      itemId: item.id,
+      itemName: item.item_name,
+      quantity: quantity,
+      price: price,
+      subtotal: subtotal
     };
 
     const updatedList = [...itemsList, newItem];
     setItemsList(updatedList);
-    setTotal((prev) => prev + price);
+    setTotal(prev => prev + subtotal);
 
-    setSelectedItems((prev) => ({ ...prev, [selectedCategory]: '' }));
-    setGrams('');
+    setSelectedItem('');
+    setQuantity('');
   };
+
+  // Group items by category
+  const groupedItems = items.reduce((acc, item) => {
+    if (!acc[item.category]) acc[item.category] = [];
+    acc[item.category].push(item);
+    return acc;
+  }, {});
 
   return (
     <div className="bill-container">
       <h2 className='heading'>Billing Section</h2>
       <div className="input-section">
-        {' '}
         <div className="date-section">
-          {' '}
           <input
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
             className="date-input"
-          />{' '}
+          />
         </div>
+
         <div className="customer-details">
           <input
             type="text"
-            placeholder="Customer Name"
+            placeholder="Customer Name (Optional)"
             value={customerName}
             onChange={(e) => setCustomerName(e.target.value)}
             className="customer-input"
           />
           <input
             type="tel"
-            placeholder="Phone Number"
+            placeholder="Phone Number (Optional)"
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
             className="customer-input"
           />
+
           <div className="payment-methods">
             <label>
               <input
                 type="radio"
-                value="cash"
-                checked={paymentMethod === 'cash'}
+                value="Cash"
+                checked={paymentMethod === 'Cash'}
                 onChange={(e) => setPaymentMethod(e.target.value)}
-              />{' '}
+              />
               Cash
             </label>
             <label>
               <input
                 type="radio"
-                value="card"
-                checked={paymentMethod === 'card'}
+                value="Card"
+                checked={paymentMethod === 'Card'}
                 onChange={(e) => setPaymentMethod(e.target.value)}
-              />{' '}
+              />
               Card
             </label>
             <label>
               <input
                 type="radio"
-                value="online"
-                checked={paymentMethod === 'online'}
+                value="UPI"
+                checked={paymentMethod === 'UPI'}
                 onChange={(e) => setPaymentMethod(e.target.value)}
-              />{' '}
-              Online
+              />
+              UPI
             </label>
           </div>
-      
         </div>
+
         <div className="item-selection-container">
           <label className="dropdown-label">Select Item</label>
-          <div className="dropdowns">
-            <select
-              value={selectedItems.Regular}
-              onChange={(e) => handleSelect('Regular', e.target.value)}
-              className="item-select"
-            >
-              <option value="">Regular</option>
-              {Object.keys(Regular).map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
 
-            <select
-              value={selectedItems.MilkSweets}
-              onChange={(e) => handleSelect('MilkSweets', e.target.value)}
-              className="item-select"
-            >
-              <option value="">Milk Sweets</option>
-              {Object.keys(MilkSweets).map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-
-            <select
-              value={selectedItems.DryFruitSweets}
-              onChange={(e) => handleSelect('DryFruitSweets', e.target.value)}
-              className="item-select"
-            >
-              <option value="">Dry Fruit Sweets</option>
-              {Object.keys(DryFruitSweets).map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-
-            <select
-              value={selectedItems.Snacks}
-              onChange={(e) => handleSelect('Snacks', e.target.value)}
-              className="item-select"
-            >
-              <option value="">Snacks</option>
-              {Object.keys(Snacks).map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-          </div>
+          <select
+            value={selectedItem}
+            onChange={(e) => setSelectedItem(e.target.value)}
+            className="item-select"
+          >
+            <option value="">-- Select Item --</option>
+            {Object.entries(groupedItems).map(([category, categoryItems]) => (
+              <optgroup key={category} label={category}>
+                {categoryItems.map(item => (
+                  <option key={item.id} value={item.id} disabled={!item.availability}>
+                    {item.item_name} - ₹{item.price}/kg {!item.availability && '(Out of Stock)'}
+                  </option>
+                ))}
+              </optgroup>
+            ))}
+          </select>
 
           <div className="grams-section">
             <input
               type="number"
-              value={grams}
-              onChange={(e) => setGrams(Number(e.target.value))}
-              placeholder="Enter grams"
+              value={quantity}
+              onChange={(e) => setQuantity(Number(e.target.value))}
+              placeholder="Enter quantity (kg)"
               className="grams-input"
+              step="0.1"
             />
-            
+
             <div className="quick-grams">
-            {selectedItems.Snacks? 
-            <div>
-              {Qty.map((q)=>(
-                <button
-                  key={q} onClick={()=> setGrams(q)} className='gram-btn'>
-                  {q} pcs
-                </button>
-              ))}
-            </div> :
-          <div>
               {PRESET_GRAMS.map((g) => (
                 <button
                   key={g}
-                  onClick={() => setGrams(g)}
+                  onClick={() => setQuantity(g / 1000)} // Convert grams to kg
                   className="gram-btn"
                 >
                   {g}g
                 </button>
-              ))} </div> }
+              ))}
             </div>
           </div>
 
           <button
             className="add-item-btn"
             onClick={handleAddItem}
-            disabled={!grams}
+            disabled={!quantity || !selectedItem}
           >
             Add Item
           </button>
         </div>
       </div>
+
       <Tab
         items={itemsList}
         total={total}

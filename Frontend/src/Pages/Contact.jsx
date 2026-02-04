@@ -1,7 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useToast } from '../Context/ToastContext';
 import '../styles/Contact.css';
 
 function Contact() {
+  const { showToast } = useToast();
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      const response = await axios.post('http://localhost:5016/contact/submit', formData);
+      showToast(response.data.message, 'success');
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    } catch (error) {
+      console.error('Contact error:', error);
+      showToast(error.response?.data?.message || 'Failed to send message.', 'error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="contact-page">
       <div className="section-header">
@@ -34,25 +64,61 @@ function Contact() {
 
         <main className="contact-form-card">
           <h2>Send a Message</h2>
-          <form onSubmit={(e) => e.preventDefault()}>
+          <form onSubmit={handleSubmit}>
             <div className="form-row">
               <div className="form-group">
-                <input type="text" className="form-input" placeholder="Your Name" required />
+                <input
+                  type="text"
+                  name="name"
+                  className="form-input"
+                  placeholder="Your Name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
               </div>
               <div className="form-group">
-                <input type="email" className="form-input" placeholder="Your Email" required />
+                <input
+                  type="email"
+                  name="email"
+                  className="form-input"
+                  placeholder="Your Email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
               </div>
             </div>
 
             <div className="form-group">
-              <input type="text" className="form-input" placeholder="Subject (e.g., Bulk Order, Feedback)" />
+              <input
+                type="text"
+                name="subject"
+                className="form-input"
+                placeholder="Subject (e.g., Bulk Order, Feedback)"
+                value={formData.subject}
+                onChange={handleChange}
+              />
             </div>
 
             <div className="form-group">
-              <textarea className="form-input" placeholder="How can we make your day sweeter?"></textarea>
+              <textarea
+                name="message"
+                className="form-input"
+                placeholder="How can we make your day sweeter?"
+                value={formData.message}
+                onChange={handleChange}
+                required
+              ></textarea>
             </div>
 
-            <button type="submit" className="submit-btn">Send Message</button>
+            <button
+              type="submit"
+              className="submit-btn"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Sending...' : 'Send Message'}
+            </button>
           </form>
         </main>
       </div>

@@ -3,8 +3,10 @@ import api from "../api/axios";
 import "../styles/Inv.css";
 import { Navigate, useNavigate } from "react-router-dom";
 import AddItem from "./AddItem";
+import { useToast } from '../Context/ToastContext';
 
 export default function Inventory() {
+  const { showToast } = useToast();
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [editingId, setEditingId] = useState(null);
@@ -26,6 +28,7 @@ export default function Inventory() {
       setItems(res.data);
     } catch (err) {
       console.error("Fetch error:", err);
+      showToast('Failed to fetch items', 'error');
     }
   };
 
@@ -58,8 +61,10 @@ export default function Inventory() {
 
       setNewItem({ category: "", item_name: "", price: "", img_url: "" });
       fetchItems();
+      showToast('Item added successfully', 'success');
     } catch (err) {
       console.error("Add error:", err);
+      showToast('Failed to add item', 'error');
     }
   };
 
@@ -85,9 +90,24 @@ export default function Inventory() {
     try {
       await api.delete(`/items/${id}`);
       fetchItems();
-      console.log("Item has been deleted", new Date().toLocaleString());
+      showToast('Item deleted successfully', 'success');
     } catch (err) {
       console.error("Delete error:", err);
+      showToast('Failed to delete item', 'error');
+    }
+  };
+
+  /* =========================
+     TOGGLE AVAILABILITY
+  ========================= */
+  const handleToggleAvailability = async (id) => {
+    try {
+      await api.patch(`/admin/inventory/items/${id}/availability`);
+      fetchItems(); // Refresh the list
+      showToast('Stock status updated', 'success');
+    } catch (err) {
+      console.error("Toggle availability error:", err);
+      showToast("Failed to update availability", 'error');
     }
   };
 
@@ -104,7 +124,7 @@ export default function Inventory() {
               <col style={{ width: "25%" }} />  {/* Actions */}
               <col style={{ width: "25%" }} />  {/* Stock */}
             </colgroup>
-            
+
             <thead>
               <tr>
                 <th>Item</th>
@@ -126,8 +146,16 @@ export default function Inventory() {
                     </button>
                   </td>
                   <td>
-                    <span className={item.availability ? 'badge-yes' : 'badge-no'}>
-                      {item.availability ? 'Yes' : 'No'}
+                    <label className="toggle-switch">
+                      <input
+                        type="checkbox"
+                        checked={item.availability}
+                        onChange={() => handleToggleAvailability(item.id)}
+                      />
+                      <span className="toggle-slider"></span>
+                    </label>
+                    <span className={item.availability ? 'stock-text available' : 'stock-text unavailable'}>
+                      {item.availability ? 'In Stock' : 'Out of Stock'}
                     </span>
                   </td>
                 </tr>

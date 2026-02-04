@@ -11,14 +11,51 @@ export const useCart = () => {
 };
 
 export const CartProvider = ({ children }) => {
+    const getCurrentUserId = () => {
+        const userData = localStorage.getItem('userData');
+        if (!userData) return 'guest';
+        try {
+            const user = JSON.parse(userData);
+            return user.id || 'guest';
+        } catch (e) {
+            return 'guest';
+        }
+    };
+
+    const [userId, setUserId] = useState(getCurrentUserId);
+
+    // Key depends on state userId, not direct localStorage read, to avoid race conditions
+    const cartKey = `sweet-tooth-cart-${userId}`;
+
     const [cartItems, setCartItems] = useState(() => {
-        const savedCart = localStorage.getItem('sweet-tooth-cart');
+        const savedCart = localStorage.getItem(`sweet-tooth-cart-${getCurrentUserId()}`);
         return savedCart ? JSON.parse(savedCart) : [];
     });
 
+    // Save cart whenever it changes
     useEffect(() => {
-        localStorage.setItem('sweet-tooth-cart', JSON.stringify(cartItems));
-    }, [cartItems]);
+        localStorage.setItem(cartKey, JSON.stringify(cartItems));
+    }, [cartItems, cartKey]);
+
+    // Sync cart when user logs in or out
+    useEffect(() => {
+        const handleAuthChange = () => {
+            const newUserId = getCurrentUserId();
+            setUserId(newUserId);
+
+            // Reload cart items for the new user immediately
+            const savedCart = localStorage.getItem(`sweet-tooth-cart-${newUserId}`);
+            setCartItems(savedCart ? JSON.parse(savedCart) : []);
+        };
+
+        window.addEventListener('authChange', handleAuthChange);
+        window.addEventListener('storage', handleAuthChange);
+
+        return () => {
+            window.removeEventListener('authChange', handleAuthChange);
+            window.removeEventListener('storage', handleAuthChange);
+        };
+    }, []);
 
     const addToCart = (product, weight, price) => {
         setCartItems((prevItems) => {

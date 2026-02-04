@@ -4,7 +4,38 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  username  String    @unique @db.VarChar(30)
+  email     String    @unique @db.VarChar(50)
+  phone     String?   @db.VarChar(15)
+  password  String    @db.Text
+  addresses Address[]
+  orders    Order[]
+}
+
+model Address {
+  id      Int    @id @default(autoincrement())
+  label   String @default("Home") @db.VarChar(20)
+  userId  Int
+  user    User   @relation(fields: [userId], references: [id])
+  street  String @db.VarChar(100)
+  city    String @db.VarChar(50)
+  state   String @db.VarChar(50)
+  zipCode String @db.VarChar(10)
+  country String @db.VarChar(50)
+}
+
+model Order {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  total     Int
+  status    String   @default("Pending") @db.VarChar(20)
+  items     Json
+  createdAt DateTime @default(now())
 }
 
 model Item {
@@ -14,4 +45,39 @@ model Item {
   price        Int
   image_url    String?
   availability Boolean @default(true)
+}
+
+model Contact {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(50)
+  email     String   @db.VarChar(50)
+  subject   String?  @db.VarChar(100)
+  message   String   @db.Text
+  createdAt DateTime @default(now())
+}
+
+model Bill {
+  id          Int      @id @default(autoincrement())
+  items       Json // Array of {itemId, itemName, quantity, price, subtotal}
+  totalAmount Int
+  paymentMode String   @default("Cash") @db.VarChar(20) // Cash, UPI, Card
+  createdAt   DateTime @default(now())
+}
+
+model Employee {
+  id          Int          @id @default(autoincrement())
+  name        String       @db.VarChar(50)
+  phone       String?      @db.VarChar(15)
+  role        String       @default("Staff") @db.VarChar(30)
+  isActive    Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  attendances Attendance[]
+}
+
+model Attendance {
+  id         Int      @id @default(autoincrement())
+  employeeId Int
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  date       DateTime @default(now())
+  isPresent  Boolean  @default(true)
 }

@@ -1,12 +1,22 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../Context/CartContext';
 import '../styles/Cart.css';
 
 function Cart() {
   const { cartItems, removeFromCart, updateQuantity, getCartTotal } = useCart();
+  const navigate = useNavigate();
+  const isLoggedIn = !!localStorage.getItem('userToken');
 
   const formatPrice = (p) => `₹${p}`;
+
+  const handleCheckout = () => {
+    if (!isLoggedIn) {
+      navigate('/log', { state: { from: '/cart' } });
+      return;
+    }
+    navigate('/payment');
+  };
 
   return (
     <div className="cart-page">
@@ -81,7 +91,11 @@ function Cart() {
             <span>{formatPrice(getCartTotal())}</span>
           </div>
 
-          <button className="checkout-btn" disabled={cartItems.length === 0}>
+          <button
+            className="checkout-btn"
+            disabled={cartItems.length === 0}
+            onClick={handleCheckout}
+          >
             Proceed to Checkout
           </button>
 

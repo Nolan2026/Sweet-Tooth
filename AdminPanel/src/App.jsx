@@ -3,9 +3,8 @@ import Bill from './Component/Bill';
 import Header from './Component/Header';
 import Inventory from './Pages/Inventory';
 import Attend from './Pages/Attend.jsx';
-
-
-import { Regular, MilkSweets, DryFruitSweets, CoolSweets, Snacks } from './Store/Cost';
+import Orders from './Pages/Orders.jsx';
+import Messages from './Pages/Messages.jsx';
 
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import History from './Pages/BillHistory';
@@ -23,9 +22,11 @@ function App() {
         <Route path="/admin">
           <Route index element={<Bill />} />
           <Route path="bill" element={<Bill />} />
+          <Route path="orders" element={<Orders />} />
+          <Route path="messages" element={<Messages />} />
           <Route path="uploads" element={<UploadTest />} />
           <Route path="inventory" element={<Inventory />} />
-          <Route path="edit/:id" element={<Edit/>} />
+          <Route path="edit/:id" element={<Edit />} />
           <Route path="attend" element={<Attend />} />
           <Route path="label" element={<Label />} />
           <Route path="history" element={<History />} />

@@ -12,6 +12,8 @@ function Header() {
       <h2 onClick={gohome}>Sweet Tooth Admin</h2>
       <div className="nav-links">
         <Link to="/admin/bill" className="nav-item">Billing</Link>
+        <Link to="/admin/orders" className="nav-item">Orders</Link>
+        <Link to="/admin/messages" className="nav-item">Messages</Link>
         <Link to="/admin/uploads" className="nav-item">Uploads</Link>
         <Link to="/admin/inventory" className="nav-item">Inventory </Link>
         <Link to="/admin/attend" className="nav-item">Attendence</Link>

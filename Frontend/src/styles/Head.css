@@ -136,6 +136,37 @@
   box-shadow: var(--shadow-sm);
 }
 
+.profile-link-btn {
+  background: var(--accent);
+}
+
+.auth-user-links {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.logout-btn-nav {
+  background: none;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: 0.4rem 0.8rem;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.logout-btn-nav:hover {
+  background: var(--accent);
+  color: white;
+}
+
+.mobile-only {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .header-container {
     padding: 0.6rem 4%;
@@ -221,5 +252,9 @@
   .login-btn {
     padding: 0.4rem 1rem;
     font-size: 0.85rem;
+  }
+
+  .mobile-only {
+    display: block;
   }
 }
