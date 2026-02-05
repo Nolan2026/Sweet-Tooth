@@ -88,6 +88,22 @@
     color: #2c5282;
 }
 
+.addres {
+    color: #212326;
+    font-size: 0.9rem;
+}
+
+.addres strong {
+    display: inline-block;
+    color: #2d3748;
+    margin-right: 1.9rem;
+}
+
+.addres span {
+    color: #587098;
+    margin-left: 0.5rem;
+}
+
 .order-status {
     padding: 0.5rem 1rem;
     border-radius: 20px;

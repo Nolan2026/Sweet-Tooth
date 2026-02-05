@@ -12,6 +12,7 @@ import Label from './Pages/Labels';
 import AddItem from './Pages/AddItem';
 import Edit from './Component/Edit';
 import UploadTest from './Pages/UploadTest.jsx';
+import OrderLabel from './Pages/OrderLabel.jsx';
 
 function App() {
 
@@ -25,6 +26,7 @@ function App() {
           <Route path="orders" element={<Orders />} />
           <Route path="messages" element={<Messages />} />
           <Route path="uploads" element={<UploadTest />} />
+          <Route path="shipLabel" element={<OrderLabel />} />
           <Route path="inventory" element={<Inventory />} />
           <Route path="edit/:id" element={<Edit />} />
           <Route path="attend" element={<Attend />} />

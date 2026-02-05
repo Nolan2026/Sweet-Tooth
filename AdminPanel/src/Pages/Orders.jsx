@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import api from "../api/axios";
 import "../styles/Orders.css";
 import { useToast } from '../Context/ToastContext';
+import ShippingLabel from "../Component/ShippingLabel";
 
 export default function Orders() {
     const { showToast } = useToast();
@@ -23,6 +24,7 @@ export default function Orders() {
 
             const res = await api.get(`/admin/orders?${params.toString()}`);
             setOrders(res.data);
+            console.log("Fetched orders:", res.data);
         } catch (err) {
             console.error("Fetch orders error:", err);
             showToast("Failed to fetch orders", 'error');
@@ -55,6 +57,8 @@ export default function Orders() {
             minute: '2-digit'
         });
     };
+
+    console.log("Rendering orders:", orders);
 
     return (
         <div className="orders-container">
@@ -107,7 +111,8 @@ export default function Orders() {
                         <p className="no-orders">No orders found</p>
                     ) : (
                         orders.map((order) => (
-                            <div key={order.id} className="order-card">
+                            
+                            <div key={order.id} className="order-card"> 
                                 <div className="order-header">
                                     <div className="order-id">Order #{order.id}</div>
                                     <div className={`order-status status-${order.status.toLowerCase()}`}>
@@ -142,6 +147,13 @@ export default function Orders() {
                                             </li>
                                         ))}
                                     </ul>
+                                </div>
+
+                                <div className="addres">
+                                    <strong>Street <span>{order.user.addresses[0]?.street}</span></strong>
+                                    <strong>City <span>{order.user.addresses[0]?.city}</span></strong>
+                                    <strong>State <span>{order.user.addresses[0]?.state}</span></strong>
+                                    <strong>Zipcode <span>{order.user.addresses[0]?.zipCode}</span></strong>
                                 </div>
 
                                 <div className="order-actions">

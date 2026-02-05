@@ -47,6 +47,29 @@ router.get("/profile", authenticateToken, async (req, res) => {
     }
 });
 
+// Get User Addresses
+router.get("/address/:id", async (req, res) => {
+    try {
+        const userId = parseInt(req.params.id);
+        if (isNaN(userId)) {
+            return res.status(400).json({ message: "Invalid user ID" });
+        }
+
+        const address = await prisma.address.findMany({
+            where: { userId: userId }
+        });
+
+        if (address.length === 0) {
+            return res.status(404).json({ message: "Address not found" });
+        };
+
+        res.json(address);
+    } catch (error) {
+        console.error("Error fetching address:", error);
+        res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+});
+
 // Add or Update Address
 router.post("/address", authenticateToken, async (req, res) => {
     try {

@@ -15,7 +15,7 @@ model User {
   addresses Address[]
   orders    Order[]
 }
-
+  
 model Address {
   id      Int    @id @default(autoincrement())
   label   String @default("Home") @db.VarChar(20)

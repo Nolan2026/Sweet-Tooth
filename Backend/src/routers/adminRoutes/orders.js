@@ -24,7 +24,8 @@ router.get("/", async (req, res) => {
                         id: true,
                         username: true,
                         email: true,
-                        phone: true
+                        phone: true,
+                        addresses: true
                     }
                 }
             },
