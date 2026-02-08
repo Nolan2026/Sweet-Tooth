@@ -1,9 +1,17 @@
 import React from "react";
 import Barcode from "react-barcode";
 import "../styles/shippingLabel.css";
+const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 const ShippingLabel = ({ order }) => {
     const address = order.user.addresses[0];
+    const shipDate = new Date().toLocaleString("en-IN", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric"
+    });
+
+    console.log("Order in ShippingLabel:", order);
 
     return (
         <div className="label-container">
@@ -30,13 +38,23 @@ const ShippingLabel = ({ order }) => {
             </div>
 
             <div className="order-info">
-                <p><strong>Order ID:</strong> {order.id}</p>
-                <p><strong>Payment:</strong> {order.paymentType}</p>
-                <p><strong>Total:</strong> ₹{order.totalAmount}</p>
+                <p><strong className="id">Order ID:</strong> {order.id}</p>
+                <p><strong className="date">Shipment Date:</strong> {shipDate}</p>
+                <p><strong className="total">Total:</strong> ₹{order.total}</p>
             </div>
 
             <div className="barcode">
-                <Barcode value={order.trackingId} height={60} />
+                <Barcode value={order.trackingId} width={1.4} height={55} />
+            </div>
+            <div className="glass">
+                <div className="fragile-img">
+                    <img src={`${API_URL}/uploads/Fragile.png`} alt="Fragile" />
+                </div>
+                <div className="note">
+                    <h4>Handle With Care</h4>
+                    <h4>from Sweet Tooth</h4>
+                    <h4>sweetthooth@gmail.com</h4>
+                </div>   
             </div>
         </div>
     );

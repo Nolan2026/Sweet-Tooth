@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import api from "../api/axios";
 import "../styles/Orders.css";
 import { useToast } from '../Context/ToastContext';
-import ShippingLabel from "../Component/ShippingLabel";
 
 export default function Orders() {
     const { showToast } = useToast();
@@ -17,6 +16,7 @@ export default function Orders() {
     const fetchOrders = async () => {
         try {
             setLoading(true);
+
             const params = new URLSearchParams();
             if (filter.status) params.append("status", filter.status);
             if (filter.startDate) params.append("startDate", filter.startDate);
@@ -24,7 +24,7 @@ export default function Orders() {
 
             const res = await api.get(`/admin/orders?${params.toString()}`);
             setOrders(res.data);
-            console.log("Fetched orders:", res.data);
+
         } catch (err) {
             console.error("Fetch orders error:", err);
             showToast("Failed to fetch orders", 'error');
@@ -33,9 +33,11 @@ export default function Orders() {
         }
     };
 
+
     useEffect(() => {
-        fetchOrders();
+     fetchOrders();
     }, []);
+
 
     const handleStatusChange = async (orderId, newStatus) => {
         try {
@@ -61,11 +63,14 @@ export default function Orders() {
     console.log("Rendering orders:", orders);
 
     return (
-        <div className="orders-container">
-            <h1>Orders Management</h1>
+        <div className="orders-container">         
 
             {/* Filters */}
-            <div className="filters-section">
+            <div className="filters-sections">
+                <div>
+                    Total Orders {orders.length}
+
+                </div>
                 <div className="filter-group">
                     <label>Status:</label>
                     <select
@@ -111,15 +116,37 @@ export default function Orders() {
                         <p className="no-orders">No orders found</p>
                     ) : (
                         orders.map((order) => (
-                            
-                            <div key={order.id} className="order-card"> 
+
+                            <div key={order.id} className="order-card">
                                 <div className="order-header">
-                                    <div className="order-id">Order #{order.id}</div>
+                                    <div className="order-id">Order #{order.id} {orders[orders.id]}
+                                        <label htmlFor="selectOrder">
+                                            <input
+                                                type="checkbox"
+                                                id="selectOrder"
+                                                onChange={(e) => {
+                                                    const { checked } = e.target;
+
+                                                    if (checked) {
+                                                        // Add ID to array
+                                                        setSelectedOrder((prev) => [...prev, order.id]);
+                                                    } else {
+                                                        // Remove ID from array
+                                                        setSelectedOrder((prev) =>
+                                                            prev.filter((id) => id !== order.id)
+                                                        );
+                                                    }
+                                                }}
+
+                                            />
+                                            Select
+                                        </label>
+                                    </div>
                                     <div className={`order-status status-${order.status.toLowerCase()}`}>
                                         {order.status}
                                     </div>
                                 </div>
-
+                                         
                                 <div className="order-details">
                                     <div className="detail-row">
                                         <strong>Customer:</strong> {order.user.username}

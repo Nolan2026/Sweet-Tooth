@@ -10,6 +10,7 @@
 }
 
 .label-container h2 {
+    margin-top: 10px;
     font-size: 16px;
     text-align: center;
 }
@@ -29,19 +30,64 @@
 
 .section h4 {
     margin-bottom: 8px;
+    color: rgb(255, 196, 2);
+    font-weight: bold;
+    font-family: Arial, sans-serif;
 }
 
 .section p {
     margin: 2px 0;
-    font-size: 14px;
+    font-size: 11px;
+    font-family: cursive;
 }
 
 .order-info {
+    display: flex;
+    gap: 20px;
     margin-top: 15px;
     font-size: 14px;
+    color: rgb(2, 23, 248);
+    font-weight: bold;
 }
 
+.order-info strong{
+    font-size: 14px;
+    color: red;
+    font-weight: bold; 
+}
+
+.glass {
+    display: flex;
+    margin-top: 10px;
+    text-align: center;
+    justify-content: space-around;
+    font-family: cursive;
+    color: rgb(237, 64, 7);
+    font-size: 10px;
+}
+
+.glass h4 {
+    margin: 6px;
+    font-size: 11px;
+    font-weight: bold;
+}
+.fragile-img {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.note{
+    margin-top: 14px;
+}
+.fragile-img img {
+    width: 80px;
+    height: auto;
+    background: transparent;
+    mix-blend-mode: multiply;
+}
 .barcode {
     margin-top: 20px;
     text-align: center;
+    color: #a50f0f;
 }

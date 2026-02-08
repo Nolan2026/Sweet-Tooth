@@ -14,11 +14,14 @@ export default function Bill() {
   const [quantity, setQuantity] = useState('');
   const [itemsList, setItemsList] = useState([]);
   const [total, setTotal] = useState(0);
-  const [customerName, setCustomerName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [customerName, setCustomerName] = useState('Quentin Tarintino');
+  const [phoneNumber, setPhoneNumber] = useState('9359356495');
   const [paymentMethod, setPaymentMethod] = useState('Cash');
   const Current = new Date();
   const [date, setDate] = useState(Current.toISOString().split('T')[0]);
+
+  const selectedItemId = items.find(item => item.id === selectedItem);
+  const isKilo = selectedItemId?.kilo_grams;
 
   // Fetch all items from database
   useEffect(() => {
@@ -173,11 +176,18 @@ export default function Bill() {
               step="0.1"
             />
 
+            {console.log('Selected Item:', selectedItem, 'Quantity:', quantity)}
+            {console.log('items:', items)}
+            {console.log(items.some(i => i.selectedItem) ? PRESET_GRAMS : Qty)}
+            {console.log('selectedItemId:', selectedItemId)}
+            {console.log('isKilo:', isKilo)}
+
+
             <div className="quick-grams">
-              {PRESET_GRAMS.map((g) => (
+              {(isKilo ? Qty : PRESET_GRAMS).map((g) => (
                 <button
                   key={g}
-                  onClick={() => setQuantity(g / 1000)} // Convert grams to kg
+                  onClick={() => setQuantity(g)} 
                   className="gram-btn"
                 >
                   {g}g
