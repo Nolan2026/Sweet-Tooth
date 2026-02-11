@@ -8,9 +8,9 @@
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
-}  
+}
 
-.heading{
+.heading {
   color: darkcyan;
   font-size: 10;
   font-weight: bold;
@@ -91,10 +91,11 @@
 }
 
 /* Select Inputs */
-.dropdowns{
+.dropdowns {
   display: flex;
   gap: 10px;
 }
+
 .item-select {
   font-weight: bold;
   width: 95%;
@@ -206,13 +207,16 @@
   margin: 5px 0;
   color: #666;
 }
-.billno{
+
+.billno {
   margin-left: 40%;
 }
-.bill-details{
-  font-family:  'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+
+.bill-details {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   font-size: 13px;
 }
+
 /* Table Styling */
 .billTable {
   width: 100%;
@@ -220,15 +224,38 @@
   margin: 20px 0;
 }
 
+thead tr {
+  background-color: #cde080;
+  border: 2px solid hsl(72, 10%, 10%);
+}
+
+.headline {
+  background-color: #cde080;
+  border: 2px solid hsl(72, 10%, 10%);
+}
+
+.total {
+  background-color: #cde080;
+  border: 2px solid #1b1c17;
+
+}
+
+.total td {
+  border: 2px solid #1b1c17;
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #221d1d;
+}
+
 .billTable th,
 .billTable td {
   padding: 12px;
   text-align: left;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #f5f5f5;
 }
 
 .billTable th {
-  background-color: #f8f9fa;
+  background-color: #60a4e8;
   font-weight: 600;
   color: #333;
 }
@@ -248,7 +275,10 @@
 }
 
 /* Print Button */
-.print-btn, .newbill, .undo, .history {
+.print-btn,
+.newbill,
+.undo,
+.history {
   width: 200px;
   margin: 10px 5px;
   padding: 12px 20px;
@@ -262,58 +292,104 @@
   font-weight: bold;
   font-family: monospace;
 }
-.btns{
+
+.btns {
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.newbill{
+
+.newbill {
   background-color: coral;
 }
-.newbill:disabled{
+
+.newbill:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
-.undo{
+
+.undo {
   background-color: goldenrod;
 }
-.undo:disabled{
+
+.undo:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
+
 .print-btn:hover {
   background-color: #3182ce;
 }
-.history{
+
+.history {
   background-color: darkseagreen;
 }
-.newbill:hover:not(:disabled){
+
+.newbill:hover:not(:disabled) {
   background-color: chocolate;
 }
-.undo:hover:not(:disabled){
+
+.undo:hover:not(:disabled) {
   background-color: darkgoldenrod;
 }
-.history:hover{
+
+.history:hover {
   background-color: seagreen;
 }
 
 /* Print Styles */
 @media print {
+
+  /* Hide UI elements */
+  .head,
   .input-section,
-  .head, .heading, .btns{
-    display: none;
+  .heading,
+  .btns {
+    display: none !important;
+  }
+
+  body {
+    visibility: hidden;
+    background: white !important;
+  }
+
+  .bill-container,
+  .bill-container * {
+    visibility: visible;
   }
 
   .bill-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
     margin: 0;
     padding: 0;
     box-shadow: none;
+    background: white;
   }
 
   #billSection {
     margin-top: 0;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .billTable th {
+    background-color: #60a4e8 !important;
+    color: #333 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .total td {
+    background-color: #cde080 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 }
+
+
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -321,15 +397,15 @@
     margin: 0;
     padding: 10px;
   }
-  
+
   .customer-details {
     flex-direction: column;
   }
-  
-  .gram-btn{
+
+  .gram-btn {
     margin-right: 0;
   }
-  
+
   .payment-methods {
     flex-wrap: wrap;
   }

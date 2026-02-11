@@ -1,13 +1,16 @@
 import dotenv from "dotenv";
-dotenv.config();
+dotenv.config({ quiet: true });
 import express from "express";
 import cors from "cors";
+import path from "path";
 import items from "./routers/landingRoutes/items.js"
 import auth from "./routers/landingRoutes/auth.js"
 import userRoutes from "./routers/landingRoutes/user.js"
 import orderRoutes from "./routers/landingRoutes/order.js"
 import contactRoutes from "./routers/landingRoutes/contact.js"
 import uploadRoutes from "./routers/uploadsRoutes/upload.js"
+import couponRoutes from "./routers/landingRoutes/coupons.js"
+
 
 // Admin Routes
 import adminOrderRoutes from "./routers/adminRoutes/orders.js"
@@ -15,6 +18,13 @@ import adminMessageRoutes from "./routers/adminRoutes/messages.js"
 import adminBillingRoutes from "./routers/adminRoutes/billing.js"
 import adminInventoryRoutes from "./routers/adminRoutes/inventory.js"
 import adminAttendanceRoutes from "./routers/adminRoutes/attendance.js"
+import adminprofileRoutes from "./routers/adminRoutes/adminprofile.js"
+import adminCouponRoutes from "./routers/adminRoutes/coupons.js"
+
+import authenticateAdmin from "./middleware/authentication/adminAuth.js"
+import { authLimiter, apiLimiter } from "./middleware/security/rateLimiter.js"
+import securityHeaders from "./middleware/security/securityHeaders.js"
+import errorHandler, { notFoundHandler } from "./middleware/error/errorHandler.js"
 
 import prisma from "./prismaClient.js"
 
@@ -25,31 +35,69 @@ if (!process.env.JWT_SECRET) {
     console.warn("WARNING: JWT_SECRET is not set in environment variables!");
 }
 
-app.use(cors());
-app.use(express.json());
+// Security: Restrict CORS in production
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(',')
+    : ['http://localhost:5173', 'http://localhost:3000'];
 
-// Routes
-app.use("/items", items)
-app.use("/auth", auth)
-app.use("/user", userRoutes)
-app.use("/order", orderRoutes)
-app.use("/contact", contactRoutes)
+app.use(cors({
+    origin: (origin, callback) => {
+        // Allow requests with no origin (like mobile apps or curl)
+        if (!origin) return callback(null, true);
+
+        if (allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('CORS policy violation'));
+        }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Security middleware
+app.use(securityHeaders);
+app.use(express.json({ limit: '10mb' })); // Limit payload size
+
+// Routes with rate limiting
+app.use("/items", apiLimiter, items)
+app.use("/auth", authLimiter, auth) // Protect auth with stricter limits
+app.use("/user", apiLimiter, userRoutes)
+app.use("/order", apiLimiter, orderRoutes)
+app.use("/contact", apiLimiter, contactRoutes)
+app.use("/coupons", apiLimiter, couponRoutes)
+
 
 // Admin Routes
-app.use("/admin/orders", adminOrderRoutes)
-app.use("/admin/messages", adminMessageRoutes)
-app.use("/admin/billing", adminBillingRoutes)
-app.use("/admin/inventory", adminInventoryRoutes)
-app.use("/admin/attendance", adminAttendanceRoutes)
+app.use("/admin/orders", authenticateAdmin, adminOrderRoutes)
+app.use("/admin/messages", authenticateAdmin, adminMessageRoutes)
+app.use("/admin/billing", authenticateAdmin, adminBillingRoutes)
+app.use("/admin/inventory", authenticateAdmin, adminInventoryRoutes)
+app.use("/admin/attendance", authenticateAdmin, adminAttendanceRoutes)
+app.use("/admin", adminprofileRoutes)
+app.use("/admin/coupons", authenticateAdmin, adminCouponRoutes)
+
 
 // serve uploaded images
-app.use("/uploads", express.static("uploads"));
+const __dirname = path.resolve();
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // routes
 app.use("/api/uploads", uploadRoutes);
 
 
+app.get("/debug-profile", async (req, res) => {
+    try {
+        const profile = await prisma.adminProfile.findFirst();
+        res.json(profile);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 app.get("/test-db", async (req, res) => {
+
     try {
         const count = await prisma.user.count();
         res.json({ count });
@@ -67,6 +115,12 @@ app.get("/", async (req, res) => {
         res.status(500).send("Backend is up, but DB is down: " + err.message);
     }
 });
+
+// 404 Handler - must be after all routes
+app.use(notFoundHandler);
+
+// Global Error Handler - must be last
+app.use(errorHandler);
 
 
 app.listen(PORT, () => {

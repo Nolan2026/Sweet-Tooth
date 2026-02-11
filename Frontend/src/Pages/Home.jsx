@@ -1,20 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import axios from "axios";
+import api from "../api/axios";
 import { useCart } from '../Context/CartContext';
 import '../styles/Home.css';
-
+import homeImg from '../assets/frontend_home_img.jpg';
 const ProductCard = ({ item }) => {
   const { addToCart } = useCart();
-  const [selectedWeight, setSelectedWeight] = useState(1); // 1 = 1kg, 0.5 = 500g, 0.25 = 250g
+  const [selectedWeight, setSelectedWeight] = useState(1);
   const [added, setAdded] = useState(false);
   const price = Math.round(item.price * selectedWeight);
   const isOutOfStock = !item.availability;
+
+  // Use the same base as API for images
+  const API_BASE = api.defaults.baseURL;
 
   const weights = [
     { label: '250g', value: 0.25 },
     { label: '500g', value: 0.5 },
     { label: '1kg', value: 1 },
   ];
+
+  const qty = [
+    {}
+  ]
 
   const formatPrice = (p) => `₹${p}`;
 
@@ -29,7 +36,7 @@ const ProductCard = ({ item }) => {
       <div className="product-image-container">
         {item.image_url ? (
           <img
-            src={`http://localhost:5016${item.image_url}`}
+            src={`${API_BASE}${item.image_url}`}
             alt={item.item_name}
             className="product-image"
           />
@@ -41,20 +48,21 @@ const ProductCard = ({ item }) => {
       <div className="product-info">
         <h4 className="product-name">{item.item_name}</h4>
         <p className="dynamic-price">{formatPrice(price)}</p>
-
-        <div className="weight-selector-bar">
-          {weights.map((w) => (
-            <button
-              key={w.label}
-              className={`weight-unit-btn ${selectedWeight === w.value ? 'active' : ''}`}
-              onClick={() => setSelectedWeight(w.value)}
-              disabled={isOutOfStock}
-            >
-              {w.label}
-            </button>
-          ))}
-        </div>
-
+        {item.kilo_grams ?
+          <div className="weight-selector-bar">
+            {weights.map((w) => (
+              <button
+                key={w.label}
+                className={`weight-unit-btn ${selectedWeight === w.value ? 'active' : ''}`}
+                onClick={() => setSelectedWeight(item.kilo_grams ? w.value : 2)}
+                disabled={isOutOfStock}
+              >
+                {w.label}
+              </button>
+            ))}
+          </div>
+          : <div></div>
+        }
 
         <button
           className={`add-to-cart-btn ${added ? 'added' : ''}`}
@@ -87,7 +95,7 @@ const ProductCard = ({ item }) => {
 
 const CategorySection = ({ title, items }) => {
   return (
-    <div className="category-group">
+    <div className="category-group" id={title}>
       <div className="category-title-container">
         <h3 className="category-title">{title}</h3>
         <div className="category-line"></div>
@@ -108,20 +116,31 @@ const CategorySection = ({ title, items }) => {
 
 function Home() {
   const [data, setData] = useState([]);
+  const [profile, setProfile] = useState(null);
 
   useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await api.get("/admin/admin-profile");
+        setProfile(res.data);
+      } catch (err) {
+        console.error("Profile load failed", err);
+      }
+    };
+    fetchProfile();
+
     const allitems = async () => {
       try {
-        const res = await axios.get("http://localhost:5016/items");
+        const res = await api.get("/items");
         setData(res.data);
-        console.log(res.data);
       } catch (error) {
         console.error("Error in fetching", error);
       }
     };
-
     allitems();
   }, []);
+
+  const API_BASE = api.defaults.baseURL;
 
   const groupByCategory = (items = []) =>
     items.reduce((acc, item) => {
@@ -136,21 +155,30 @@ function Home() {
     <div className="home-page">
       <section className="hero-section">
         <img
-          src="https://images.unsplash.com/photo-1589119908995-c6837fa14848?auto=format&fit=crop&q=80&w=2000"
+          src={profile?.Collections_image ? `${API_BASE}/uploads/${profile.Collections_image}` : homeImg}
           className="hero-image"
           alt="Premium Sweets"
         />
         <div className="hero-content">
-          <h2>Indulgence in Every Bite</h2>
+          <h2>{profile?.business_name && profile.business_name !== "" ? `Welcome to ${profile.business_name}` : "Indulgence in Every Bite"}</h2>
           <p>Handcrafted with love, using traditional recipes passed down through generations. Authentic taste, premium ingredients.</p>
           <button className="btn btn-primary">Explore Collection</button>
         </div>
       </section>
 
+
       <main className="categories-container">
         <div className="section-header">
           <h2>Our Signature Collections</h2>
           <p>Carefully curated sweets and snacks for every occasion</p>
+        </div>
+
+        <div className='allCat'>
+          {Object.entries(groupedData).map(([category, items]) => (
+            <a href={`#${category}`} className='singleCat' key={category}>
+              <h4>{category}</h4>
+            </a>
+          ))}
         </div>
 
         <div className="catalog-content">

@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useToast } from '../Context/ToastContext';
 import '../styles/Contact.css';
 
 function Contact() {
   const { showToast } = useToast();
+  const [profile, setProfile] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -12,6 +13,12 @@ function Contact() {
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    axios.get("http://localhost:5016/admin/admin-profile")
+      .then(res => setProfile(res.data))
+      .catch(err => console.error(err));
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -43,17 +50,23 @@ function Contact() {
         <aside className="contact-info-card">
           <div className="info-item">
             <h3>Visit Our Flagship Store</h3>
-            <p>Sweet Tooth Main Road,<br />Near City Center, Kurnool,<br />Andhra Pradesh 518001</p>
+            <p style={{ whiteSpace: 'pre-wrap' }}>{profile?.address || "Sweet Tooth Main Road,\nNear City Center, Kurnool,\nAndhra Pradesh 518001"}</p>
           </div>
 
           <div className="info-item">
             <h3>Talk to Our Sweet Masters</h3>
-            <p>Primary: +91 98765 43210<br />WhatsApp: +91 98765 43210</p>
+            <p>
+              Primary: {profile?.phone || "+91 98765 43210"}<br />
+              WhatsApp: {profile?.whatsapp || "+91 98765 43210"}
+            </p>
           </div>
 
           <div className="info-item">
             <h3>Email & Social</h3>
-            <p>hello@sweettoothkurnool.com<br />@SweetToothKurnool</p>
+            <p>
+              {profile?.business_email || "hello@sweettoothkurnool.com"}<br />
+              {profile?.instagram_url && <span>Instagram: {profile.instagram_url.split('/').pop()}</span>}
+            </p>
           </div>
 
           <div className="info-item">
@@ -61,6 +74,7 @@ function Contact() {
             <p>Mon - Sat: 8:00 AM - 9:00 PM<br />Sun & Holidays: 9:00 AM - 8:00 PM</p>
           </div>
         </aside>
+
 
         <main className="contact-form-card">
           <h2>Send a Message</h2>

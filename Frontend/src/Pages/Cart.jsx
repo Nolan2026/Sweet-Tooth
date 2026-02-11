@@ -1,21 +1,46 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../Context/CartContext';
+import api from "../api/axios";
 import '../styles/Cart.css';
 
 function Cart() {
   const { cartItems, removeFromCart, updateQuantity, getCartTotal } = useCart();
   const navigate = useNavigate();
   const isLoggedIn = !!localStorage.getItem('userToken');
+  const [couponCode, setCouponCode] = React.useState('');
+  const [discountData, setDiscountData] = React.useState(null);
+  const [couponError, setCouponError] = React.useState('');
 
-  const formatPrice = (p) => `₹${p}`;
+  const formatPrice = (p) => `₹${Math.round(p)}`;
+
+  const handleApplyCoupon = async () => {
+    setCouponError('');
+    try {
+      const res = await api.post('/coupons/validate', {
+        code: couponCode.toUpperCase(),
+        cartTotal: getCartTotal()
+      });
+      setDiscountData(res.data);
+    } catch (err) {
+      setCouponError(err.response?.data?.error || 'Invalid coupon');
+      setDiscountData(null);
+    }
+  };
+
+  const calculateFinalTotal = () => {
+    const total = getCartTotal();
+    if (!discountData) return total;
+    return Math.max(0, total - discountData.discountAmount);
+  };
 
   const handleCheckout = () => {
     if (!isLoggedIn) {
       navigate('/log', { state: { from: '/cart' } });
       return;
     }
-    navigate('/payment');
+    // Pass coupon data to payment page if needed
+    navigate('/payment', { state: { coupon: discountData } });
   };
 
   return (
@@ -51,7 +76,7 @@ function Cart() {
                   </div>
                   <div className="cart-item-info">
                     <h3>{item.item_name}</h3>
-                    <p className="item-variant">Unit: {item.selectedWeight < 1 ? `${item.selectedWeight * 1000}g` : '1kg'}</p>
+                    <p className="item-variant">Unit: {item.selectedWeight < 1 ? `${item.selectedWeight * 1000}g` : '1 qty'}</p>
                     <p className="item-price">{formatPrice(item.priceAtSelectedWeight)} each</p>
                   </div>
                   <div className="cart-item-actions">
@@ -78,17 +103,63 @@ function Cart() {
 
         <aside className="cart-summary-section">
           <h2 className="summary-title">Order Summary</h2>
-          <div className="summary-row">
-            <span>Subtotal</span>
-            <span>{formatPrice(getCartTotal())}</span>
+
+          <div className="summary-items-list" style={{ marginBottom: '1.5rem', maxHeight: '200px', overflowY: 'auto', paddingRight: '5px' }}>
+            {cartItems.map((item) => (
+              <div key={`${item.id}-${item.selectedWeight}`} className="summary-row" style={{ fontSize: '0.9rem', marginBottom: '0.5rem', color: '#555' }}>
+                <span>{item.item_name} (x{item.quantity})</span>
+                <span>{formatPrice(item.priceAtSelectedWeight * item.quantity)}</span>
+              </div>
+            ))}
           </div>
-          <div className="summary-row">
-            <span>Shipping</span>
-            <span>FREE</span>
+
+          <div style={{ borderTop: '1px solid #eee', paddingTop: '1rem' }}>
+            <div className="summary-row">
+              <span>Total</span>
+              <span>{formatPrice(getCartTotal())}</span>
+            </div>
+            <div className="summary-row">
+              <span>Shipping</span>
+              <span>FREE</span>
+            </div>
           </div>
-          <div className="summary-row total">
-            <span>Total</span>
-            <span>{formatPrice(getCartTotal())}</span>
+
+          <div className="coupon-section" style={{ margin: '1rem 0', padding: '1rem 0', borderTop: '1px solid #eee', borderBottom: '1px solid #eee' }}>
+            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+              <input
+                type="text"
+                placeholder="Coupon Code"
+                value={couponCode}
+                onChange={(e) => setCouponCode(e.target.value)}
+                style={{ flex: 1, padding: '0.6rem', borderRadius: '8px', border: '1px solid #ddd', fontSize: '0.85rem' }}
+              />
+              <button
+                onClick={handleApplyCoupon}
+                style={{ padding: '0.6rem 1rem', background: '#333', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem' }}
+              >
+                Apply
+              </button>
+            </div>
+            {couponError && <p style={{ color: 'red', fontSize: '0.75rem', margin: '0.2rem 0' }}>{couponError}</p>}
+            {discountData && (
+              <p style={{ color: 'green', fontSize: '0.75rem', margin: '0.2rem 0' }}>
+                Coupon applied! You saved {formatPrice(discountData.discountAmount)}
+              </p>
+            )}
+          </div>
+
+          {discountData && (
+            <div className="summary-row" style={{ color: '#666', marginBottom: '1rem' }}>
+              <span>Coupon ({discountData.code})</span>
+              <span style={{ color: 'green' }}>-{formatPrice(discountData.discountAmount)}</span>
+            </div>
+          )}
+
+          <div style={{ borderTop: '2px solid #f0f0f0', margin: '1rem 0' }}></div>
+
+          <div className="summary-row total" style={{ marginTop: '0' }}>
+            <span>Final Price</span>
+            <span>{formatPrice(calculateFinalTotal())}</span>
           </div>
 
           <button

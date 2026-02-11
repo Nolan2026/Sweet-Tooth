@@ -1,30 +1,32 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Barcode from "react-barcode";
+import axios from "axios";
 import "../styles/shippingLabel.css";
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 const ShippingLabel = ({ order }) => {
+    const [profile, setProfile] = useState(null);
     const address = order.user.addresses[0];
     const shipDate = new Date().toLocaleString("en-IN", {
         day: "2-digit",
-        month: "long",
+        month: "short",
         year: "numeric"
     });
 
-    console.log("Order in ShippingLabel:", order);
+    useEffect(() => {
+        axios.get(`${API_URL}/admin/admin-profile`).then(res => setProfile(res.data));
+    }, []);
 
     return (
         <div className="label-container">
-            <h2 className="company-name">Sweet Tooth Bakery</h2>
+            <h2 className="company-name">{profile?.business_name && profile.business_name !== "" ? profile.business_name : "Sweet Tooth"}</h2>
 
             <div className="section">
                 <div>
                     <h4>FROM:</h4>
-                    <p>Sweet Tooth Bakery</p>
-                    <p>Bus Stand Road</p>
-                    <p>Kurnool, AP 518502</p>
-                    <p>India</p>
-                    <p>+91 9876543210</p>
+                    <p>{profile?.business_name && profile.business_name !== "" ? profile.business_name : "Sweet Tooth"}</p>
+                    <p style={{ whiteSpace: 'pre-wrap' }}>{profile?.address || "Bus Stand Road, Kurnool, AP"}</p>
+                    <p>{profile?.phone || "+91 9876543210"}</p>
                 </div>
 
                 <div>
@@ -39,25 +41,41 @@ const ShippingLabel = ({ order }) => {
 
             <div className="order-info">
                 <p><strong className="id">Order ID:</strong> {order.id}</p>
-                <p><strong className="date">Shipment Date:</strong> {shipDate}</p>
+                <p><strong className="date">Dispatch Date:</strong> {shipDate}</p>
                 <p><strong className="total">Total:</strong> ₹{order.total}</p>
             </div>
 
             <div className="barcode">
-                <Barcode value={order.trackingId} width={1.4} height={55} />
+                {order.trackingId ? (
+                    <Barcode
+                        value={order.trackingId}
+                        format="CODE128"
+                        width={1.6}
+                        height={60}
+                        fontSize={14}
+                        margin={10}
+                    />
+                ) : (
+                    <p style={{ color: 'red', fontSize: '0.8rem' }}>No Tracking ID available</p>
+                )}
             </div>
-            <div className="glass">
-                <div className="fragile-img">
-                    <img src={`${API_URL}/uploads/Fragile.png`} alt="Fragile" />
+
+            <div className="label-footer-grid">
+                <div className="glass">
+                    <div className="fragile-img">
+                        <img src={`${API_URL}/uploads/Fragile.png`} alt="Fragile" />
+                    </div>
                 </div>
+
                 <div className="note">
                     <h4>Handle With Care</h4>
-                    <h4>from Sweet Tooth</h4>
-                    <h4>sweetthooth@gmail.com</h4>
-                </div>   
+                    <h4>from {profile?.business_name && profile.business_name !== "" ? profile.business_name : "Sweet Tooth"}</h4>
+                    <h4>{profile?.business_email || "sweettooth@gmail.com"}</h4>
+                </div>
             </div>
         </div>
     );
 };
 
 export default ShippingLabel;
+

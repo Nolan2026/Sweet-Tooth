@@ -14,8 +14,6 @@
   margin: 0 auto 2rem;
   padding: 1.5rem;
   background: white;
-  width: 90%;
-  max-width: 1200px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   flex-wrap: wrap;
@@ -31,7 +29,7 @@
 .filter-group label {
   font-weight: 600;
   color: #4a5568;
-  font-size: 0.9rem;
+  font-size: 0.9rem;;
 }
 
 .filter-group select,
@@ -40,7 +38,7 @@
   border: 1px solid #e2e8f0;
   border-radius: 6px;
   font-size: 1rem;
-  min-width: 150px;
+  min-width: 100px;
 }
 
 .apply-filter-btn {
@@ -64,6 +62,7 @@
 .bill-table {
   margin: 0 auto;
   width: 98%;
+  margin-left: 270px;
   max-width: 1200px;
   padding: 0 10px;
   box-sizing: border-box;
@@ -80,11 +79,13 @@ table {
 
 /* Header Cells */
 thead th {
-  background-color: darkseagreen;
+  background-color: rgb(238, 189, 116);
   padding: 12px;
   font-weight: bold;
+  width: 20px;
   text-align: center;
   border-bottom: 2px solid #ccc;
+  border: 2px solid rgb(32, 34, 32);
 }
 
 .today {
@@ -93,6 +94,7 @@ thead th {
 
 /* Body Cells */
 tbody td {
+  border: 2px solid rgb(23, 26, 23);
   padding: 10px;
   text-align: center;
   border-bottom: 1px solid #ddd;

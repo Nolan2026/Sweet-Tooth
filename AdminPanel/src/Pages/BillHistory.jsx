@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react';
 import api from '../api/axios';
 import '../styles/History.css';
 import { useToast } from '../Context/ToastContext';
+import { useConfirm } from '../Context/ConfirmContext';
 
 function BillHistory() {
   const { showToast } = useToast();
+  const confirm = useConfirm();
   const [bills, setBills] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viewItems, setViewItems] = useState(null);
+  const [profile, setProfile] = useState(null);
   const [filter, setFilter] = useState({
     startDate: '',
     endDate: '',
@@ -32,8 +35,23 @@ function BillHistory() {
     }
   };
 
+  const handleDelete = async (billId) => {
+    const isConfirmed = await confirm("Delete Bill", "Are you sure you want to delete this bill record?");
+    if (!isConfirmed) return;
+
+    try {
+      await api.delete(`/admin/billing/${billId}`);
+      showToast('Bill deleted successfully', 'success');
+      fetchBills();
+    } catch (err) {
+      console.error('Delete bill error:', err);
+      showToast('Failed to delete bill', 'error');
+    }
+  };
+
   useEffect(() => {
     fetchBills();
+    api.get("/admin/admin-profile").then(res => setProfile(res.data));
   }, []);
 
   const handleView = (bill) => {
@@ -52,7 +70,7 @@ function BillHistory() {
 
   return (
     <div className="history-container">
-      <h2 className="billHead">Billing History of Sweet Tooth</h2>
+      <h2 className="billHead">Billing History of {profile?.business_name && profile.business_name !== "" ? profile.business_name : "Sweet Tooth"}</h2>
 
       {/* Filters */}
       <div className="filters-section">
@@ -123,6 +141,7 @@ function BillHistory() {
                       <td>₹{bill.totalAmount}</td>
                       <td className="btns">
                         <button onClick={() => handleView(bill)}>View</button>
+                        <button onClick={() => handleDelete(bill.id)}>Delete</button>
                       </td>
                     </tr>
                   ))

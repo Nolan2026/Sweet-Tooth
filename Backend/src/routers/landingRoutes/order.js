@@ -120,6 +120,18 @@ router.post("/create", authenticateToken, async (req, res) => {
             }
         });
 
+        // 4. Update coupon usage if used
+        if (req.body.couponCode) {
+            try {
+                await prisma.coupon.update({
+                    where: { code: req.body.couponCode },
+                    data: { usedCount: { increment: 1 } }
+                });
+            } catch (couponErr) {
+                console.error("Failed to update coupon usage:", couponErr);
+            }
+        }
+
         res.status(201).json({
             message: "Order created successfully",
             orderId: order.id,

@@ -2,12 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../Context/CartContext';
 import { useToast } from '../Context/ToastContext';
+import { useLocation } from 'react-router-dom';
 import '../styles/Payment.css';
 
 function Payment() {
     const { cartItems, getCartTotal, clearCart } = useCart();
     const navigate = useNavigate();
     const { showToast } = useToast();
+    const location = useLocation();
+    const couponData = location.state?.coupon || null;
+
     const [profile, setProfile] = useState(null);
     const [validatedItems, setValidatedItems] = useState([]);
     const [confirmedTotal, setConfirmedTotal] = useState(0);
@@ -27,7 +31,8 @@ function Payment() {
 
     const subtotal = confirmedTotal;
     const shipping = subtotal < 500 ? SHIPPING_CHARGE : 0;
-    const finalTotal = subtotal + shipping;
+    const discount = couponData ? couponData.discountAmount : 0;
+    const finalTotal = Math.max(0, subtotal + shipping - discount);
 
     useEffect(() => {
         initializeCheckout();
@@ -122,7 +127,8 @@ function Payment() {
                 },
                 body: JSON.stringify({
                     cartItems,
-                    total: finalTotal
+                    total: finalTotal,
+                    couponCode: couponData?.code
                 })
             });
 
@@ -174,6 +180,12 @@ function Payment() {
                                 <span>Shipping</span>
                                 <span>{shipping === 0 ? <span className="free">FREE</span> : `₹${shipping}`}</span>
                             </div>
+                            {couponData && (
+                                <div className="summary-item" style={{ color: '#10b981', fontWeight: '600' }}>
+                                    <span>Discount ({couponData.code})</span>
+                                    <span>-₹{discount}</span>
+                                </div>
+                            )}
                         </div>
                         <div className="summary-total">
                             <span>Total Amount</span>

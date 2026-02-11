@@ -1,28 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import api from '../api/axios';
+
 import '../styles/About.css';
+import heroImage from '../assets/frontend_About_img.jpg';
 
 function About() {
+  const [profile, setProfile] = useState(null);
+
+  useEffect(() => {
+    api.get("/admin/admin-profile")
+      .then(res => setProfile(res.data))
+      .catch(err => console.error(err));
+  }, []);
+
+  const API_BASE = api.defaults.baseURL;
+
   return (
     <div className="about-page">
       <div className="about-hero">
         <img
-          src="https://images.unsplash.com/photo-1590089415225-401ed6f9db8e?auto=format&fit=crop&q=80&w=2000"
+          src={profile?.OurStory_image ? `${API_BASE}/uploads/${profile.OurStory_image}` : heroImage}
           alt="Legacy Sweet Shop"
           className="about-hero-img"
         />
         <div className="about-hero-content">
-          <h1>Crafting Joy Since 1990</h1>
-          <p>The Journey of Sweet Tooth</p>
+          <h1>{profile?.business_name && profile.business_name !== "" ? profile.business_name : "Sweet Tooth"}</h1>
+          <p>Crafting Joy Since 1990</p>
         </div>
       </div>
-
 
       <main className="about-main">
         <section className="about-section">
           <h2>Our Legacy</h2>
-          <p>Nestled in the heart of Kurnool, Sweet Tooth began as a humble family endeavor with a single mission: to preserve the authentic flavors of Indian heritage. For over three decades, we have been more than just a sweet shop; we have been a part of your celebrations, your traditions, and your daily moments of joy.</p>
+          <p>Nestled in the heart of our community, {profile?.business_name && profile.business_name !== "" ? profile.business_name : "Sweet Tooth"} began as a humble family endeavor with a single mission: to preserve the authentic flavors of Indian heritage. For over three decades, we have been more than just a sweet shop; we have been a part of your celebrations, your traditions, and your daily moments of joy.</p>
           <p>Our recipes have been whispered down through generations, ensuring that every bite you take is a tribute to the craftsmen who came before us.</p>
         </section>
+
 
         <section className="about-section">
           <h2>The Artisanal Touch</h2>

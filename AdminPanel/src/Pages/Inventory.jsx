@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import api from "../api/axios";
 import "../styles/Inv.css";
 import { Navigate, useNavigate } from "react-router-dom";
-import AddItem from "./AddItem";
 import { useToast } from '../Context/ToastContext';
+import { useConfirm } from '../Context/ConfirmContext';
 
 export default function Inventory() {
   const { showToast } = useToast();
+  const confirm = useConfirm();
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [editingId, setEditingId] = useState(null);
@@ -46,46 +47,11 @@ export default function Inventory() {
   }, {});
 
   /* =========================
-     ADD ITEM
-  ========================= */
-  const handleAddItem = async (e) => {
-    e.preventDefault();
-
-    try {
-      await api.post("/items", {
-        category: newItem.category,
-        item_name: newItem.item_name,
-        price: Number(newItem.price),
-        image_url: newItem.category,
-      });
-
-      setNewItem({ category: "", item_name: "", price: "", img_url: "" });
-      fetchItems();
-      showToast('Item added successfully', 'success');
-    } catch (err) {
-      console.error("Add error:", err);
-      showToast('Failed to add item', 'error');
-    }
-  };
-
-  /* =========================
-     Clear Felds
-  ========================= */
-
-  const clear = () => {
-    setNewItem({
-      category: "",
-      item_name: "",
-      price: "",
-      img_url: ""
-    })
-  };
-
-  /* =========================
      DELETE ITEM
   ========================= */
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete this item?")) return;
+    const isConfirmed = await confirm("Delete Item", "Are you sure you want to remove this item from inventory?");
+    if (!isConfirmed) return;
 
     try {
       await api.delete(`/items/${id}`);
@@ -116,13 +82,13 @@ export default function Inventory() {
       {Object.entries(groupedItems).map(([category, items]) => (
         <div key={category} className="category-table">
           <h2>{category}</h2>
-
+ 
           <table>
             <colgroup>
-              <col style={{ width: "30%" }} />  {/* Item */}
-              <col style={{ width: "25%" }} />  {/* Price */}
-              <col style={{ width: "25%" }} />  {/* Actions */}
-              <col style={{ width: "25%" }} />  {/* Stock */}
+              <col style={{ width: "30%" }} />
+              <col style={{ width: "25%" }} />
+              <col style={{ width: "25%" }} />
+              <col style={{ width: "25%" }} />
             </colgroup>
 
             <thead>

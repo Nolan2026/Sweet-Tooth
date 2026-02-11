@@ -56,6 +56,20 @@ router.post("/create", async (req, res) => {
     }
 });
 
+// delete a bill
+router.delete("/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const killbill = await prisma.bill.delete({
+            where: { id: parseInt(id) }
+        });
+        res.json({ message: "bill deleted successfully" }); 
+    } catch (error) {
+        res.status(500).json({ message: "Error in deleting bill", error: error.message });
+        
+    }
+});
+
 // Get all bills with filters
 router.get("/history", async (req, res) => {
     try {

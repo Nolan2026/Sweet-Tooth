@@ -7,7 +7,7 @@
     font-family: Arial, sans-serif;
     font-size: 13px;
     height: 450px;
-}
+} 
 
 .label-container h2 {
     margin-top: 10px;
@@ -50,20 +50,40 @@
     font-weight: bold;
 }
 
-.order-info strong{
+.total{
+    background-color: white;
+    border: none;
+}
+.order-info strong {
     font-size: 14px;
-    color: red;
-    font-weight: bold; 
+    color: rgb(235, 4, 4);
+    font-weight: bold;
+}
+
+.label-footer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    border-top: 1px solid #000;
 }
 
 .glass {
-    display: flex;
-    margin-top: 10px;
     text-align: center;
-    justify-content: space-around;
     font-family: cursive;
     color: rgb(237, 64, 7);
     font-size: 10px;
+}
+
+.business-logo-label {
+    text-align: center;
+}
+
+.business-logo-label img {
+    max-width: 80px;
+    max-height: 80px;
+    object-fit: contain;
 }
 
 .glass h4 {
@@ -71,23 +91,30 @@
     font-size: 11px;
     font-weight: bold;
 }
+
 .fragile-img {
     text-align: center;
-    margin-top: 10px;
-    margin-bottom: 10px;
 }
 
-.note{
-    margin-top: 14px;
+.note {
+    font-family: cursive;
+    color: rgb(237, 64, 7);
+    font-size: 10px;
 }
+
+.note h4 {
+    margin: 2px 0;
+    font-size: 11px;
+}
+
 .fragile-img img {
-    width: 80px;
+    width: 60px;
     height: auto;
     background: transparent;
     mix-blend-mode: multiply;
 }
+
 .barcode {
-    margin-top: 20px;
+    margin-top: 10px;
     text-align: center;
-    color: #a50f0f;
 }

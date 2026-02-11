@@ -15,7 +15,7 @@ model User {
   addresses Address[]
   orders    Order[]
 }
-  
+
 model Address {
   id      Int    @id @default(autoincrement())
   label   String @default("Home") @db.VarChar(20)
@@ -29,14 +29,14 @@ model Address {
 }
 
 model Order {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id])
-  total     Int
-  status    String   @default("Pending") @db.VarChar(20)
-  items     Json
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+  total      Int
+  status     String   @default("Pending") @db.VarChar(20)
+  items      Json
   trackingId String?  @unique @db.VarChar(50)
-  createdAt DateTime @default(now())
+  createdAt  DateTime @default(now())
 }
 
 model Item {
@@ -84,6 +84,43 @@ model Attendance {
   isPresent  Boolean  @default(true)
 }
 
+model AdminProfile {
+  id            Int    @id @default(autoincrement())
+  business_name String
+  address       String
+
+  gstin          String?
+  phone          String?
+  whatsapp       String?
+  business_email String?
+
+  instagram_url String?
+  facebook_url  String?
+
+  frontend_logo String?
+  backend_logo  String?
+  business_logo String?
+
+  Collections_image String?
+  OurStory_image    String?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model Coupon {
+  id            Int      @id @default(autoincrement())
+  code          String   @unique @db.VarChar(20)
+  discountType  String   @db.VarChar(10) // "percentage" or "fixed"
+  discountValue Float
+  minOrderValue Float    @default(0)
+  expiryDate    DateTime
+  usageLimit    Int?     @default(1)
+  usedCount     Int      @default(0)
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updated_at    DateTime @updatedAt
+}
 
 // npx prisma migrate dev --name init
 // npx prisma generate

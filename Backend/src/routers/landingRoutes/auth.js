@@ -2,11 +2,12 @@ import express from "express";
 import prisma from "../../prismaClient.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { validateRegistration, validateLogin } from "../../middleware/validation/inputValidator.js";
 
 const router = express.Router();
 
 // user register
-router.post("/register", async (req, res) => {
+router.post("/register", validateRegistration, async (req, res) => {
     try {
         console.log("Registration request body:", JSON.stringify(req.body));
         const { username, email, password, phone } = req.body;
@@ -54,7 +55,7 @@ router.post("/register", async (req, res) => {
 });
 
 // user login
-router.post("/login", async (req, res) => {
+router.post("/login", validateLogin, async (req, res) => {
     try {
         const { email, password } = req.body;
         const cleanEmail = email.trim().toLowerCase();

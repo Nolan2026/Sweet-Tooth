@@ -12,21 +12,31 @@ export default function Bill() {
   const [items, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState('');
   const [quantity, setQuantity] = useState('');
-  const [itemsList, setItemsList] = useState([]);
+  const [itemsList, setItemsList] = useState(() => {
+    const stored = localStorage.getItem("itemsList");
+    return stored ? JSON.parse(stored) : [];
+  });
   const [total, setTotal] = useState(0);
   const [customerName, setCustomerName] = useState('Quentin Tarintino');
   const [phoneNumber, setPhoneNumber] = useState('9359356495');
   const [paymentMethod, setPaymentMethod] = useState('Cash');
   const Current = new Date();
   const [date, setDate] = useState(Current.toISOString().split('T')[0]);
+  const selectedItemid = items.find(
+    item => item.id === Number(selectedItem)
+  );
+  const isKilo = selectedItemid?.kilo_grams === true;
 
-  const selectedItemId = items.find(item => item.id === selectedItem);
-  const isKilo = selectedItemId?.kilo_grams;
 
   // Fetch all items from database
   useEffect(() => {
     fetchItems();
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("itemsList", JSON.stringify(itemsList));
+  }, [itemsList]);
+
 
   const fetchItems = async () => {
     try {
@@ -61,7 +71,7 @@ export default function Bill() {
     if (!item) return;
 
     const price = item.price;
-    const subtotal = price * quantity;
+    const subtotal = price * (item.kilo_grams ? quantity / 1000 : quantity);
 
     const newItem = {
       itemId: item.id,
@@ -98,7 +108,6 @@ export default function Bill() {
             className="date-input"
           />
         </div>
-
         <div className="customer-details">
           <input
             type="text"
@@ -175,22 +184,15 @@ export default function Bill() {
               className="grams-input"
               step="0.1"
             />
-
-            {console.log('Selected Item:', selectedItem, 'Quantity:', quantity)}
-            {console.log('items:', items)}
-            {console.log(items.some(i => i.selectedItem) ? PRESET_GRAMS : Qty)}
-            {console.log('selectedItemId:', selectedItemId)}
-            {console.log('isKilo:', isKilo)}
-
-
+            
             <div className="quick-grams">
-              {(isKilo ? Qty : PRESET_GRAMS).map((g) => (
+              {(isKilo ? PRESET_GRAMS : Qty).map((g) => (
                 <button
                   key={g}
-                  onClick={() => setQuantity(g)} 
+                  onClick={() => setQuantity(g)}
                   className="gram-btn"
                 >
-                  {g}g
+                  {isKilo ? `${g}g` : `${g} pcs`}
                 </button>
               ))}
             </div>

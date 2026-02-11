@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import api from "../api/axios";
 import "../styles/Orders.css";
 import { useToast } from '../Context/ToastContext';
+import { useConfirm } from '../Context/ConfirmContext';
 
 export default function Orders() {
     const { showToast } = useToast();
+    const confirm = useConfirm();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState({
@@ -35,7 +37,7 @@ export default function Orders() {
 
 
     useEffect(() => {
-     fetchOrders();
+        fetchOrders();
     }, []);
 
 
@@ -50,6 +52,20 @@ export default function Orders() {
         }
     };
 
+    const handleDelete = async (orderId) => {
+        const isConfirmed = await confirm("Delete Order", "Are you sure you want to permanently remove this order record? This cannot be undone.");
+        if (!isConfirmed) return;
+
+        try {
+            await api.delete(`/admin/orders/${orderId}`);
+            showToast("Order deleted successfully", 'success');
+            fetchOrders();
+        } catch (err) {
+            console.error("Delete order error:", err);
+            showToast("Failed to delete order", 'error');
+        }
+    };
+
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleDateString('en-IN', {
             year: 'numeric',
@@ -60,10 +76,8 @@ export default function Orders() {
         });
     };
 
-    console.log("Rendering orders:", orders);
-
     return (
-        <div className="orders-container">         
+        <div className="orders-container">
 
             {/* Filters */}
             <div className="filters-sections">
@@ -119,34 +133,12 @@ export default function Orders() {
 
                             <div key={order.id} className="order-card">
                                 <div className="order-header">
-                                    <div className="order-id">Order #{order.id} {orders[orders.id]}
-                                        <label htmlFor="selectOrder">
-                                            <input
-                                                type="checkbox"
-                                                id="selectOrder"
-                                                onChange={(e) => {
-                                                    const { checked } = e.target;
-
-                                                    if (checked) {
-                                                        // Add ID to array
-                                                        setSelectedOrder((prev) => [...prev, order.id]);
-                                                    } else {
-                                                        // Remove ID from array
-                                                        setSelectedOrder((prev) =>
-                                                            prev.filter((id) => id !== order.id)
-                                                        );
-                                                    }
-                                                }}
-
-                                            />
-                                            Select
-                                        </label>
-                                    </div>
+                                    <div className="order-id">Order #{order.id}</div>
                                     <div className={`order-status status-${order.status.toLowerCase()}`}>
                                         {order.status}
                                     </div>
                                 </div>
-                                         
+
                                 <div className="order-details">
                                     <div className="detail-row">
                                         <strong>Customer:</strong> {order.user.username}
@@ -194,6 +186,12 @@ export default function Orders() {
                                         <option value="Delivered">Delivered</option>
                                         <option value="Cancelled">Cancelled</option>
                                     </select>
+                                    <button
+                                        className="order-delete-btn"
+                                        onClick={() => handleDelete(order.id)}
+                                    >
+                                        Delete Record
+                                    </button>
                                 </div>
                             </div>
                         ))

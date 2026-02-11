@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
 import '../styles/Attend.css';
 import { useToast } from '../Context/ToastContext';
+import { useConfirm } from '../Context/ConfirmContext';
 
 function Attend() {
   const { showToast } = useToast();
+  const confirm = useConfirm();
   const [employees, setEmployees] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState('');
   const [isPresent, setIsPresent] = useState(true);
@@ -38,7 +40,7 @@ function Attend() {
       showToast('Failed to fetch employees', 'error');
     }
   };
- 
+
   const fetchAttendance = async () => {
     try {
       const params = new URLSearchParams();
@@ -78,7 +80,8 @@ function Attend() {
   };
 
   const handleRemoveEmployee = async (id) => {
-    if (!window.confirm('Are you sure you want to remove this employee?')) return;
+    const isConfirmed = await confirm("Remove Employee", "Are you sure you want to remove this employee and mark them as inactive?");
+    if (!isConfirmed) return;
 
     try {
       await api.delete(`/admin/attendance/employees/${id}`);
@@ -190,7 +193,7 @@ function Attend() {
       </div>
 
       {/* Mark Attendance Section */}
-      <div className="section-card">
+      <div className="section-card attendence-section">
         <h2>Mark Attendance</h2>
         <form onSubmit={handleMarkAttendance} className="attendance-form">
           <select

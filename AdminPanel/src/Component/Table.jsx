@@ -1,12 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { useToast } from '../Context/ToastContext';
 
 export default function Tab({ items, total, date, customerName, phoneNumber, paymentMethod, clear, setItemsList, setTotal }) {
-
   const his = useNavigate();
-  const [billNumber, setBillNumber] = useState(null);
+  const [profile, setProfile] = useState(null);
+
+  const [billNumber, setBillNumber] = useState(() => {
+    const stored = localStorage.getItem("billNumber");
+    return stored ? Number(stored) : 1;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("billNumber", billNumber);
+  }, [billNumber]);
+
+  useEffect(() => {
+    api.get("/admin/admin-profile").then(res => setProfile(res.data));
+  }, []);
+
   const { showToast } = useToast();
 
   const getCurrentTime = () => {
@@ -35,7 +48,7 @@ export default function Tab({ items, total, date, customerName, phoneNumber, pay
         paymentMode: paymentMethod
       });
 
-      setBillNumber(res.data.bill.id);
+      setBillNumber(prev => prev + 1);
       showToast('Bill saved successfully!', 'success');
     } catch (err) {
       console.error('Save bill error:', err);
@@ -49,7 +62,7 @@ export default function Tab({ items, total, date, customerName, phoneNumber, pay
   };
 
   const Move = () => {
-    his('/history');
+    his('/admin/history');
   };
 
   const handleUndo = () => {
@@ -67,11 +80,12 @@ export default function Tab({ items, total, date, customerName, phoneNumber, pay
   return (
     <div id="billSection">
       <div className="bill-header">
-        <h1>Sweet Tooth</h1>
-        <p>123 Main Street, Kurnool, Andhra Pradesh - 518001</p>
-        <p>GSTIN: 37AABCS1429B1Z1</p>
-        <p>Phone: +91 98765 43210</p>
+        <h1>{profile?.business_name && profile.business_name !== "" ? profile.business_name : "Sweet Tooth"}</h1>
+        <p style={{ whiteSpace: 'pre-wrap' }}>{profile?.address || "123 Main Street, Kurnool, Andhra Pradesh - 518001"}</p>
+        {profile?.gstin && <p>GSTIN: {profile.gstin}</p>}
+        <p>Phone: {profile?.phone || "+91 98765 43210"}</p>
       </div>
+
 
       <div className="bill-details">
         <p>Date: {date} | Time: {getCurrentTime()} <span className='billno'>Bill No: {billNumber || 'Unsaved'}</span></p>
@@ -80,24 +94,26 @@ export default function Tab({ items, total, date, customerName, phoneNumber, pay
 
       <table className="billTable">
         <thead>
-          <tr>
+          <tr className='headline'>
             <th>Item Name</th>
-            <th>Quantity (g)</th>
+            <th>Quantity</th>
             <th>Price (₹)</th>
+            <th>Amount (₹)</th>
           </tr>
         </thead>
         <tbody>
           {items.map((item, index) => (
             <tr key={index}>
               <td>{item.itemName || item.name}</td>
-              <td>{item.quantity} kg</td>
+              <td>{item.quantity} {item.quantity > 50 ? 'gm' : 'pcs'}</td>
+              <td>₹{item.price}</td>
               <td>₹{item.subtotal || item.price}</td>
             </tr>
           ))}
         </tbody>
         <tfoot>
-          <tr>
-            <td colSpan="2"><strong>Total Amount</strong></td>
+          <tr className='total'>
+            <td colSpan="3"><strong>Total Amount</strong></td>
             <td><strong>₹{total}</strong></td>
           </tr>
         </tfoot>

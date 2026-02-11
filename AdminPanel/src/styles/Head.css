@@ -27,6 +27,13 @@
   letter-spacing: 1px;
 }
 
+.admin-header-logo {
+  height: 35px;
+  max-width: 150px;
+  object-fit: contain;
+  vertical-align: middle;
+}
+
 /* Nav container */
 .nav-links {
   display: flex;
@@ -89,16 +96,37 @@
   background-color: darkorange;
 }
 
+.logout-btn {
+  background: #ff6347;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.logout-btn:hover {
+  background: #e5533d;
+}
+
 @media (max-width: 768px) {
   .head {
     padding: 5px 10px;
   }
-  
+
   .nav-links {
     gap: 10px;
   }
-  
+
   .nav-item {
     padding: 8px 5px;
+  }
+}
+
+@media print {
+  .head {
+    display: none !important;
   }
 }

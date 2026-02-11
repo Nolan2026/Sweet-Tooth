@@ -1,9 +1,9 @@
 import express from "express";
-import img from "../../media/Images.js";
+import upload from "../../media/Images.js";
 
 const router = express.Router();
 
-router.post("/", img.single("image"), (req, res) => {
+router.post("/", upload.single("image"), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ message: "No image uploaded" });
     }

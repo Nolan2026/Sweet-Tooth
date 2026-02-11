@@ -7,9 +7,9 @@
     background: #d2e3f4;
     min-height: 93vh;
     display: grid;
-    --margin: 20px;
     grid-template-columns: 3fr 1fr;
     overflow: auto;
+    position: relative;
 }
 
 /* ===== Print Button ===== */
@@ -36,18 +36,24 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 9px;
     height: 480px;
+    margin-left: 260px;
+    margin-top: 15px;
 }
 
 /* ===== Individual Label Box ===== */
-.filter-group{
+.filter-group {
     display: flex;
     flex-direction: row;
-    --width: 20px;
+    ;
 }
-.filters-section{
+
+.filters-section {
     display: flex;
     align-items: center;
     gap: 9px;
+    position: fixed;
+    top: 80px;
+    left: 10px;
     padding: 20px 20px 10px 20px;
     background: white;
     border: 2px solid #000;
@@ -55,6 +61,7 @@
     width: 250px;
     box-sizing: border-box;
 }
+
 .label-container {
     background: white;
     border: 2px solid #000;
@@ -71,21 +78,23 @@
 
 @media print {
 
-    /* Hide everything except label page */
-    body * {
+    /* Hide specific non-printable areas */
+    .head,
+    .filters-section,
+    .btn,
+    .order-label-page button {
+        display: none !important;
+    }
+
+    /* Use visibility trick locally to avoid breaking other pages */
+    body {
         visibility: hidden;
-        margin: 0;
-        background: white;
+        background: white !important;
     }
 
     .order-label-page,
     .order-label-page * {
         visibility: visible;
-        overflow: visible;
-    }
-
-    .filters-section{
-        display: none;
     }
 
     .order-label-page {
@@ -93,34 +102,34 @@
         left: 0;
         top: 0;
         width: 100%;
+        background: white;
+        display: block !important;
+        padding: 0;
     }
 
-.order-label-page {
-    padding: 0;
-}
+    .labels-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        gap: 15px;
+        margin: 0 auto;
+        width: 100%;
+    }
 
-/* Hide button while printing */
-.order-label-page button {
-    display: none;
-}
+    .label-container {
+        page-break-inside: avoid;
+        height: 135mm;
+        /* Fixed height for 2x2 on A4 */
+        border: 1px solid #000;
+        width: 95%;
+        margin: 5px auto;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
 
-.labels-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-}
 
-.label-container {
-    page-break-inside: avoid;
-    height: 43vh;
-    /* 2 rows per page */
-    border: 1px solid #000;
-    width: 450px;
-}
-
-/* 4 labels per A4 page */
-@page {
-    size: A4;
-    margin: 5mm;
-}
+    @page {
+        size: A4;
+        margin: 5mm;
+    }
 }

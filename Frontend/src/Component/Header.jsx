@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../Context/CartContext';
 import '../styles/Head.css'
+import api from '../api/axios';
+
+const BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5016";
 
 function Header() {
   const navigate = useNavigate();
   const { getCartCount } = useCart();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('userToken'));
-
-  console.log("Header rendering, isLoggedIn:", isLoggedIn);
+  const [profile, setProfile] = useState(null);
 
   const handleLogout = () => {
     localStorage.removeItem('userToken');
@@ -24,6 +26,15 @@ function Header() {
   };
 
   useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await api.get("/admin/admin-profile");
+        setProfile(res.data);
+      } catch (err) {
+        console.error("Header profile load failed", err);
+      }
+    };
+    fetchProfile();
     const handleStorageChange = () => {
       setIsLoggedIn(!!localStorage.getItem('userToken'));
     };
@@ -58,7 +69,15 @@ function Header() {
             </div>
           </button>
           <Link to="/" className="logo-link">
-            <h1 className="logo-text">Sweet Tooth</h1>
+            {profile?.frontend_logo ? (
+              <img
+                src={`${BASE}/uploads/${profile.frontend_logo}`}
+                alt={profile.business_name}
+                className="header-logo-img"
+              />
+            ) : (
+              <h1 className="logo-text">{profile?.business_name && profile.business_name !== "" ? profile.business_name : "Sweet Tooth"}</h1>
+            )}
           </Link>
         </div>
 

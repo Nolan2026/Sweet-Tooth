@@ -3,7 +3,7 @@
   max-width: 1500px;
   margin: 0 auto;
 }
-
+ 
 .add-item-form {
   background: white;
   padding: 2rem 1.5rem;
@@ -159,7 +159,7 @@ th {
 .toggle-switch {
   position: relative;
   display: inline-block;
-  width: 50px;
+  width: 70px;
   height: 24px;
   margin-right: 10px;
 }

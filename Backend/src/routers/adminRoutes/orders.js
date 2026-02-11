@@ -57,4 +57,18 @@ router.patch("/:id/status", async (req, res) => {
     }
 });
 
+// Delete order
+router.delete("/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        await prisma.order.delete({
+            where: { id: parseInt(id) }
+        });
+        res.json({ message: "Order deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting order:", error);
+        res.status(500).json({ message: "Error deleting order", error: error.message });
+    }
+});
+
 export default router;

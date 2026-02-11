@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import api from "../api/axios";
 import "../styles/Messages.css";
 import { useToast } from '../Context/ToastContext';
+import { useConfirm } from "../Context/ConfirmContext";
 
 export default function Messages() {
     const { showToast } = useToast();
+    const confirm = useConfirm();
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedMessage, setSelectedMessage] = useState(null);
@@ -27,7 +29,8 @@ export default function Messages() {
     }, []);
 
     const handleDelete = async (id) => {
-        if (!window.confirm("Are you sure you want to delete this message?")) return;
+        const isConfirmed = await confirm("Delete Message", "Are you sure you want to permanently delete this contact message?");
+        if (!isConfirmed) return;
 
         try {
             await api.delete(`/admin/messages/${id}`);

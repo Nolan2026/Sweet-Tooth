@@ -39,8 +39,6 @@ const OrderLabel = () => {
         fetchOrders();
     }, []);
 
-    console.log("Rendering orders:", orders);
-
     const handlePrint = () => {
         window.print();
     };
