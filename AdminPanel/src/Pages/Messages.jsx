@@ -3,6 +3,7 @@ import api from "../api/axios";
 import "../styles/Messages.css";
 import { useToast } from '../Context/ToastContext';
 import { useConfirm } from "../Context/ConfirmContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Messages() {
     const { showToast } = useToast();
@@ -10,6 +11,8 @@ export default function Messages() {
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedMessage, setSelectedMessage] = useState(null);
+
+const navigate = useNavigate();
 
     const fetchMessages = async () => {
         try {
@@ -56,6 +59,7 @@ export default function Messages() {
     return (
         <div className="messages-container">
             <h1>Contact Messages</h1>
+            <span onClick={() => {navigate("/admin/profile")}} className="arrow">⬅ <h6>Back to Profile</h6></span>
 
             {loading ? (
                 <div className="loading">Loading messages...</div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logout } from '../Store/authSlice';
 import api from '../api/axios';
@@ -10,7 +10,9 @@ const BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5016";
 function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const [profile, setProfile] = useState(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -24,6 +26,11 @@ function Header() {
     fetchProfile();
   }, []);
 
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location]);
+
   const handleLogout = () => {
     dispatch(logout());
     navigate('/admin/login');
@@ -33,9 +40,27 @@ function Header() {
     navigate('/admin');
   };
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const navItems = [
+    { path: "/admin/bill", label: "Billing", icon: "📄" },
+    { path: "/admin/orders", label: "Orders", icon: "🛍️" },
+    { path: "/admin/profile", label: "Profile", icon: "👤" },
+    { path: "/admin/inventory", label: "Inventory", icon: "📦" },
+    { path: "/admin/shipLabel", label: "Ship Label", icon: "🏷️" },
+    // { path: "/admin/messages", label: "Messages", icon: "💬" },
+    // { path: "/admin/attend", label: "Attendance", icon: "📅" },
+    // { path: "/admin/label", label: "Labels", icon: "🔖" },
+    // { path: "/admin/history", label: "History", icon: "📊" },
+    { path: "/admin/add-item", label: "Add Item", icon: "➕" },
+    { path: "/admin/coupons", label: "Coupons", icon: "🎫" },
+  ];
+
   return (
-    <div className="head">
-      <div className="admin-logo-section" onClick={gohome} style={{ cursor: 'pointer' }}>
+    <header className="head">
+      <div className="admin-logo-section" onClick={gohome}>
         {profile?.backend_logo ? (
           <img
             src={`${BASE}/uploads/${profile.backend_logo}`}
@@ -43,26 +68,47 @@ function Header() {
             className="admin-header-logo"
           />
         ) : (
-          <h2>{profile?.business_name && profile.business_name !== "" ? `${profile.business_name} Admin` : "Sweet Tooth Admin"}</h2>
+          <h2 className="gradient-text">
+            {profile?.business_name && profile.business_name !== "" ? `${profile.business_name}` : "Sweet Tooth"}
+          </h2>
         )}
       </div>
-      <div className="nav-links">
-        <Link to="/admin/bill" className="nav-item">Billing</Link>
-        <Link to="/admin/orders" className="nav-item">Orders</Link>
-        <Link to="/admin/messages" className="nav-item">Messages</Link>
-        <Link to="/admin/admin-profile" className="nav-item">Admin Profile</Link>
-        <Link to="/admin/inventory" className="nav-item">Inventory </Link>
-        <Link to="/admin/shipLabel" className="nav-item">Ship Label</Link>
-        <Link to="/admin/attend" className="nav-item">Attendence</Link>
-        <Link to='/admin/label' className="nav-item">Labels</Link>
-        <Link to="/admin/history" className="nav-item">History</Link>
-        <Link to="/admin/add-item" className="nav-item">Add Item</Link>
-        <Link to="/admin/coupons" className="nav-item">Coupons</Link>
-        <button onClick={handleLogout} className="logout-btn">Logout</button>
-      </div>
-    </div>
+
+      {/* Hamburger Menu */}
+      <button
+        className={`hamburger ${isMobileMenuOpen ? 'active' : ''}`}
+        onClick={toggleMobileMenu}
+        aria-label="Toggle navigation menu"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      {/* Navigation */}
+      <nav className={`nav-links ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
+        {navItems.map((item) => (
+          <Link
+            key={item.path}
+            to={item.path}
+            className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}
+          >
+            <span className="nav-icon">{item.icon}</span>
+            <span className="nav-label">{item.label}</span>
+          </Link>
+        ))}
+        <button onClick={handleLogout} className="logout-btn">
+          <span className="nav-icon">🚪</span>
+          <span className="nav-label">Logout</span>
+        </button>
+      </nav>
+
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <div className="mobile-overlay" onClick={toggleMobileMenu}></div>
+      )}
+    </header>
   );
 }
-
 
 export default Header;

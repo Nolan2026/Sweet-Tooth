@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import "../styles/Labels.css";
 import api from "../api/axios";
+import { useNavigate } from "react-router-dom";
 
 function Label() {
   const [items, setItems] = useState([]);
   const [selectedIds, setSelectedIds] = useState(new Set());
-
+  const navigate = useNavigate();
+  
   const handlePrint = () => {
     if (selectedIds.size === 0) {
       alert("Please select at least one label to print.");
@@ -48,11 +49,12 @@ function Label() {
 
   return (
     <div className="label-page">
+      <span onClick={() => { navigate("/admin/profile") }} className="arrow">⬅ <h6>Back to Profile</h6></span>
       <div className="label-controls no-print">
         <button onClick={selectAll} className="control-btn">
           {selectedIds.size === items.length ? "Deselect All" : "Select All"}
         </button>
-        <span>{selectedIds.size} labels selected</span>
+        <span>{selectedIds.size} labels selected </span>
       </div>
 
       <div className="label-grid">
@@ -66,7 +68,7 @@ function Label() {
               {selectedIds.has(item.id) ? "✓" : ""}
             </div>
             <h2 className="label-name">{item.item_name}</h2>
-            <p className="label-price">₹{item.price} / {item.kilo_grams ? "kg" : "piece"}</p>
+            <p className="label-price">₹{item.price} / {item.kilo_grams ? "kg" : "pcs"}</p>
           </div>
         ))}
       </div>

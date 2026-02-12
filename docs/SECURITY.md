@@ -304,7 +304,19 @@ add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" alway
 
 ---
 
-### 14. API Security
+### 11. API Security
+
+#### Endpoint Documentation
+
+**Public vs Internal Documentation:**
+- ✅ `docs/PUBLIC_API.md` - Safe to deploy publicly
+- ❌ `docs/API_DOCUMENTATION.md` - Internal only, contains admin endpoints
+
+**Best Practices:**
+- Only expose public API documentation to customers
+- Keep admin endpoint documentation internal
+- Never include API documentation in public git repositories without review
+- Implement API versioning for public endpoints
 
 #### Authentication Header
 ```

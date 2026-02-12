@@ -1,5 +1,13 @@
 # API Documentation - Sweet Tooth Platform
 
+> ⚠️ **INTERNAL DOCUMENTATION - DO NOT DEPLOY PUBLICLY**
+> 
+> This file contains complete API documentation including admin and internal endpoints.
+> For public documentation, see [PUBLIC_API.md](./PUBLIC_API.md)
+> 
+> **Security Note:** Exposing admin endpoints publicly is a security risk (information disclosure).
+> Only share this documentation with authorized developers.
+
 ## Base URL
 
 ```

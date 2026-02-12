@@ -46,8 +46,10 @@ const OrderLabel = () => {
     return (
         <div className="order-label-page">
             <div className="filters-section">
-                <div>
-                    Total Orders {orders.length}
+                <div className="filter-group">
+                    <label htmlFor="total">Total Orders</label>
+                    <input type="text" placeholder={orders.length} disabled/>
+                     
 
                 </div>
                 <div className="filter-group">
@@ -80,11 +82,13 @@ const OrderLabel = () => {
                         onChange={(e) => setFilter({ ...filter, endDate: e.target.value })}
                     />
                 </div>
+                <div className="btns">
 
-                <button onClick={fetchOrders} className="apply-filter-btn">
-                    Apply Filters
-                </button>
-                <button className="btn" onClick={(e) => handlePrint()}>Print All</button>
+                    <button onClick={fetchOrders} className="apply-filter-btn">
+                        Apply Filters
+                    </button>
+                    <button style={{background: "red"}} onClick={(e) => handlePrint()}>Print All</button>
+                </div>
             </div>
 
             <div className="labels-container">

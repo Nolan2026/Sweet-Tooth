@@ -299,9 +299,12 @@ npm run dev
 
 ## 📚 API Documentation
 
-See [API_DOCUMENTATION.md](./docs/API_DOCUMENTATION.md) for complete API reference.
+See [PUBLIC_API.md](./docs/PUBLIC_API.md) for public API reference.
 
-### Quick Reference
+> **Note:** Complete internal API documentation (including admin endpoints) is available in 
+> `docs/API_DOCUMENTATION.md` but should NOT be deployed publicly for security reasons.
+
+### Public API Endpoints
 
 #### Authentication
 - `POST /auth/register` - Register new user

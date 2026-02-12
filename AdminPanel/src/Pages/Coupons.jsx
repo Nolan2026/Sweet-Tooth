@@ -146,7 +146,17 @@ const Coupons = () => {
             <div className="coupons-grid">
                 {coupons.map((coupon) => (
                     <div className="coupon-card" key={coupon.id}>
-                        <div className="coupon-code">{coupon.code}</div>
+                        <div
+                            className="coupon-code"
+                            onClick={() => {
+                                navigator.clipboard.writeText(coupon.code);
+                                alert(`Coupon ${coupon.code} copied to clipboard!`);
+                            }}
+                            title="Click to copy"
+                            style={{ cursor: 'pointer' }}
+                        >
+                            {coupon.code}
+                        </div>
                         <div className="coupon-info">
                             <p><strong>Discount:</strong> {coupon.discountValue}{coupon.discountType === 'percentage' ? '%' : '₹'} OFF</p>
                             <p><strong>Min Order:</strong> ₹{coupon.minOrderValue}</p>

@@ -192,6 +192,28 @@ ALLOWED_ORIGINS="https://yourdomain.com,https://admin.yourdomain.com"
 
 ---
 
+### 11. API Documentation Security ✅
+
+**Files Created:**
+- `docs/PUBLIC_API.md` - Customer-facing documentation
+- `docs/.gitignore` - Prevents accidental commits
+
+**Files Modified:**
+- `docs/API_DOCUMENTATION.md` - Added security warning
+- `README.md` - References public docs only
+
+**Protection:**
+- ✅ Admin endpoints not publicly documented
+- ✅ Internal docs marked as confidential
+- ✅ Public docs contain only customer endpoints
+- ✅ Prevents information disclosure vulnerability
+
+**Security Note:**
+> Documenting all API endpoints publicly (especially admin routes) creates an **information disclosure** 
+> vulnerability, giving attackers a complete roadmap of the API surface. Now separated into public and internal docs.
+
+---
+
 ## 📚 Documentation Created
 
 ### 1. README.md ✅
@@ -235,6 +257,11 @@ ALLOWED_ORIGINS="https://yourdomain.com,https://admin.yourdomain.com"
 - Performance optimizations
 - Maintenance guide
 
+### 6. docs/PUBLIC_API.md ✅
+- Public customer-facing API documentation
+- Safe to deploy publicly
+- Only documented customer endpoints
+
 ---
 
 ## 🔐 Security Checklist
@@ -266,6 +293,7 @@ ALLOWED_ORIGINS="https://yourdomain.com,https://admin.yourdomain.com"
 - [x] Environment variables secured
 - [x] .env in .gitignore
 - [x] File upload restrictions
+- [x] API documentation separation (public/internal)
 
 ### Application Security
 - [x] XSS protection
@@ -273,6 +301,7 @@ ALLOWED_ORIGINS="https://yourdomain.com,https://admin.yourdomain.com"
 - [x] Clickjacking prevention
 - [x] Centralized error handling
 - [x] 404 handler
+- [x] Information disclosure prevention
 
 ### Infrastructure
 - [x] Production environment config
@@ -442,11 +471,12 @@ ALLOWED_ORIGINS="https://yourdomain.com,https://admin.yourdomain.com"
 
 The Sweet Tooth platform has been successfully hardened for production deployment with comprehensive security measures:
 
-- ✅ **11 Security Layers** implemented
-- ✅ **5 Documentation Files** created
+- ✅ **12 Security Layers** implemented
+- ✅ **6 Documentation Files** created (public + internal)
 - ✅ **100% Input Validation** coverage
 - ✅ **Rate Limiting** on all routes
 - ✅ **Error Handling** without information leakage
+- ✅ **API Documentation Security** - Public/Internal separation
 - ✅ **Production-Ready** configuration
 
 The application is now ready for deployment following the instructions in `docs/DEPLOYMENT.md`.

@@ -1,75 +1,244 @@
-.admin-login-container {
+/* ============================================
+   MODERN LOGIN PAGE - RESPONSIVE DESIGN
+   ============================================ */
+
+.login-container {
+    min-height: 100vh;
     display: flex;
-    justify-content: center;
     align-items: center;
-    height: 100vh;
-    background: #f4f6f8;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 2rem 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    animation: float 20s infinite ease-in-out;
+}
+
+.login-container::after {
+    content: '';
+    position: absolute;
+    bottom: -50%;
+    left: -50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    animation: float 25s infinite ease-in-out reverse;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(50px, 50px);
+    }
 }
 
 .login-card {
-    background: white;
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: var(--border-radius-lg);
+    padding: 3rem 2.5rem;
     width: 100%;
-    max-width: 400px;
+    max-width: 450px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    position: relative;
+    z-index: 1;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.login-card h2 {
+.login-header {
     text-align: center;
-    margin-bottom: 30px;
-    color: #1f2937;
+    margin-bottom: 2.5rem;
 }
 
-.login-card .input-group {
-    margin-bottom: 20px;
+.login-header h1 {
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 800;
 }
 
-.login-card label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: #374151;
-}
-
-.login-card input {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-}
-
-.login-card button {
-    width: 100%;
-    padding: 12px;
-    background: #4f46e5;
-    color: white;
-    border: none;
-    border-radius: 8px;
+.login-header p {
+    color: var(--text-secondary);
     font-size: 1rem;
+    margin: 0;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
     font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group input {
+    padding: 1rem 1.25rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    font-size: 1rem;
+    transition: all var(--transition-base);
+    background: var(--bg-card);
+    font-family: var(--font-sans);
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-dark);
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.login-btn {
+    padding: 1rem 2rem;
+    background: var(--primary-gradient);
+    color: var(--text-white);
+    border: none;
+    border-radius: var(--border-radius-sm);
+    font-size: 1.1rem;
+    font-weight: 700;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: all var(--transition-base);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+    margin-top: 1rem;
 }
 
-.login-card button:hover {
-    background: #4338ca;
+.login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(102, 126, 234, 0.5);
 }
 
-.login-card button:disabled {
-    background: #9ca3af;
+.login-btn:active {
+    transform: translateY(0);
+}
+
+.login-btn:disabled {
+    opacity: 0.5;
     cursor: not-allowed;
+    transform: none;
 }
 
-.auth-switch {
-    margin-top: 20px;
+.login-footer {
     text-align: center;
-    font-size: 0.9rem;
-    color: #6b7280;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 2px solid var(--border-color);
 }
 
-.auth-switch a {
-    color: #4f46e5;
+.login-footer a {
+    color: var(--primary-dark);
     text-decoration: none;
     font-weight: 600;
+    transition: all var(--transition-base);
+}
+
+.login-footer a:hover {
+    color: var(--primary-light);
+    text-decoration: underline;
+}
+
+.error-message {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    color: #991b1b;
+    padding: 1rem;
+    border-radius: var(--border-radius-sm);
+    border-left: 4px solid var(--accent-red);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.success-message {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    color: #065f46;
+    padding: 1rem;
+    border-radius: var(--border-radius-sm);
+    border-left: 4px solid var(--accent-green);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-sm);
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 768px) {
+    .login-card {
+        padding: 2.5rem 2rem;
+        max-width: 100%;
+    }
+
+    .login-header h1 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        padding: 1rem;
+    }
+
+    .login-card {
+        padding: 2rem 1.5rem;
+    }
+
+    .login-header h1 {
+        font-size: 1.75rem;
+    }
+
+    .form-group input {
+        padding: 0.875rem 1rem;
+    }
+
+    .login-btn {
+        padding: 0.875rem 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .login-container::before,
+    .login-container::after {
+        animation: none;
+    }
+
+    .login-btn {
+        transition: none;
+    }
 }

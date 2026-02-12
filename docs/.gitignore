@@ -1,0 +1,14 @@
+# .gitignore for Documentation
+
+# Internal API documentation (contains admin endpoints)
+# Only PUBLIC_API.md should be shared publicly
+API_DOCUMENTATION.md
+
+# Build outputs
+_site/
+.jekyll-cache/
+.jekyll-metadata
+
+# OS files
+.DS_Store
+Thumbs.db

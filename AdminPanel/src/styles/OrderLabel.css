@@ -1,82 +1,126 @@
-/* ===== Page Container ===== */
+/* ============================================
+   MODERN ORDER LABEL PAGE
+   ============================================ */
+
+/* Page Container */
 .order-label-page {
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
-    padding: 10px 5px;
-    background: #d2e3f4;
-    min-height: 93vh;
-    display: grid;
-    grid-template-columns: 3fr 1fr;
-    overflow: auto;
-    position: relative;
+    /* Change to column layout */
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background: var(--bg-light);
+    min-height: calc(100vh - 80px);
+    overflow-x: hidden;
 }
 
-/* ===== Print Button ===== */
+/* Filters / Sidebar */
+.filters-section {
+    display: flex;
+    flex-direction: row;
+    /* Changed to horizontal */
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--bg-card);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+    position: sticky;
+    top: 1.5rem;
+    align-self: start;
+    z-index: 10;
+    width: 100%;
+    /* Take full width */
+    align-items: flex-end;
+    /* Align inputs with labels */
+    justify-content: flex-start;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 200px;
+}
+
+.filter-group label {
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.filter-group input,
+.filter-group select {
+    padding: 0.6rem 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    font-size: 0.95rem;
+    background: var(--bg-light);
+    transition: all var(--transition-base);
+    width: 100%;
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+    border-color: var(--primary-dark);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    background: var(--bg-card);
+    outline: none;
+}
+
+/* Print Button */
 .order-label-page button {
-    margin-top: 20px;
-    padding: 10px;
-    width: 150px;
-    height: 40px;
-    font-size: 14px;
+    margin-top: 1rem;
+    padding: 1rem;
+    --width: 100%;
+    font-size: 1rem;
     border: none;
-    background: #111;
-    color: #fff;
+    background: var(--primary-gradient);
+    color: var(--text-white);
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: var(--border-radius-sm);
+    font-weight: 700;
+    transition: all var(--transition-base);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: var(--shadow-colored);
 }
 
 .order-label-page button:hover {
-    background: #333;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
 }
 
-/* ===== Labels Grid (Screen View) ===== */
+.order-label-page button:active {
+    transform: translateY(0);
+}
+
+/* Labels Grid (Screen View) */
 .labels-container {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 9px;
-    height: 480px;
-    margin-left: 260px;
-    margin-top: 15px;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 1.5rem;
+    overflow-y: auto;
+    padding-right: 0.5rem;
 }
 
-/* ===== Individual Label Box ===== */
-.filter-group {
-    display: flex;
-    flex-direction: row;
-    ;
-}
 
-.filters-section {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    position: fixed;
-    top: 80px;
-    left: 10px;
-    padding: 20px 20px 10px 20px;
-    background: white;
-    border: 2px solid #000;
-    height: 400px;
-    width: 250px;
-    box-sizing: border-box;
-}
-
-.label-container {
-    background: white;
-    border: 2px solid #000;
-    padding: 25px;
-    margin: 3px 10px;
-    width: 380px;
-    height: 480px;
-    box-sizing: border-box;
-}
 
 /* ===================================== */
 /* ========== PRINT STYLES ============ */
 /* ===================================== */
 
 @media print {
+
+    /* Force background colors to print */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
 
     /* Hide specific non-printable areas */
     .head,
@@ -90,6 +134,8 @@
     body {
         visibility: hidden;
         background: white !important;
+        margin: 0;
+        padding: 0;
     }
 
     .order-label-page,
@@ -98,38 +144,65 @@
     }
 
     .order-label-page {
+        display: block !important;
         position: absolute;
         left: 0;
         top: 0;
         width: 100%;
         background: white;
-        display: block !important;
         padding: 0;
+        margin: 0;
     }
 
     .labels-container {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: repeat(2, 1fr);
-        gap: 15px;
-        margin: 0 auto;
+        display: block;
+        /* Fallback */
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-content: flex-start;
+        gap: 0;
+        margin: 0;
         width: 100%;
+        height: auto;
+        padding: 0;
     }
 
     .label-container {
         page-break-inside: avoid;
-        height: 135mm;
-        /* Fixed height for 2x2 on A4 */
+        height: 130mm !important;
+        width: 48% !important;
+        /* Matches ShippingLabel.css */
         border: 1px solid #000;
-        width: 95%;
-        margin: 5px auto;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
+        margin: 0 0 4mm 0 !important;
+        /* Bottom margin only */
+        padding: 3mm !important;
+        box-shadow: none;
+        border-radius: 0;
+        transform: none !important;
+        font-size: 9pt !important;
+        box-sizing: border-box !important;
     }
 
-
     @page {
-        size: A4;
+        size: A4 portrait;
         margin: 5mm;
+    }
+}
+
+@media (max-width: 900px) {
+    .order-label-page {
+        grid-template-columns: 1fr;
+    }
+
+    .filters-section {
+        position: static;
+        width: 100%;
+        max-height: none;
+        margin-bottom: 2rem;
+    }
+
+    .labels-container {
+        grid-template-columns: 1fr;
     }
 }

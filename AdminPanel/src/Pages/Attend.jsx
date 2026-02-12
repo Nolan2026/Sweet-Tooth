@@ -3,6 +3,7 @@ import api from '../api/axios';
 import '../styles/Attend.css';
 import { useToast } from '../Context/ToastContext';
 import { useConfirm } from '../Context/ConfirmContext';
+import { useNavigate } from 'react-router-dom';
 
 function Attend() {
   const { showToast } = useToast();
@@ -13,6 +14,7 @@ function Attend() {
   const [attendanceDate, setAttendanceDate] = useState(new Date().toISOString().split('T')[0]);
   const [attendanceRecords, setAttendanceRecords] = useState([]);
 
+  const navigate = useNavigate();
   // Add employee form
   const [newEmployee, setNewEmployee] = useState({
     name: '',
@@ -67,7 +69,7 @@ function Attend() {
       showToast('Phone number must be 10 digits', 'warning');
       return;
     }
-    // http://localhost:5016/admin/attendance/employees
+ 
     try {
       await api.post('/admin/attendance/employees', newEmployee);
       setNewEmployee({ name: '', phone: '', role: 'Staff' });
@@ -126,8 +128,10 @@ function Attend() {
   return (
     <div className="attend-container">
       {/* Add Employee Section */}
+      <span onClick={() => { navigate("/admin/profile") }} className="arrow">⬅ <h6>Back to Profile</h6></span>
       <div className="section-card">
         <h2>Add New Employee</h2>
+       
         <form onSubmit={handleAddEmployee} className="employee-form">
           <input
             type="text"

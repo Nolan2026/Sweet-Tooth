@@ -39,7 +39,7 @@ function App() {
         <Route path="/admin/bill" element={<ProtectedRoute><Bill /></ProtectedRoute>} />
         <Route path="/admin/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
         <Route path="/admin/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
-        <Route path="/admin/admin-profile" element={<ProtectedRoute><AdminProfile /></ProtectedRoute>} />
+        <Route path="/admin/profile" element={<ProtectedRoute><AdminProfile /></ProtectedRoute>} />
         <Route path="/admin/uploads" element={<ProtectedRoute><UploadTest /></ProtectedRoute>} />
         <Route path="/admin/shipLabel" element={<ProtectedRoute><OrderLabel /></ProtectedRoute>} />
         <Route path="/admin/inventory" element={<ProtectedRoute><Inventory /></ProtectedRoute>} />

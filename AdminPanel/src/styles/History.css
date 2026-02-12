@@ -1,23 +1,48 @@
-/* Header Style */
+/* ============================================
+   MODERN HISTORY PAGE
+   ============================================ */
+
 .billHead {
   text-align: center;
   font-size: 2rem;
-  margin: 20px 0;
-  color: #333;
+  margin: 2rem 0;
+  color: var(--text-primary);
+  font-weight: 800;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.arrow {
+  font-size: 20px;
+  padding: 0;
+  margin-left: 90px;
+  cursor: pointer;
+}
+
+h6 {
+  display: inline;
+  margin-bottom: 20px;
 }
 
 /* Filters Section */
 .filters-section {
   display: flex;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: flex-start;
   gap: 1.5rem;
   margin: 0 auto 2rem;
   padding: 1.5rem;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: var(--bg-card);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-md);
   flex-wrap: wrap;
-  align-items: end;
+  align-items: flex-end;
+  max-width: 1400px;
+  /* Increased width */
+  width: 95%;
+  /* Responsive width */
 }
 
 .filter-group {
@@ -28,191 +53,266 @@
 
 .filter-group label {
   font-weight: 600;
-  color: #4a5568;
-  font-size: 0.9rem;;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .filter-group select,
 .filter-group input {
-  padding: 0.75rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
   font-size: 1rem;
-  min-width: 100px;
+  min-width: 150px;
+  background: var(--bg-light);
+  transition: all var(--transition-base);
+  color: var(--text-primary);
+}
+
+.filter-group select:focus,
+.filter-group input:focus {
+  border-color: var(--primary-dark);
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+  background: var(--bg-card);
+  outline: none;
 }
 
 .apply-filter-btn {
   padding: 0.75rem 1.5rem;
-  background-color: #4299e1;
-  color: white;
+  background: var(--accent-blue);
+  color: var(--text-white);
   border: none;
-  border-radius: 6px;
+  border-radius: var(--border-radius-sm);
   cursor: pointer;
-  font-weight: 600;
-  height: 42px;
-  margin-bottom: 0px !important;
-  /* Override generic button margin */
+  font-weight: 700;
+  height: 46px;
+  transition: all var(--transition-base);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 .apply-filter-btn:hover {
-  background-color: #3182ce;
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+}
+
+.apply-filter-btn:active {
+  transform: translateY(0);
 }
 
 /* Table Wrapper */
 .bill-table {
   margin: 0 auto;
-  width: 98%;
-  margin-left: 270px;
-  max-width: 1200px;
-  padding: 0 10px;
+  width: 95%;
+  max-width: 1400px;
+  padding: 0 1rem;
   box-sizing: border-box;
+  overflow-x: auto;
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Table Style */
 table {
   width: 100%;
-  border-collapse: collapse;
-  border-radius: 8px 8px 0 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--bg-card);
   overflow: hidden;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Header Cells */
 thead th {
-  background-color: rgb(238, 189, 116);
-  padding: 12px;
-  font-weight: bold;
-  width: 20px;
+  background: var(--bg-secondary);
+  color: var(--text-white);
+  padding: 1rem;
+  font-weight: 700;
   text-align: center;
-  border-bottom: 2px solid #ccc;
-  border: 2px solid rgb(32, 34, 32);
+  border-bottom: 2px solid var(--border-color);
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+thead th:first-child {
+  border-top-left-radius: var(--border-radius-md);
+}
+
+thead th:last-child {
+  border-top-right-radius: var(--border-radius-md);
 }
 
 .today {
-  width: 100px;
+  width: 120px;
 }
 
 /* Body Cells */
 tbody td {
-  border: 2px solid rgb(23, 26, 23);
-  padding: 10px;
+  border-bottom: 1px solid var(--border-color);
+  padding: 1rem;
   text-align: center;
-  border-bottom: 1px solid #ddd;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
 }
 
 /* Alternating Row Colors */
 tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
+  background-color: var(--bg-light);
+}
+
+tbody tr:hover {
+  background-color: #f1f5f9;
 }
 
 /* Button Styling */
 button {
-  padding: 6px 12px;
-  margin: 4px;
+  padding: 0.5rem 1rem;
+  margin: 0.25rem;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--border-radius-sm);
   cursor: pointer;
-  font-weight: bold;
+  font-weight: 700;
+  font-size: 0.85rem;
+  transition: all var(--transition-base);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-button:hover {
-  opacity: 0.9;
+.view-btn {
+  background: var(--accent-blue);
+  color: var(--text-white);
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3);
 }
 
-button:first-child {
-  background-color: #3498db;
-  color: white;
+.view-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
 }
 
-button:last-child {
-  background-color: #e74c3c;
-  color: white;
+.delete-btn {
+  background: var(--accent-red);
+  color: var(--text-white);
+  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
+}
+
+.delete-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.4);
 }
 
 @media (max-width: 768px) {
   .bill-table {
-    padding: 0 5px;
+    margin: 0;
+    width: 100%;
+    padding: 0 0.5rem;
   }
 
   table {
-    font-size: 14px;
+    font-size: 0.85rem;
   }
 
   thead th,
   tbody td {
-    padding: 8px 4px;
+    padding: 0.75rem 0.5rem;
+  }
+
+  .filters-section {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
 
 
 /* View Bill Section */
 .bill-view {
-  position: absolute;
-  top: 13%;
-  right: 25%;
-  width: 40%;
-  max-width: 500px;
-  margin: 30px auto;
-  padding: 20px;
-  border: 1px solid darkgoldenrod;
-  border-radius: 12px;
-  background-color: #fafafa;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 600px;
+  padding: 2rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-lg);
+  z-index: 1000;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .bill-view h3 {
-  font-weight: bold;
-  font-size: 20px;
-  font-family: 'Times New Roman', Times, serif;
-  margin-bottom: 10px;
-  color: mediumseagreen;
+  font-weight: 800;
+  font-size: 1.5rem;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: var(--primary-dark);
+  text-align: center;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 1rem;
 }
 
 .exit {
   position: absolute;
-  top: 10px;
-  right: 30px;
-  color: black;
+  top: 1rem;
+  right: 1.5rem;
+  color: var(--text-secondary);
   font-weight: bold;
-  font-size: 30px;
+  font-size: 1.5rem;
   cursor: pointer;
+  transition: color var(--transition-base);
 }
 
-span {
-  color: black;
-  margin-right: 20px;
+.exit:hover {
+  color: var(--accent-red);
 }
 
 .bill-view p {
-  margin: 6px 0;
-  color: #e74c3c;
-  font-weight: bold;
-  font-family: sans-serif;
+  margin: 0.75rem 0;
+  color: var(--text-primary);
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem;
+  background: var(--bg-light);
+  border-radius: var(--border-radius-sm);
+}
+
+.bill-view span {
+  color: var(--text-secondary);
+  margin-right: 1rem;
+  font-weight: 400;
 }
 
 /* Detailed Bill Table */
 .view-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 15px;
-  border-radius: 5px 5px 0 0;
+  margin-top: 1.5rem;
+  border-radius: var(--border-radius-sm);
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .view-table th,
 .view-table td {
-  padding: 10px;
+  padding: 0.875rem;
   text-align: center;
-  border: 1px solid black;
+  border: 1px solid var(--border-color);
 }
 
 .view-table th {
-  background-color: lightblue;
-  color: #222;
-  font-weight: bold;
-  font-family: monospace;
+  background: var(--bg-tertiary);
+  color: var(--text-white);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.8rem;
 }
 
 .view-table tr:nth-child(even) {
-  background-color: gainsboro;
+  background: var(--bg-light);
 }

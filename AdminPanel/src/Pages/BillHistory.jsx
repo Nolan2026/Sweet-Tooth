@@ -3,6 +3,7 @@ import api from '../api/axios';
 import '../styles/History.css';
 import { useToast } from '../Context/ToastContext';
 import { useConfirm } from '../Context/ConfirmContext';
+import { useNavigate } from 'react-router-dom';
 
 function BillHistory() {
   const { showToast } = useToast();
@@ -16,6 +17,8 @@ function BillHistory() {
     endDate: '',
     paymentMode: ''
   });
+
+  const navigate = useNavigate();
 
   const fetchBills = async () => {
     try {
@@ -73,6 +76,7 @@ function BillHistory() {
       <h2 className="billHead">Billing History of {profile?.business_name && profile.business_name !== "" ? profile.business_name : "Sweet Tooth"}</h2>
 
       {/* Filters */}
+      <span onClick={() => { navigate("/admin/bill") }} className="arrow">⬅ <h6>Back to Billing</h6></span>
       <div className="filters-section">
         <div className="filter-group">
           <label>Payment Mode:</label>

@@ -3,6 +3,7 @@ import api from "../api/axios.js";
 import "../styles/AdminProfile.css";
 import { useToast } from "../Context/ToastContext";
 import { useConfirm } from "../Context/ConfirmContext";
+import { Link } from "react-router-dom";
 
 const BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5016";
 
@@ -122,7 +123,14 @@ export default function AdminProfile() {
     return (
         <div className="admin-container">
             <form onSubmit={submit}>
-                <h2>Admin Profile Settings</h2>
+                <div className="heads">
+                    <h2>Admin Profile Settings</h2>
+                    <div className="nav-btn">
+                        <Link to={"/admin/messages"} > <span className="nav-admin">Message</span></Link>
+                        <Link to={"/admin/attend"} > <span className="nav-admin">Attendence</span></Link>
+                        <Link to={"/admin/label"} > <span className="nav-admin">Labels</span></Link>
+                    </div>
+                </div>
 
                 <div className="form-grid">
                     <div className="input-group">
