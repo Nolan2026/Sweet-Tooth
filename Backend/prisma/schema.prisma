@@ -40,13 +40,14 @@ model Order {
 }
 
 model Item {
-  id           Int     @id @default(autoincrement())
-  category     String  @db.VarChar(20)
-  item_name    String  @db.VarChar(50)
-  price        Int
-  image_url    String?
-  availability Boolean @default(true)
-  kilo_grams   Boolean @default(true)
+  id          Int     @id @default(autoincrement())
+  category    String  @db.VarChar(20)
+  item_name   String  @db.VarChar(50)
+  price       Int
+  image_url   String?
+  isavailable Boolean @default(true)
+  iskilo      Boolean @default(true)
+  isbill      Boolean @default(false)
 }
 
 model Contact {

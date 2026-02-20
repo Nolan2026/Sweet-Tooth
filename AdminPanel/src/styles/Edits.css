@@ -24,6 +24,18 @@
     background: var(--primary-gradient);
 }
 
+.edit-image-preview{
+    border: 2px solid black;
+    align-self: center;
+    height: 300px;
+    width: 300px;
+}
+
+.edt-btn{
+    justify-content: center;
+    display: flex;
+}
+
 .edit-container h3 {
     text-align: center;
     margin-bottom: 2rem;

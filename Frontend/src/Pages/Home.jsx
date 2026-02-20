@@ -8,7 +8,7 @@ const ProductCard = ({ item }) => {
   const [selectedWeight, setSelectedWeight] = useState(1);
   const [added, setAdded] = useState(false);
   const price = Math.round(item.price * selectedWeight);
-  const isOutOfStock = !item.availability;
+  const isOutOfStock = !item.isavailable;
 
   // Use the same base as API for images
   const API_BASE = api.defaults.baseURL;
@@ -48,13 +48,13 @@ const ProductCard = ({ item }) => {
       <div className="product-info">
         <h4 className="product-name">{item.item_name}</h4>
         <p className="dynamic-price">{formatPrice(price)}</p>
-        {item.kilo_grams ?
+        {item.iskilo ?
           <div className="weight-selector-bar">
             {weights.map((w) => (
               <button
                 key={w.label}
                 className={`weight-unit-btn ${selectedWeight === w.value ? 'active' : ''}`}
-                onClick={() => setSelectedWeight(item.kilo_grams ? w.value : 2)}
+                onClick={() => setSelectedWeight(item.iskilo ? w.value : 2)}
                 disabled={isOutOfStock}
               >
                 {w.label}

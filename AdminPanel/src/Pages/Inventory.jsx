@@ -12,7 +12,7 @@ export default function Inventory() {
   const [items, setItems] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editedPrice, setEditedPrice] = useState("");
-  const [availability, setAvailability] = useState(true);
+  const [isavailable, setIsAvailable] = useState(true);
   const [newItem, setNewItem] = useState({
     category: "",
     item_name: "",
@@ -20,12 +20,31 @@ export default function Inventory() {
     img_url: "",
   });
 
+
+  // Use the same base as API for images
+  const API_BASE = api.defaults.baseURL;
+
+
+  /* =========================
+     FETCH IMAGE
+  ========================= */
+  const fetchImg = async (id) => {
+    try {
+      const imgs = await api.get(`uploads/${id}`);
+      return;
+    } catch (error) {
+      console.error("Fetch error:", error);
+      showToast('Failed to fetch items', 'error');
+    }
+  }
+
+
   /* =========================
      FETCH ITEMS
   ========================= */
   const fetchItems = async () => {
     try {
-      const res = await api.get("/items");
+      const res = await api.get("/admin/inventory/items");
       setItems(res.data);
     } catch (err) {
       console.error("Fetch error:", err);
@@ -68,7 +87,7 @@ export default function Inventory() {
   ========================= */
   const handleToggleAvailability = async (id) => {
     try {
-      await api.patch(`/admin/inventory/items/${id}/availability`);
+      await api.patch(`/admin/inventory/items/${id}/isavailable`);
       fetchItems(); // Refresh the list
       showToast('Stock status updated', 'success');
     } catch (err) {
@@ -82,7 +101,7 @@ export default function Inventory() {
       {Object.entries(groupedItems).map(([category, items]) => (
         <div key={category} className="category-table">
           <h2>{category}</h2>
- 
+
           <table>
             <colgroup>
               <col style={{ width: "30%" }} />
@@ -93,6 +112,7 @@ export default function Inventory() {
 
             <thead>
               <tr>
+                <th>Images</th>
                 <th>Item</th>
                 <th>Price (₹)</th>
                 <th>Actions</th>
@@ -100,28 +120,29 @@ export default function Inventory() {
               </tr>
             </thead>
 
-            <tbody>
+            <tbody className="invtable">
               {items.map((item) => (
                 <tr key={item.id}>
-                  <td>{item.item_name}</td>
-                  <td>{item.price}</td>
-                  <td>
+                  <td className="invImg"><img src={`${API_BASE}${item.image_url}`} alt={item.item_name} /></td>
+                  <td className="tabData">{item.item_name}</td>
+                  <td className="tabData">{item.price}</td>
+                  <td className="tabData">
                     <button onClick={() => navigate(`/admin/edit/${item.id}`)} >Edit</button>
                     <button onClick={() => handleDelete(item.id)}>
                       Delete
                     </button>
                   </td>
-                  <td>
+                  <td className="tabData">
                     <label className="toggle-switch">
                       <input
                         type="checkbox"
-                        checked={item.availability}
+                        checked={item.isavailable}
                         onChange={() => handleToggleAvailability(item.id)}
                       />
                       <span className="toggle-slider"></span>
                     </label>
-                    <span className={item.availability ? 'stock-text available' : 'stock-text unavailable'}>
-                      {item.availability ? 'In Stock' : 'Out of Stock'}
+                    <span className={item.isavailable ? 'stock-text available' : 'stock-text unavailable'}>
+                      {item.isavailable ? 'In Stock' : 'Out of Stock'}
                     </span>
                   </td>
                 </tr>

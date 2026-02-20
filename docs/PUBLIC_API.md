@@ -102,7 +102,8 @@ Retrieve the complete product catalog.
     "item_name": "Gulab Jamun",
     "price": 200,
     "image_url": "/uploads/image-123.jpg",
-    "availability": true
+    "isavailable": true,
+    "iskilo": true
   }
 ]
 ```
@@ -125,7 +126,8 @@ Get information about a specific product.
   "item_name": "Gulab Jamun",
   "price": 200,
   "image_url": "/uploads/image-123.jpg",
-  "availability": true
+  "isavailable": true,
+  "iskilo": true
 }
 ```
 

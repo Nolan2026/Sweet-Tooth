@@ -7,7 +7,7 @@ function Label() {
   const [items, setItems] = useState([]);
   const [selectedIds, setSelectedIds] = useState(new Set());
   const navigate = useNavigate();
-  
+
   const handlePrint = () => {
     if (selectedIds.size === 0) {
       alert("Please select at least one label to print.");
@@ -19,7 +19,7 @@ function Label() {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const res = await api.get("/items");
+        const res = await api.get("/admin/inventory/items");
         setItems(res.data);
       } catch (error) {
         console.error("Error fetching items", error);
@@ -68,7 +68,7 @@ function Label() {
               {selectedIds.has(item.id) ? "✓" : ""}
             </div>
             <h2 className="label-name">{item.item_name}</h2>
-            <p className="label-price">₹{item.price} / {item.kilo_grams ? "kg" : "pcs"}</p>
+            <p className="label-price">₹{item.price} / {item.iskilo ? "kg" : "pcs"}</p>
           </div>
         ))}
       </div>

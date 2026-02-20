@@ -9,7 +9,9 @@ function Edit() {
 
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
-  const [availability, setAvailability] = useState(true);
+  const [isavailable, setIsavailable] = useState(true);
+  const [iskilo, setIskilo] = useState(true);
+  const [isbill, setIsbill] = useState(false);
 
   const [existingImage, setExistingImage] = useState(""); // 🔥 string
   const [newImage, setNewImage] = useState(null);          // 🔥 File
@@ -27,7 +29,9 @@ function Edit() {
 
         setName(res.data.item_name);
         setPrice(res.data.price);
-        setAvailability(res.data.availability ?? true);
+        setIsavailable(res.data.isavailable ?? true);
+        setIskilo(res.data.iskilo ?? true);
+        setIsbill(res.data.isbill ?? false);
         setExistingImage(res.data.image_url || "");
 
         setLoading(false);
@@ -48,7 +52,9 @@ function Edit() {
       const formData = new FormData();
       formData.append("item_name", name);
       formData.append("price", Number(price));
-      formData.append("availability", availability);
+      formData.append("isavailable", isavailable);
+      formData.append("iskilo", iskilo);
+      formData.append("isbill", isbill);
 
       // ✅ send image ONLY if user selected new one
       if (newImage) {
@@ -122,30 +128,78 @@ function Edit() {
           </div>
         </div>
 
-        <div className="radio-group">
-          <label>
-            <input
-              type="radio"
-              checked={availability === true}
-              onChange={() => setAvailability(true)}
-            />
-            Available
-          </label>
-
-          <label>
-            <input
-              type="radio"
-              checked={availability === false}
-              onChange={() => setAvailability(false)}
-            />
-            Out of Stock
-          </label>
+        <div className="radio-group-container">
+          <label>Stock Availability:</label>
+          <div className="radio-group">
+            <label>
+              <input
+                type="radio"
+                checked={isavailable === true}
+                onChange={() => setIsavailable(true)}
+              />
+              Available
+            </label>
+            <label>
+              <input
+                type="radio"
+                checked={isavailable === false}
+                onChange={() => setIsavailable(false)}
+              />
+              Out of Stock
+            </label>
+          </div>
         </div>
 
-        <button type="submit">Update Item</button>
-        <button type="button" onClick={() => navigate("/admin/inventory")}>
-          Cancel
-        </button>
+        <div className="radio-group-container">
+          <label>Price Type:</label>
+          <div className="radio-group">
+            <label>
+              <input
+                type="radio"
+                checked={iskilo === true}
+                onChange={() => setIskilo(true)}
+              />
+              Per Kilo
+            </label>
+            <label>
+              <input
+                type="radio"
+                checked={iskilo === false}
+                onChange={() => setIskilo(false)}
+              />
+              Fixed Price
+            </label>
+          </div>
+        </div>
+
+        <div className="radio-group-container">
+          <label>Usage Type:</label>
+          <div className="radio-group">
+            <label>
+              <input
+                type="radio"
+                checked={isbill === false}
+                onChange={() => setIsbill(false)}
+              />
+              Home & Billing
+            </label>
+            <label>
+              <input
+                type="radio"
+                checked={isbill === true}
+                onChange={() => setIsbill(true)}
+              />
+              Billing Only
+            </label>
+          </div>
+        </div>
+        <div className="edt-btn">
+          <button type="submit">Update Item</button>
+          <button type="button" onClick={() => navigate("/admin/inventory")}>
+            Cancel
+          </button>
+        </div>
+
       </form>
     </div>
   );

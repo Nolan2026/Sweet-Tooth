@@ -167,8 +167,9 @@ Stores product catalog.
 | item_name    | VARCHAR(50) | NOT NULL          | Product name                   |
 | price        | INT         | NOT NULL          | Price per kg in rupees         |
 | image_url    | TEXT        | NULLABLE          | Path to product image          |
-| availability | BOOLEAN     | DEFAULT TRUE      | In stock status                |
-| kilo_grams   | BOOLEAN     | DEFAULT TRUE      | Priced per kg                  |
+| isavailable  | BOOLEAN     | DEFAULT TRUE      | In stock status                |
+| iskilo       | BOOLEAN     | DEFAULT TRUE      | Priced per kg                  |
+| isbill       | BOOLEAN     | DEFAULT FALSE     | Billing only status (no home)  |
 
 **Categories:**
 - Regular
@@ -183,8 +184,9 @@ Stores product catalog.
 - Recommended: `category`, `availability`
 
 **Notes:**
-- `price` is per kilogram (or per piece if `kilo_grams = false`)
+- `price` is per kilogram (or per piece if `iskilo = false`)
 - Frontend calculates prices for 250g, 500g, 750g, 1kg options
+- If `isbill = true`, item only appears in admin billing, not on customer homepage
 
 ---
 
@@ -435,7 +437,8 @@ const orders = await prisma.order.findMany({
 const items = await prisma.item.findMany({
     where: {
         category: 'MilkSweets',
-        availability: true
+        isavailable: true,
+        isbill: false
     },
     orderBy: { item_name: 'asc' }
 });

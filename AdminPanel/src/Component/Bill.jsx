@@ -25,7 +25,7 @@ export default function Bill() {
   const selectedItemid = items.find(
     item => item.id === Number(selectedItem)
   );
-  const isKilo = selectedItemid?.kilo_grams === true;
+  const isKilo = selectedItemid?.iskilo === true;
 
 
   // Fetch all items from database
@@ -71,7 +71,7 @@ export default function Bill() {
     if (!item) return;
 
     const price = item.price;
-    const subtotal = price * (item.kilo_grams ? quantity / 1000 : quantity);
+    const subtotal = price * (item.iskilo ? quantity / 1000 : quantity);
 
     const newItem = {
       itemId: item.id,
@@ -167,8 +167,8 @@ export default function Bill() {
             {Object.entries(groupedItems).map(([category, categoryItems]) => (
               <optgroup key={category} label={category}>
                 {categoryItems.map(item => (
-                  <option key={item.id} value={item.id} disabled={!item.availability}>
-                    {item.item_name} - ₹{item.price}/kg {!item.availability && '(Out of Stock)'}
+                  <option key={item.id} value={item.id} disabled={!item.isavailable}>
+                    {item.item_name} - ₹{item.price}{item.iskilo ? "/kg" : ""} {!item.isavailable && '(Out of Stock)'}
                   </option>
                 ))}
               </optgroup>
@@ -184,7 +184,7 @@ export default function Bill() {
               className="grams-input"
               step="0.1"
             />
-            
+
             <div className="quick-grams">
               {(isKilo ? PRESET_GRAMS : Qty).map((g) => (
                 <button

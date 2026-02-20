@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
 import '../styles/Coupons.css';
+import { useConfirm } from '../Context/ConfirmContext';
+import { useToast } from '../Context/ToastContext';
 
 const Coupons = () => {
+    const confirm = useConfirm();
+    const { showToast } = useToast();
     const [coupons, setCoupons] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -38,8 +42,9 @@ const Coupons = () => {
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm('Are you sure you want to delete this coupon?')) return;
+        const isConform = await confirm("Delete Coupan", "Are You Sure Delete Coupan");
         try {
+            if(!isConform) return;
             await api.delete(`/admin/coupons/${id}`);
             fetchCoupons();
         } catch (err) {
@@ -150,7 +155,8 @@ const Coupons = () => {
                             className="coupon-code"
                             onClick={() => {
                                 navigator.clipboard.writeText(coupon.code);
-                                alert(`Coupon ${coupon.code} copied to clipboard!`);
+                                showToast(`Coupon ${coupon.code} copied to clipboard!`)
+                                // alert(`Coupon ${coupon.code} copied to clipboard!`);
                             }}
                             title="Click to copy"
                             style={{ cursor: 'pointer' }}

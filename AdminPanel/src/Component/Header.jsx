@@ -69,7 +69,7 @@ function Header() {
           />
         ) : (
           <h2 className="gradient-text">
-            {profile?.business_name && profile.business_name !== "" ? `${profile.business_name}` : "Sweet Tooth"}
+            {profile?.business_name && profile.business_name !== "" ? `${profile.business_name} Admin` : "Sweet Tooth"}
           </h2>
         )}
       </div>

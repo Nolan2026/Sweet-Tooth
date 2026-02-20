@@ -7,13 +7,16 @@ const router = express.Router();
 // get all items
 router.get("/", async (req, res) => {
     try {
-        const items = await prisma.item.findMany();
+        const items = await prisma.item.findMany({
+            where: { isbill: false }
+        });
         res.status(200).json(items);
     } catch (error) {
         res.status(500).json({ error: error.message })
     }
 });
 
+// get item by id
 router.get("/:id", async (req, res) => {
     const { id } = req.params;
 
@@ -48,6 +51,9 @@ router.post("/", img.single("image"), async (req, res) => {
                 item_name,
                 price: parseInt(price),
                 image_url,
+                isavailable: req.body.isavailable === "true" || req.body.isavailable === true,
+                iskilo: req.body.iskilo === "true" || req.body.iskilo === true,
+                isbill: req.body.isbill === "true" || req.body.isbill === true,
             },
         });
 
@@ -63,7 +69,7 @@ router.post("/", img.single("image"), async (req, res) => {
 // Update item by ID
 router.put("/:id", img.single("image"), async (req, res) => {
     const { id } = req.params;
-    const { item_name, price, availability } = req.body;
+    const { item_name, price, isavailable, iskilo, isbill } = req.body;
 
     // 🔥 Build update object safely
     const data = {};
@@ -84,9 +90,19 @@ router.put("/:id", img.single("image"), async (req, res) => {
         data.price = parsedPrice;
     }
 
-    if (availability !== undefined) {
-        data.availability =
-            availability === "true" || availability === true;
+    if (isavailable !== undefined) {
+        data.isavailable =
+            isavailable === "true" || isavailable === true;
+    }
+
+    if (iskilo !== undefined) {
+        data.iskilo =
+            iskilo === "true" || iskilo === true;
+    }
+
+    if (isbill !== undefined) {
+        data.isbill =
+            isbill === "true" || isbill === true;
     }
 
     // ✅ Only update image if new file uploaded

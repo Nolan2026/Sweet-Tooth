@@ -18,7 +18,7 @@ router.get("/items", async (req, res) => {
 });
 
 // Toggle item availability
-router.patch("/items/:id/availability", async (req, res) => {
+router.patch("/items/:id/isavailable", async (req, res) => {
     try {
         const { id } = req.params;
 
@@ -32,7 +32,7 @@ router.patch("/items/:id/availability", async (req, res) => {
 
         const updatedItem = await prisma.item.update({
             where: { id: parseInt(id) },
-            data: { availability: !currentItem.availability }
+            data: { isavailable: !currentItem.isavailable }
         });
 
         res.json({

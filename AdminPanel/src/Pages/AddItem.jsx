@@ -16,6 +16,9 @@ function AddItem() {
         category: "",
         item_name: "",
         price: "",
+        isavailable: true,
+        iskilo: true,
+        isbill: false,
     });
 
     const [image, setImage] = useState(null);
@@ -32,7 +35,8 @@ function AddItem() {
             setIsOther(true);
             setFormData((prev) => ({ ...prev, category: "" }));
         } else {
-            setFormData((prev) => ({ ...prev, [name]: value }));
+            const val = e.target.type === "checkbox" ? e.target.checked : value;
+            setFormData((prev) => ({ ...prev, [name]: val }));
         }
     };
 
@@ -50,6 +54,9 @@ function AddItem() {
             data.append("category", formData.category);
             data.append("item_name", formData.item_name);
             data.append("price", formData.price);
+            data.append("isavailable", formData.isavailable);
+            data.append("iskilo", formData.iskilo);
+            data.append("isbill", formData.isbill);
             data.append("image", image); // 🔥 MUST match multer field
 
             const response = await axios.post(
@@ -64,7 +71,14 @@ function AddItem() {
 
             if (response.status === 201) {
                 setStatus({ type: "success", message: "Item added successfully!" });
-                setFormData({ category: "", item_name: "", price: "" });
+                setFormData({
+                    category: "",
+                    item_name: "",
+                    price: "",
+                    isavailable: true,
+                    iskilo: true,
+                    isbill: false
+                });
                 setImage(null);
                 setIsOther(false);
             }
@@ -152,6 +166,38 @@ function AddItem() {
                             required
                         />
                     </div>
+
+                    {/* Options */}
+                    <div className="options-group" style={{ display: 'flex', gap: '20px', margin: '15px 0' }}>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                            <input
+                                type="checkbox"
+                                name="isavailable"
+                                checked={formData.isavailable}
+                                onChange={(e) => setFormData(prev => ({ ...prev, isavailable: e.target.checked }))}
+                            />
+                            Available
+                        </label>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                            <input
+                                type="checkbox"
+                                name="iskilo"
+                                checked={formData.iskilo}
+                                onChange={(e) => setFormData(prev => ({ ...prev, iskilo: e.target.checked }))}
+                            />
+                            Per Kilo
+                        </label>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                            <input
+                                type="checkbox"
+                                name="isbill"
+                                checked={formData.isbill}
+                                onChange={(e) => setFormData(prev => ({ ...prev, isbill: e.target.checked }))}
+                            />
+                            Billing Only
+                        </label>
+                    </div>
+
 
                     {/* Image Upload */}
                     <div className="form-group">
