@@ -194,9 +194,9 @@ function Edit() {
           </div>
         </div>
         <div className="edt-btn">
-          <button type="submit">Update Item</button>
+          <button type="submit">💾 Update Item</button>
           <button type="button" onClick={() => navigate("/admin/inventory")}>
-            Cancel
+            ✖️ Cancel
           </button>
         </div>
 

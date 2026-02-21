@@ -7,13 +7,15 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  username  String    @unique @db.VarChar(30)
-  email     String    @unique @db.VarChar(50)
-  phone     String?   @db.VarChar(15)
-  password  String    @db.Text
-  addresses Address[]
-  orders    Order[]
+  id               Int       @id @default(autoincrement())
+  username         String    @unique @db.VarChar(30)
+  email            String    @unique @db.VarChar(50)
+  phone            String?   @db.VarChar(15)
+  password         String    @db.Text
+  resetToken       String?   @db.Text
+  resetTokenExpiry DateTime?
+  addresses        Address[]
+  orders           Order[]
 }
 
 model Address {

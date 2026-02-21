@@ -31,6 +31,20 @@ function Header() {
     setIsMobileMenuOpen(false);
   }, [location]);
 
+  // Prevent background scrolling when menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMobileMenuOpen]);
+
   const handleLogout = () => {
     dispatch(logout());
     navigate('/admin/login');
@@ -54,6 +68,7 @@ function Header() {
     // { path: "/admin/attend", label: "Attendance", icon: "📅" },
     // { path: "/admin/label", label: "Labels", icon: "🔖" },
     // { path: "/admin/history", label: "History", icon: "📊" },
+    // { path: "/admin/media", label: "Media", icon: "🖼️" },
     { path: "/admin/add-item", label: "Add Item", icon: "➕" },
     { path: "/admin/coupons", label: "Coupons", icon: "🎫" },
   ];
@@ -98,7 +113,6 @@ function Header() {
           </Link>
         ))}
         <button onClick={handleLogout} className="logout-btn">
-          <span className="nav-icon">🚪</span>
           <span className="nav-label">Logout</span>
         </button>
       </nav>

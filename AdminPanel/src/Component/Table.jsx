@@ -92,32 +92,34 @@ export default function Tab({ items, total, date, customerName, phoneNumber, pay
         <p>Customer Details: {customerName || 'Walk-in'} | {phoneNumber || 'N/A'} | Payment: {paymentMethod}</p>
       </div>
 
-      <table className="billTable">
-        <thead>
-          <tr className='headline'>
-            <th>Item Name</th>
-            <th>Quantity</th>
-            <th>Price (₹)</th>
-            <th>Amount (₹)</th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.map((item, index) => (
-            <tr key={index}>
-              <td>{item.itemName || item.name}</td>
-              <td>{item.quantity} {item.quantity > 50 ? 'gm' : 'pcs'}</td>
-              <td>₹{item.price}</td>
-              <td>₹{item.subtotal || item.price}</td>
+      <div className="table-responsive">
+        <table className="billTable">
+          <thead>
+            <tr className='headline'>
+              <th>Item Name</th>
+              <th>Quantity</th>
+              <th>Rate (₹)</th>
+              <th>Amount (₹)</th>
             </tr>
-          ))}
-        </tbody>
-        <tfoot>
-          <tr className='total'>
-            <td colSpan="3"><strong>Total Amount</strong></td>
-            <td><strong>₹{total}</strong></td>
-          </tr>
-        </tfoot>
-      </table>
+          </thead>
+          <tbody>
+            {items.map((item, index) => (
+              <tr key={index}>
+                <td>{item.itemName || item.name}</td>
+                <td>{item.quantity} {item.quantity > 50 ? 'gm' : 'pcs'}</td>
+                <td>₹{item.price}</td>
+                <td>₹{item.subtotal || item.price}</td>
+              </tr>
+            ))}
+          </tbody>
+          <tfoot>
+            <tr className='total'>
+              <td colSpan="3"><strong>Total Amount</strong></td>
+              <td><strong>₹{total}</strong></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
 
       <div className="bill-footer">
         <p>Thank you for shopping with us!</p>
@@ -125,14 +127,22 @@ export default function Tab({ items, total, date, customerName, phoneNumber, pay
       </div>
 
       <div className='btns'>
-        <button onClick={handlePrint} className="print-btn">Print Bill</button>
+        <button onClick={handlePrint} className="print-btn">
+          <span>🖨️</span> Print Bill
+        </button>
 
-        <button className='undo' disabled={items.length === 0} onClick={handleUndo}>Undo Item</button>
+        <button className='undo' disabled={items.length === 0} onClick={handleUndo}>
+          <span>↩️</span> Undo Item
+        </button>
 
         <button onClick={clr}
-          disabled={items.length === 0} className='newbill'>New Bill</button>
+          disabled={items.length === 0} className='newbill'>
+          <span>✨</span> New Bill
+        </button>
 
-        <button className='history' onClick={Move}>History</button>
+        <button className='history' onClick={Move}>
+          <span>⏳</span> History
+        </button>
       </div>
 
     </div>

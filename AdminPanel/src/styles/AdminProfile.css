@@ -20,26 +20,30 @@
     border-radius: 5px;
     align-items: center;
     justify-content: space-between;
-  
+
 }
-a{
+
+a {
     text-decoration: none;
 }
-.nav-btn{
+
+.nav-btn {
     display: flex;
     gap: 2rem;
 }
 
-.nav-admin{
+.nav-admin {
     background-color: whitesmoke;
     padding: 5px;
     border-radius: 5px;
     font-weight: bold;
     font-family: cursive;
 }
-.nav-admin:hover{
+
+.nav-admin:hover {
     background-color: rgb(46, 212, 218);
 }
+
 .admin-container h2 {
     font-size: 2rem;
     background: var(--primary-gradient);
@@ -212,6 +216,10 @@ a{
     .admin-container {
         padding: 1.5rem;
         margin: 1rem;
+    }
+
+    .heads {
+        flex-direction: column;
     }
 
     .form-grid {

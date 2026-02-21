@@ -5,7 +5,7 @@ import api from "../api/axios";
 import '../styles/Cart.css';
 
 function Cart() {
-  const { cartItems, removeFromCart, updateQuantity, getCartTotal } = useCart();
+  const { cartItems, removeFromCart, updateQuantity, updateItemWeight, getCartTotal } = useCart();
   const navigate = useNavigate();
   const isLoggedIn = !!localStorage.getItem('userToken');
   const [couponCode, setCouponCode] = React.useState('');
@@ -81,9 +81,21 @@ function Cart() {
                   </div>
                   <div className="cart-item-actions">
                     <div className="quantity-controls">
-                      <button onClick={() => updateQuantity(item.id, item.selectedWeight, -1)}>-</button>
-                      <span>{item.quantity}</span>
-                      <button onClick={() => updateQuantity(item.id, item.selectedWeight, 1)}>+</button>
+                      <button onClick={() => {
+                        if (item.iskilo) {
+                          updateItemWeight(item.id, item.selectedWeight, -1);
+                        } else {
+                          updateQuantity(item.id, item.selectedWeight, -1);
+                        }
+                      }}>-</button>
+                      <span>{item.iskilo ? `${item.selectedWeight < 1 ? item.selectedWeight * 1000 : item.selectedWeight}${item.selectedWeight < 1 ? 'g' : 'kg'}` : item.quantity}</span>
+                      <button onClick={() => {
+                        if (item.iskilo) {
+                          updateItemWeight(item.id, item.selectedWeight, 1);
+                        } else {
+                          updateQuantity(item.id, item.selectedWeight, 1);
+                        }
+                      }}>+</button>
                     </div>
                     <button
                       className="remove-btn"
@@ -104,9 +116,9 @@ function Cart() {
         <aside className="cart-summary-section">
           <h2 className="summary-title">Order Summary</h2>
 
-          <div className="summary-items-list" style={{ marginBottom: '1.5rem', maxHeight: '200px', overflowY: 'auto', paddingRight: '5px' }}>
+          <div className="summary-items-list">
             {cartItems.map((item) => (
-              <div key={`${item.id}-${item.selectedWeight}`} className="summary-row" style={{ fontSize: '0.9rem', marginBottom: '0.5rem', color: '#555' }}>
+              <div key={`${item.id}-${item.selectedWeight}`} className="summary-item-row">
                 <span>{item.item_name} (x{item.quantity})</span>
                 <span>{formatPrice(item.priceAtSelectedWeight * item.quantity)}</span>
               </div>
@@ -124,18 +136,18 @@ function Cart() {
             </div>
           </div>
 
-          <div className="coupon-section" style={{ margin: '1rem 0', padding: '1rem 0', borderTop: '1px solid #eee', borderBottom: '1px solid #eee' }}>
-            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+          <div className="coupon-section">
+            <div className="coupon-input-group">
               <input
                 type="text"
                 placeholder="Coupon Code"
                 value={couponCode}
                 onChange={(e) => setCouponCode(e.target.value)}
-                style={{ flex: 1, padding: '0.6rem', borderRadius: '8px', border: '1px solid #ddd', fontSize: '0.85rem' }}
+                className="coupon-input"
               />
               <button
                 onClick={handleApplyCoupon}
-                style={{ padding: '0.6rem 1rem', background: '#333', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem' }}
+                className="coupon-btn"
               >
                 Apply
               </button>

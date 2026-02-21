@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
-import api from '../api/axios';
 import { useNavigate, Link } from 'react-router-dom';
+import api from '../api/axios';
 import { useToast } from '../Context/ToastContext';
 import '../styles/Login.css';
 
-const Register = () => {
+const ResetPassword = () => {
     const [formData, setFormData] = useState({
-        username: '',
         email: '',
-        password: '',
-        phone: ''
+        otp: '',
+        newPassword: '',
+        confirmPassword: ''
     });
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
     const { showToast } = useToast();
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -21,13 +21,21 @@ const Register = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (formData.newPassword !== formData.confirmPassword) {
+            return showToast("Passwords do not match", "error");
+        }
+
         setLoading(true);
         try {
-            await api.post('/auth/register', formData);
-            showToast("Admin Registered Successfully", "success");
+            const res = await api.post('/auth/reset-password', {
+                email: formData.email,
+                otp: formData.otp,
+                newPassword: formData.newPassword
+            });
+            showToast(res.data.message, "success");
             navigate('/admin/login');
         } catch (err) {
-            const msg = err.response?.data?.message || "Registration Failed";
+            const msg = err.response?.data?.message || "Reset failed";
             showToast(msg, "error");
         } finally {
             setLoading(false);
@@ -37,18 +45,8 @@ const Register = () => {
     return (
         <div className="admin-login-container">
             <div className="login-card">
-                <h2>Admin Registration</h2>
+                <h2>Reset Password</h2>
                 <form onSubmit={handleSubmit}>
-                    <div className="input-group">
-                        <label>Username</label>
-                        <input
-                            type="text"
-                            name="username"
-                            value={formData.username}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
                     <div className="input-group">
                         <label>Email</label>
                         <input
@@ -60,35 +58,46 @@ const Register = () => {
                         />
                     </div>
                     <div className="input-group">
-                        <label>Phone</label>
+                        <label>6-Digit OTP</label>
                         <input
                             type="text"
-                            name="phone"
-                            value={formData.phone}
+                            name="otp"
+                            maxLength="6"
+                            value={formData.otp}
                             onChange={handleChange}
                             required
                         />
                     </div>
                     <div className="input-group">
-                        <label>Password</label>
+                        <label>New Password</label>
                         <input
                             type="password"
-                            name="password"
-                            value={formData.password}
+                            name="newPassword"
+                            value={formData.newPassword}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="input-group">
+                        <label>Confirm Password</label>
+                        <input
+                            type="password"
+                            name="confirmPassword"
+                            value={formData.confirmPassword}
                             onChange={handleChange}
                             required
                         />
                     </div>
                     <button type="submit" disabled={loading}>
-                        {loading ? "Registering..." : "Register"}
+                        {loading ? "Resetting..." : "Update Password"}
                     </button>
                 </form>
                 <p className="auth-switch">
-                    Already have an account? <Link to="/admin/login">Login</Link>
+                    Remembered password? <Link to="/admin/login">Login</Link>
                 </p>
             </div>
         </div>
     );
 };
 
-export default Register;
+export default ResetPassword;

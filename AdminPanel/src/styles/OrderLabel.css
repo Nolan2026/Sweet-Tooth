@@ -109,78 +109,158 @@
 
 
 
+/* Selection Styles */
+.label-wrapper {
+    position: relative;
+    border: 3px solid transparent;
+    border-radius: 15px;
+    padding: 10px;
+    transition: all 0.3s ease;
+    background: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.label-wrapper.selected {
+    border-color: #4CAF50;
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.2);
+    background: #f1f8e9;
+}
+
+.label-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.label-selector input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.label-selector label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #444;
+    cursor: pointer;
+}
+
+.select-all-btn {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.85rem !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+}
+
+.print-selected-btn {
+    background: #4CAF50 !important;
+}
+
+.print-selected-btn:disabled {
+    background: #ccc !important;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.btns {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.btns button {
+    flex: 1;
+    min-width: 150px;
+}
+
 /* ===================================== */
 /* ========== PRINT STYLES ============ */
 /* ===================================== */
 
 @media print {
 
-    /* Force background colors to print */
-    * {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-        color-adjust: exact !important;
-    }
-
-    /* Hide specific non-printable areas */
-    .head,
-    .filters-section,
-    .btn,
-    .order-label-page button {
-        display: none !important;
-    }
-
-    /* Use visibility trick locally to avoid breaking other pages */
+    /* Hide everything on the body first */
     body {
         visibility: hidden;
         background: white !important;
-        margin: 0;
-        padding: 0;
     }
 
+    /* Target specifically what we want to print */
     .order-label-page,
     .order-label-page * {
         visibility: visible;
     }
 
+    /* Reset positioning for the printed content */
     .order-label-page {
-        display: block !important;
         position: absolute;
         left: 0;
         top: 0;
         width: 100%;
-        background: white;
-        padding: 0;
-        margin: 0;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: white !important;
+    }
+
+    /* Now definitively hide the UI elements we don't want in print */
+    .no-print,
+    .head,
+    .filters-section,
+    .btns,
+    .label-selector,
+    .order-label-page button {
+        display: none !important;
+        visibility: hidden !important;
+    }
+
+    /* Print Selection Logic */
+    body.print-selected-only .label-wrapper.hide-on-selected-print {
+        display: none !important;
+        visibility: hidden !important;
     }
 
     .labels-container {
-        display: block;
-        /* Fallback */
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        align-content: flex-start;
-        gap: 0;
-        margin: 0;
-        width: 100%;
-        height: auto;
-        padding: 0;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: flex-start !important;
+        gap: 0 !important;
+        visibility: visible !important;
+        width: 100% !important;
     }
 
-    .label-container {
-        page-break-inside: avoid;
-        height: 130mm !important;
-        width: 48% !important;
-        /* Matches ShippingLabel.css */
-        border: 1px solid #000;
-        margin: 0 0 4mm 0 !important;
-        /* Bottom margin only */
-        padding: 3mm !important;
-        box-shadow: none;
-        border-radius: 0;
-        transform: none !important;
-        font-size: 9pt !important;
+    .label-wrapper {
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        background: transparent !important;
+        width: 50% !important;
+        /* Exactly half for 2 columns */
+        height: 140mm !important;
+        /* Approx half of A4 height (297mm) */
+        box-sizing: border-box !important;
+        page-break-inside: avoid !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    .label-wrapper .label-container {
+        width: 95% !important;
+        /* Leave a small gap between labels */
+        height: 95% !important;
+        margin: 0 !important;
+        border: 2px solid black !important;
         box-sizing: border-box !important;
     }
 
@@ -192,13 +272,13 @@
 
 @media (max-width: 900px) {
     .order-label-page {
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column;
     }
 
     .filters-section {
         position: static;
         width: 100%;
-        max-height: none;
         margin-bottom: 2rem;
     }
 

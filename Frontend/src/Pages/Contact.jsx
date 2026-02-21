@@ -49,12 +49,12 @@ function Contact() {
       <div className="contact-grid">
         <aside className="contact-info-card">
           <div className="info-item">
-            <h3>Visit Our Flagship Store</h3>
+            <h3><span>📍</span> Visit Our Flagship Store</h3>
             <p style={{ whiteSpace: 'pre-wrap' }}>{profile?.address || "Sweet Tooth Main Road,\nNear City Center, Kurnool,\nAndhra Pradesh 518001"}</p>
           </div>
 
           <div className="info-item">
-            <h3>Talk to Our Sweet Masters</h3>
+            <h3><span>📞</span> Talk to Our Sweet Masters</h3>
             <p>
               Primary: {profile?.phone || "+91 98765 43210"}<br />
               WhatsApp: {profile?.whatsapp || "+91 98765 43210"}
@@ -62,7 +62,7 @@ function Contact() {
           </div>
 
           <div className="info-item">
-            <h3>Email & Social</h3>
+            <h3><span>📧</span> Email & Social</h3>
             <p>
               {profile?.business_email || "hello@sweettoothkurnool.com"}<br />
               {profile?.instagram_url && <span>Instagram: {profile.instagram_url.split('/').pop()}</span>}
@@ -70,7 +70,7 @@ function Contact() {
           </div>
 
           <div className="info-item">
-            <h3>Business Hours</h3>
+            <h3><span>⏰</span> Business Hours</h3>
             <p>Mon - Sat: 8:00 AM - 9:00 PM<br />Sun & Holidays: 9:00 AM - 8:00 PM</p>
           </div>
         </aside>

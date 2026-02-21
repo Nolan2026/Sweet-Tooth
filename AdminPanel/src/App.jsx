@@ -18,6 +18,9 @@ import UploadTest from './Pages/UploadTest.jsx';
 import OrderLabel from './Pages/OrderLabel.jsx';
 import AdminProfile from './Pages/AdminProfile.jsx';
 import Coupons from './Pages/Coupons';
+import ForgotPassword from './Pages/ForgotPassword';
+import ResetPassword from './Pages/ResetPassword';
+import MediaManager from './Pages/MediaManager';
 
 
 const ProtectedRoute = ({ children }) => {
@@ -49,8 +52,9 @@ function App() {
         <Route path="/admin/history" element={<ProtectedRoute><History /></ProtectedRoute>} />
         <Route path="/admin/add-item" element={<ProtectedRoute><AddItem /></ProtectedRoute>} />
         <Route path="/admin/coupons" element={<ProtectedRoute><Coupons /></ProtectedRoute>} />
-
-
+        <Route path="/admin/media" element={<ProtectedRoute><MediaManager /></ProtectedRoute>} />
+        <Route path="/admin/forgot-password" element={<ForgotPassword />} />
+        <Route path="/admin/reset-password" element={<ResetPassword />} />
         <Route path="/" element={<Navigate to="/admin" replace />} />
       </Routes>
     </Router>

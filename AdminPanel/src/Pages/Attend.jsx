@@ -69,7 +69,7 @@ function Attend() {
       showToast('Phone number must be 10 digits', 'warning');
       return;
     }
- 
+
     try {
       await api.post('/admin/attendance/employees', newEmployee);
       setNewEmployee({ name: '', phone: '', role: 'Staff' });
@@ -131,7 +131,7 @@ function Attend() {
       <span onClick={() => { navigate("/admin/profile") }} className="arrow">⬅ <h6>Back to Profile</h6></span>
       <div className="section-card">
         <h2>Add New Employee</h2>
-       
+
         <form onSubmit={handleAddEmployee} className="employee-form">
           <input
             type="text"
@@ -154,7 +154,7 @@ function Attend() {
             <option value="Manager">Manager</option>
             <option value="Helper">Helper</option>
           </select>
-          <button type="submit" className="submit-btn">Add Employee</button>
+          <button type="submit" className="submit-btn">➕ Add Employee</button>
         </form>
       </div>
 
@@ -165,33 +165,35 @@ function Attend() {
           {employees.length === 0 ? (
             <p>No employees found</p>
           ) : (
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Phone</th>
-                  <th>Role</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {employees.map(emp => (
-                  <tr key={emp.id}>
-                    <td>{emp.name}</td>
-                    <td>{emp.phone || 'N/A'}</td>
-                    <td>{emp.role}</td>
-                    <td>
-                      <button
-                        onClick={() => handleRemoveEmployee(emp.id)}
-                        className="remove-btn"
-                      >
-                        Remove
-                      </button>
-                    </td>
+            <div className="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Role</th>
+                    <th>Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {employees.map(emp => (
+                    <tr key={emp.id}>
+                      <td>{emp.name}</td>
+                      <td>{emp.phone || 'N/A'}</td>
+                      <td>{emp.role}</td>
+                      <td>
+                        <button
+                          onClick={() => handleRemoveEmployee(emp.id)}
+                          className="remove-btn"
+                        >
+                          🗑️ Remove
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       </div>
@@ -237,7 +239,7 @@ function Attend() {
             </label>
           </div>
 
-          <button type="submit" className="submit-btn">Mark Attendance</button>
+          <button type="submit" className="submit-btn">✅ Mark Attendance</button>
         </form>
       </div>
 
@@ -271,7 +273,7 @@ function Attend() {
           />
 
           <button onClick={fetchAttendance} className="fetch-btn">
-            Fetch Records
+            🔍 Fetch Records
           </button>
         </div>
 
@@ -279,28 +281,30 @@ function Attend() {
           {attendanceRecords.length === 0 ? (
             <p>No records found. Click "Fetch Records" to load data.</p>
           ) : (
-            <table className="records-table">
-              <thead>
-                <tr>
-                  <th>Employee</th>
-                  <th>Date</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {attendanceRecords.map(record => (
-                  <tr key={record.id}>
-                    <td>{record.employee.name}</td>
-                    <td>{formatDate(record.date)}</td>
-                    <td>
-                      <span className={record.isPresent ? 'status-present' : 'status-absent'}>
-                        {record.isPresent ? 'Present' : 'Absent'}
-                      </span>
-                    </td>
+            <div className="table-responsive">
+              <table className="records-table">
+                <thead>
+                  <tr>
+                    <th>Employee</th>
+                    <th>Date</th>
+                    <th>Status</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {attendanceRecords.map(record => (
+                    <tr key={record.id}>
+                      <td>{record.employee.name}</td>
+                      <td>{formatDate(record.date)}</td>
+                      <td>
+                        <span className={record.isPresent ? 'status-present' : 'status-absent'}>
+                          {record.isPresent ? 'Present' : 'Absent'}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       </div>

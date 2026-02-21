@@ -129,6 +129,7 @@ export default function AdminProfile() {
                         <Link to={"/admin/messages"} > <span className="nav-admin">Message</span></Link>
                         <Link to={"/admin/attend"} > <span className="nav-admin">Attendence</span></Link>
                         <Link to={"/admin/label"} > <span className="nav-admin">Labels</span></Link>
+                        <Link to={"/admin/media"} > <span className="nav-admin">Media</span></Link>
                     </div>
                 </div>
 

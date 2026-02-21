@@ -103,6 +103,31 @@ export const CartProvider = ({ children }) => {
         );
     };
 
+    const updateItemWeight = (itemId, currentWeight, delta) => {
+        const weightSteps = [0.25, 0.5, 1];
+        setCartItems((prevItems) => {
+            return prevItems.map((item) => {
+                if (item.id === itemId && item.selectedWeight === currentWeight && item.iskilo) {
+                    const currentIndex = weightSteps.indexOf(currentWeight);
+                    let nextIndex = currentIndex + delta;
+
+                    if (nextIndex < 0) nextIndex = 0;
+                    if (nextIndex >= weightSteps.length) nextIndex = weightSteps.length - 1;
+
+                    const newWeight = weightSteps[nextIndex];
+                    const newUnitPrice = Math.round(item.price * newWeight);
+
+                    return {
+                        ...item,
+                        selectedWeight: newWeight,
+                        priceAtSelectedWeight: newUnitPrice
+                    };
+                }
+                return item;
+            });
+        });
+    };
+
     const clearCart = () => setCartItems([]);
 
     const getCartTotal = () => {
@@ -123,6 +148,7 @@ export const CartProvider = ({ children }) => {
                 addToCart,
                 removeFromCart,
                 updateQuantity,
+                updateItemWeight,
                 clearCart,
                 getCartTotal,
                 getCartCount,

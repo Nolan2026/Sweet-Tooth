@@ -24,85 +24,87 @@
     display: flex;
     flex-wrap: wrap;
     background: var(--bg-card);
-    border: none;
-    padding: 1.5rem;
+    padding: 1.25rem 2rem;
     border-radius: var(--border-radius-md);
     box-shadow: var(--shadow-md);
     margin-bottom: 2rem;
-    gap: 1rem;
+    gap: 2rem;
     align-items: center;
-    position: sticky;
-    top: 80px;
-    z-index: 100;
     backdrop-filter: blur(10px);
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.9);
 }
 
 .filters-sections>div:first-child {
     font-size: 1.1rem;
     font-weight: 700;
-    color: var(--text-primary);
-    padding: 0.75rem 1.25rem;
-    background: var(--primary-gradient);
-    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+    padding: 0.85rem 1.5rem;
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
     color: var(--text-white);
     border-radius: var(--border-radius-sm);
-    box-shadow: var(--shadow-colored);
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    white-space: nowrap;
+}
+
+.filter-layout {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex: 1;
 }
 
 .filter-group {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    flex: 1 1 150px;
+    gap: 0.4rem;
 }
 
 .filter-group label {
-    font-weight: 600;
+    font-weight: 700;
     color: var(--text-secondary);
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .filter-group select,
 .filter-group input {
-    padding: 0.75rem 1rem;
-    border: 2px solid var(--border-color);
+    padding: 0.6rem 1rem;
+    border: 1.5px solid var(--border-color);
     border-radius: var(--border-radius-sm);
-    font-size: 1rem;
-    min-width: 150px;
-    transition: all var(--transition-base);
-    background: var(--bg-card);
+    font-size: 0.95rem;
+    min-width: 160px;
+    background: #f8fafc;
     color: var(--text-primary);
     font-family: var(--font-sans);
+    transition: all var(--transition-base);
 }
 
 .filter-group select:focus,
 .filter-group input:focus {
-    border-color: var(--primary-dark);
-    box-shadow: 0 0 0 3px rgba(90, 103, 216, 0.1);
+    border-color: #6366f1;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
     outline: none;
 }
 
 .apply-filter-btn {
-    padding: 0.75rem 1.5rem;
-    background: var(--accent-blue);
-    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--primary-dark) 100%);
+    padding: 0.85rem 2rem;
+    background: #3b82f6;
     color: var(--text-white);
     border: none;
     border-radius: var(--border-radius-sm);
     cursor: pointer;
     font-weight: 700;
     transition: all var(--transition-base);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-    font-size: 1rem;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    font-size: 0.95rem;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
 }
 
 .apply-filter-btn:hover {
     transform: translateY(-2px);
+    background: #2563eb;
     box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
 }
 
@@ -380,8 +382,14 @@
    ============================================ */
 
 @media (max-width: 1024px) {
-    .order-card {
-        margin: 0;
+    .filters-sections {
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .filter-layout {
+        gap: 1rem;
+        flex-wrap: wrap;
     }
 }
 
@@ -397,8 +405,9 @@
     /* Filters */
     .filters-sections {
         flex-direction: column;
+        align-items: stretch;
         position: static;
-        padding: 1rem;
+        gap: 1.5rem;
     }
 
     .filters-sections>div:first-child {
@@ -406,13 +415,16 @@
         text-align: center;
     }
 
-    .filter-group {
-        width: 100%;
+    .filter-layout {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
     }
 
     .filter-group select,
     .filter-group input {
         width: 100%;
+        min-width: unset;
     }
 
     .apply-filter-btn {
@@ -476,7 +488,7 @@
     }
 
     .filters-sections {
-        padding: 0.75rem;
+        padding: 1rem 0.75rem;
     }
 
     .order-card {

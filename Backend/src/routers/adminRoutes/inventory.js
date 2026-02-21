@@ -17,6 +17,22 @@ router.get("/items", async (req, res) => {
     }
 });
 
+// Get unique categories
+router.get("/categories", async (req, res) => {
+    try {
+        const items = await prisma.item.findMany({
+            select: { category: true },
+            distinct: ['category'],
+        });
+
+        const categories = items.map(item => item.category).filter(Boolean);
+        res.json(categories);
+    } catch (error) {
+        console.error("Error fetching categories:", error);
+        res.status(500).json({ message: "Error fetching categories", error: error.message });
+    }
+});
+
 // Toggle item availability
 router.patch("/items/:id/isavailable", async (req, res) => {
     try {
@@ -67,6 +83,25 @@ router.patch("/items/:id", async (req, res) => {
     } catch (error) {
         console.error("Error updating item:", error);
         res.status(500).json({ message: "Error updating item", error: error.message });
+    }
+});
+
+// Delete entire category
+router.delete("/categories/:category", async (req, res) => {
+    try {
+        const { category } = req.params;
+
+        const deleted = await prisma.item.deleteMany({
+            where: { category: category }
+        });
+
+        res.json({
+            message: `Category '${category}' and its ${deleted.count} items deleted successfully`,
+            count: deleted.count
+        });
+    } catch (error) {
+        console.error("Error deleting category:", error);
+        res.status(500).json({ message: "Error deleting category", error: error.message });
     }
 });
 

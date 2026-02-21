@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useToast } from "../Context/ToastContext";
 import "../styles/Form.css";
-import axios from "axios";
+import api from "../api/axios";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ export default function Login() {
 
   const register = async () => {
     try {
-      const res = await axios.post("http://localhost:5016/auth/register", {
+      const res = await api.post("/auth/register", {
         username: formData.name,
         email: formData.email,
         phone: formData.phone,
@@ -48,7 +48,7 @@ export default function Login() {
 
   const login = async () => {
     try {
-      const res = await axios.post("http://localhost:5016/auth/login", {
+      const res = await api.post("/auth/login", {
         email: formData.email,
         password: formData.password
       });
@@ -155,7 +155,7 @@ export default function Login() {
             </div>
 
             {action === "Login" && (
-              <a href="#" className="forgot-pw">Forgot your password?</a>
+              <Link to="/forgot-password" size="small" className="forgot-pw">Forgot your password?</Link>
             )}
           </div>
         </form>

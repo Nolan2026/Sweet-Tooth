@@ -50,16 +50,38 @@ const ProductCard = ({ item }) => {
         <p className="dynamic-price">{formatPrice(price)}</p>
         {item.iskilo ?
           <div className="weight-selector-bar">
-            {weights.map((w) => (
-              <button
-                key={w.label}
-                className={`weight-unit-btn ${selectedWeight === w.value ? 'active' : ''}`}
-                onClick={() => setSelectedWeight(item.iskilo ? w.value : 2)}
-                disabled={isOutOfStock}
-              >
-                {w.label}
-              </button>
-            ))}
+            <button
+              className="weight-step-btn"
+              onClick={() => {
+                const idx = weights.findIndex(w => w.value === selectedWeight);
+                if (idx > 0) setSelectedWeight(weights[idx - 1].value);
+              }}
+              disabled={isOutOfStock || selectedWeight === 0.25}
+            >
+              -
+            </button>
+            <div className="weight-units-display">
+              {weights.map((w) => (
+                <button
+                  key={w.label}
+                  className={`weight-unit-btn ${selectedWeight === w.value ? 'active' : ''}`}
+                  onClick={() => setSelectedWeight(w.value)}
+                  disabled={isOutOfStock}
+                >
+                  {w.label}
+                </button>
+              ))}
+            </div>
+            <button
+              className="weight-step-btn"
+              onClick={() => {
+                const idx = weights.findIndex(w => w.value === selectedWeight);
+                if (idx < weights.length - 1) setSelectedWeight(weights[idx + 1].value);
+              }}
+              disabled={isOutOfStock || selectedWeight === 1}
+            >
+              +
+            </button>
           </div>
           : <div></div>
         }

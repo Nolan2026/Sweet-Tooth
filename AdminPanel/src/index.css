@@ -8,6 +8,11 @@
   box-sizing: border-box;
 }
 
+img {
+  max-width: 100%;
+  height: auto;
+}
+
 :root {
   /* Primary Colors */
   --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -75,13 +80,14 @@ body {
   color: var(--text-primary);
   font-size: 16px;
   line-height: 1.6;
+  overflow-x: hidden;
 }
 
 #root {
   width: 100%;
   min-height: 100vh;
   margin: 0;
-  padding: 0;
+  --qpadding: 80px 0 0 0;
 }
 
 /* Scrollbar Styling */

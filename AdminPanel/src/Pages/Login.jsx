@@ -60,6 +60,9 @@ const Login = () => {
                     <button type="submit" disabled={loading}>
                         {loading ? "Logging in..." : "Login"}
                     </button>
+                    <div className="forgot-password-link">
+                        <Link to="/admin/forgot-password">Forgot Password?</Link>
+                    </div>
                 </form>
                 <p className="auth-switch">
                     Don't have an admin account? <Link to="/admin/register">Register</Link>

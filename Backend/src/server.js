@@ -20,6 +20,7 @@ import adminInventoryRoutes from "./routers/adminRoutes/inventory.js"
 import adminAttendanceRoutes from "./routers/adminRoutes/attendance.js"
 import adminprofileRoutes from "./routers/adminRoutes/adminprofile.js"
 import adminCouponRoutes from "./routers/adminRoutes/coupons.js"
+import adminMediaRoutes from "./routers/adminRoutes/media.js"
 
 import authenticateAdmin from "./middleware/authentication/adminAuth.js"
 import { authLimiter, apiLimiter } from "./middleware/security/rateLimiter.js"
@@ -41,7 +42,7 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
     : ['http://localhost:5173', 'http://localhost:3000'];
 
 app.use(cors());
- 
+
 // Security middleware
 app.use(securityHeaders);
 app.use(express.json({ limit: '10mb' })); // Limit payload size
@@ -61,6 +62,7 @@ app.use("/admin/messages", authenticateAdmin, adminMessageRoutes)
 app.use("/admin/billing", authenticateAdmin, adminBillingRoutes)
 app.use("/admin/inventory", authenticateAdmin, adminInventoryRoutes)
 app.use("/admin/attendance", authenticateAdmin, adminAttendanceRoutes)
+app.use("/admin/media", authenticateAdmin, adminMediaRoutes)
 app.use("/admin", adminprofileRoutes)
 app.use("/admin/coupons", authenticateAdmin, adminCouponRoutes)
 
@@ -109,7 +111,7 @@ app.use(notFoundHandler);
 app.use(errorHandler);
 
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server Started on port: ${PORT}`);
 });
 

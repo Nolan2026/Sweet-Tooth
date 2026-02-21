@@ -10,15 +10,6 @@ export default function Inventory() {
   const confirm = useConfirm();
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
-  const [editingId, setEditingId] = useState(null);
-  const [editedPrice, setEditedPrice] = useState("");
-  const [isavailable, setIsAvailable] = useState(true);
-  const [newItem, setNewItem] = useState({
-    category: "",
-    item_name: "",
-    price: "",
-    img_url: "",
-  });
 
 
   // Use the same base as API for images
@@ -96,59 +87,116 @@ export default function Inventory() {
     }
   };
 
+  /* =========================
+     DELETE CATEGORY
+  ========================= */
+  const handleDeleteCategory = async (category) => {
+    const isConfirmed = await confirm(
+      "Delete Entire Category",
+      `Are you sure you want to delete the "${category}" category and ALL items within it? This action cannot be undone.`
+    );
+    if (!isConfirmed) return;
+
+    try {
+      await api.delete(`/admin/inventory/categories/${encodeURIComponent(category)}`);
+      fetchItems();
+      showToast(`Category "${category}" deleted successfully`, 'success');
+    } catch (err) {
+      console.error("Delete category error:", err);
+      showToast(`Failed to delete category "${category}"`, 'error');
+    }
+  };
+
   return (
-    <div className="inventory-container">
+    <div className="inventory-container" style={{ scrollBehavior: 'smooth' }}>
+      <h1>Inventory Management</h1>
+
+      {/* Category Navigation */}
+      <div className="category-nav">
+        <span>Jump to:</span>
+        {Object.keys(groupedItems).map((category) => (
+          <div key={category} className="nav-chip-container">
+            <a href={`#${category.replace(/\s+/g, '-')}`} className="nav-chip">
+              {category}
+            </a>
+            <button
+              className="chip-delete-icon"
+              onClick={() => handleDeleteCategory(category)}
+              title={`Delete ${category} category`}
+            >
+              🗑️
+            </button>
+          </div>
+        ))}
+      </div>
+
       {Object.entries(groupedItems).map(([category, items]) => (
-        <div key={category} className="category-table">
-          <h2>{category}</h2>
+        <div key={category} id={category.replace(/\s+/g, '-')} className="category-table">
+          <div className="category-header">
+            <h2>{category}</h2>
+            <button
+              className="delete-category-btn"
+              onClick={() => handleDeleteCategory(category)}
+              title="Delete this entire category"
+            >
+              🗑️ Delete Category
+            </button>
+          </div>
 
-          <table>
-            <colgroup>
-              <col style={{ width: "30%" }} />
-              <col style={{ width: "25%" }} />
-              <col style={{ width: "25%" }} />
-              <col style={{ width: "25%" }} />
-            </colgroup>
-
-            <thead>
-              <tr>
-                <th>Images</th>
-                <th>Item</th>
-                <th>Price (₹)</th>
-                <th>Actions</th>
-                <th>Stock</th>
-              </tr>
-            </thead>
-
-            <tbody className="invtable">
-              {items.map((item) => (
-                <tr key={item.id}>
-                  <td className="invImg"><img src={`${API_BASE}${item.image_url}`} alt={item.item_name} /></td>
-                  <td className="tabData">{item.item_name}</td>
-                  <td className="tabData">{item.price}</td>
-                  <td className="tabData">
-                    <button onClick={() => navigate(`/admin/edit/${item.id}`)} >Edit</button>
-                    <button onClick={() => handleDelete(item.id)}>
-                      Delete
-                    </button>
-                  </td>
-                  <td className="tabData">
-                    <label className="toggle-switch">
-                      <input
-                        type="checkbox"
-                        checked={item.isavailable}
-                        onChange={() => handleToggleAvailability(item.id)}
-                      />
-                      <span className="toggle-slider"></span>
-                    </label>
-                    <span className={item.isavailable ? 'stock-text available' : 'stock-text unavailable'}>
-                      {item.isavailable ? 'In Stock' : 'Out of Stock'}
-                    </span>
-                  </td>
+          <div className="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Item Name</th>
+                  <th>Price (₹)</th>
+                  <th style={{ width: "300px" }}>Actions</th>
+                  <th style={{ width: "250px" }}>Stock</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+
+              <tbody className="invtable">
+                {items.map((item) => (
+                  <tr key={item.id}>
+                    <td className="invImg" data-label="Image">
+                      <img
+                        src={`${API_BASE}${item.image_url}`}
+                        alt={item.item_name}
+                        loading="lazy"
+                      />
+                    </td>
+                    <td className="tabData" data-label="Item Name">{item.item_name}</td>
+                    <td className="tabData" data-label="Price">{item.price}</td>
+                    <td className="tabData" data-label="Actions">
+                      <div className="action-buttons">
+                        <button className="edit-action" onClick={() => navigate(`/admin/edit/${item.id}`)}>
+                          <span>✏️</span> Edit
+                        </button>
+                        <button className="delete-action" onClick={() => handleDelete(item.id)}>
+                          <span>🗑️</span> Delete
+                        </button>
+                      </div>
+                    </td>
+                    <td className="tabData" data-label="Stock">
+                      <div className="stock-control">
+                        <label className="toggle-switch">
+                          <input
+                            type="checkbox"
+                            checked={item.isavailable}
+                            onChange={() => handleToggleAvailability(item.id)}
+                          />
+                          <span className="toggle-slider"></span>
+                        </label>
+                        <span className={item.isavailable ? 'stock-text available' : 'stock-text unavailable'}>
+                          {item.isavailable ? 'In Stock' : 'Out Of Stock'}
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       ))}
     </div>

@@ -1,17 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/AddItem.css";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
-const CATEGORIES = [
-    "Regular",
-    "MilkSweets",
-    "DryFruitSweets",
-    "CoolSweets",
-    "Snacks",
-];
+import api from "../api/axios";
 
 function AddItem() {
+    const [categories, setCategories] = useState([]);
     const [formData, setFormData] = useState({
         category: "",
         item_name: "",
@@ -27,6 +20,18 @@ function AddItem() {
     const [status, setStatus] = useState({ type: "", message: "" });
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const res = await api.get("/admin/inventory/categories");
+                setCategories(res.data);
+            } catch (err) {
+                console.error("Failed to fetch categories:", err);
+            }
+        };
+        fetchCategories();
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -59,8 +64,8 @@ function AddItem() {
             data.append("isbill", formData.isbill);
             data.append("image", image); // 🔥 MUST match multer field
 
-            const response = await axios.post(
-                "http://localhost:5016/items",
+            const response = await api.post(
+                "/items",
                 data,
                 {
                     headers: {
@@ -117,7 +122,7 @@ function AddItem() {
                             required
                         >
                             <option value="">Select Category</option>
-                            {CATEGORIES.map((cat) => (
+                            {categories.map((cat) => (
                                 <option key={cat} value={cat}>
                                     {cat}
                                 </option>
@@ -168,8 +173,8 @@ function AddItem() {
                     </div>
 
                     {/* Options */}
-                    <div className="options-group" style={{ display: 'flex', gap: '20px', margin: '15px 0' }}>
-                        <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <div className="options-group">
+                        <label className="checkbox-label">
                             <input
                                 type="checkbox"
                                 name="isavailable"
@@ -178,7 +183,7 @@ function AddItem() {
                             />
                             Available
                         </label>
-                        <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                        <label className="checkbox-label">
                             <input
                                 type="checkbox"
                                 name="iskilo"
@@ -187,7 +192,7 @@ function AddItem() {
                             />
                             Per Kilo
                         </label>
-                        <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                        <label className="checkbox-label">
                             <input
                                 type="checkbox"
                                 name="isbill"
@@ -221,7 +226,7 @@ function AddItem() {
 
 
                     <button type="submit" className="submit-btn" disabled={loading}>
-                        {loading ? "Adding..." : "Add Item to Menu"}
+                        {loading ? "Adding..." : "🚀 Add Item to Menu"}
                     </button>
                 </form>
             </div>

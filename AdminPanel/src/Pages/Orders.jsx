@@ -85,6 +85,7 @@ export default function Orders() {
                     Total Orders {orders.length}
 
                 </div>
+                <div className="filter-layout">
                 <div className="filter-group">
                     <label>Status:</label>
                     <select
@@ -114,6 +115,7 @@ export default function Orders() {
                         value={filter.endDate}
                         onChange={(e) => setFilter({ ...filter, endDate: e.target.value })}
                     />
+                </div>
                 </div>
 
                 <button onClick={fetchOrders} className="apply-filter-btn">

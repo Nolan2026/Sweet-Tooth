@@ -106,7 +106,7 @@ export default function Bill() {
             value={date}
             onChange={(e) => setDate(e.target.value)}
             className="date-input"
-          />
+          /> 
         </div>
         <div className="customer-details">
           <input
@@ -168,7 +168,7 @@ export default function Bill() {
               <optgroup key={category} label={category}>
                 {categoryItems.map(item => (
                   <option key={item.id} value={item.id} disabled={!item.isavailable}>
-                    {item.item_name} - ₹{item.price}{item.iskilo ? "/kg" : ""} {!item.isavailable && '(Out of Stock)'}
+                    {item.item_name} - ₹{item.price}{item.iskilo ? "/kg" : "/pcs"} {!item.isavailable && '(Out of Stock)'}
                   </option>
                 ))}
               </optgroup>
