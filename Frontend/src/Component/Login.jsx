@@ -17,7 +17,12 @@ export default function Login() {
     phone: "",
     password: ""
   });
+
+  const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [otpType, setOtpType] = useState(""); // 'register' or 'login'
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData(prev => ({
@@ -27,7 +32,16 @@ export default function Login() {
     setError("");
   };
 
+  const handleOtpChange = (e) => {
+    const value = e.target.value.replace(/\D/g, "");
+    if (value.length <= 6) {
+      setOtp(value);
+    }
+    setError("");
+  };
+
   const register = async () => {
+    setLoading(true);
     try {
       const res = await api.post("/auth/register", {
         username: formData.name,
@@ -35,38 +49,83 @@ export default function Login() {
         phone: formData.phone,
         password: formData.password
       });
-      showToast("Registration successful! You can now login.", "success");
-      setAction("Login");
-      setFormData({ name: "", email: "", phone: "", password: "" });
+      showToast(res.data.message || "OTP sent to your email", "success");
+      setOtpSent(true);
+      setOtpType("register");
     } catch (error) {
       console.error("Registration error:", error);
       const msg = error.response?.data?.message || "Registration failed";
-      const detail = error.response?.data?.error ? ` (${error.response.data.error})` : "";
-      setError(msg + detail);
+      setError(msg);
+    } finally {
+      setLoading(false);
     }
   };
 
   const login = async () => {
+    setLoading(true);
     try {
       const res = await api.post("/auth/login", {
         email: formData.email,
         password: formData.password
       });
-      localStorage.setItem("userToken", res.data.token);
-      localStorage.setItem("userData", JSON.stringify(res.data.user));
-      window.dispatchEvent(new Event('authChange'));
-      showToast("Login successful!", "success");
-      navigate(from, { replace: true });
+      if (res.data.requiresOtp) {
+        showToast(res.data.message || "OTP sent to your email", "success");
+        setOtpSent(true);
+        setOtpType("login");
+      } else {
+        localStorage.setItem("userToken", res.data.token);
+        localStorage.setItem("userData", JSON.stringify(res.data.user));
+        window.dispatchEvent(new Event('authChange'));
+        showToast("Login successful!", "success");
+        navigate(from, { replace: true });
+      }
     } catch (error) {
       console.error("Login error:", error);
       const msg = error.response?.data?.message || "Login failed";
-      const detail = error.response?.data?.error ? ` (${error.response.data.error})` : "";
-      setError(msg + detail);
+      setError(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    setLoading(true);
+    try {
+      const res = await api.post("/auth/verify-otp", {
+        email: formData.email,
+        otp,
+        type: otpType
+      });
+      localStorage.setItem("userToken", res.data.token);
+      localStorage.setItem("userData", JSON.stringify(res.data.user));
+      window.dispatchEvent(new Event('authChange'));
+      showToast(res.data.message || "Successful!", "success");
+      navigate(from, { replace: true });
+    } catch (error) {
+      console.error("OTP verification error:", error);
+      const msg = error.response?.data?.message || "Verification failed";
+      setError(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    try {
+      await api.post("/auth/resend-otp", { email: formData.email });
+      showToast("OTP resent successfully", "success");
+    } catch (error) {
+      showToast("Failed to resend OTP", "error");
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (otpSent) {
+      handleVerifyOtp();
+      return;
+    }
+
     if (action === "Login") {
       if (!formData.email || !formData.password) {
         setError("Please enter your credentials.");
@@ -87,75 +146,124 @@ export default function Login() {
       <div className="login-card">
         <header className="login-header">
           <h2>{action}</h2>
-          <p>{action === "Login" ? "Welcome back to Sweet Tooth" : "Join our sweet community today"}</p>
+          <p>
+            {otpSent
+              ? `Verification code sent to ${formData.email}`
+              : (action === "Login" ? "Welcome back to Sweet Tooth" : "Join our sweet community today")}
+          </p>
         </header>
 
         <form onSubmit={handleSubmit}>
           <div className="form-inputs">
-            {action === "Sign up" && (
-              <input
-                type="text"
-                name="name"
-                className="login-input"
-                placeholder="Full Name"
-                value={formData.name}
-                onChange={handleChange}
-              />
+            {!otpSent ? (
+              <>
+                {action === "Sign up" && (
+                  <input
+                    type="text"
+                    name="name"
+                    className="login-input"
+                    placeholder="Full Name"
+                    value={formData.name}
+                    onChange={handleChange}
+                  />
+                )}
+
+                <input
+                  type="email"
+                  name="email"
+                  className="login-input"
+                  placeholder="Email Address"
+                  value={formData.email}
+                  onChange={handleChange}
+                />
+
+                {action === "Sign up" && (
+                  <input
+                    type="text"
+                    name="phone"
+                    className="login-input"
+                    placeholder="Mobile Number"
+                    value={formData.phone}
+                    onChange={handleChange}
+                  />
+                )}
+
+                <input
+                  type="password"
+                  name="password"
+                  className="login-input"
+                  placeholder="Password"
+                  value={formData.password}
+                  onChange={handleChange}
+                />
+              </>
+            ) : (
+              <div className="otp-group">
+                <label className="otp-label">Enter 6-Digit OTP</label>
+                <input
+                  type="text"
+                  maxLength="6"
+                  className="login-input otp-input"
+                  placeholder="000000"
+                  value={otp}
+                  onChange={handleOtpChange}
+                  autoFocus
+                />
+              </div>
             )}
-
-            <input
-              type="email"
-              name="email"
-              className="login-input"
-              placeholder="Email Address"
-              value={formData.email}
-              onChange={handleChange}
-            />
-
-            {action === "Sign up" && (
-              <input
-                type="text"
-                name="phone"
-                className="login-input"
-                placeholder="Mobile Number"
-                value={formData.phone}
-                onChange={handleChange}
-              />
-            )}
-
-            <input
-              type="password"
-              name="password"
-              className="login-input"
-              placeholder="Password"
-              value={formData.password}
-              onChange={handleChange}
-            />
           </div>
 
           {error && <div className="error-message">{error}</div>}
 
           <div className="login-actions">
-            <button type="submit" className="primary-auth-btn">
-              {action === "Login" ? "Sign In" : "Create Account"}
+            <button
+              type="submit"
+              className="primary-auth-btn"
+              disabled={loading || (otpSent && otp.length !== 6)}
+            >
+              {loading
+                ? "Processing..."
+                : (otpSent ? "Verify OTP" : (action === "Login" ? "Sign In" : "Create Account"))
+              }
             </button>
 
-            <div className="auth-toggle">
-              <span>{action === "Login" ? "New here?" : "Already have an account?"}</span>
+            {otpSent && (
+              <button type="button" className="toggle-btn resend-btn" onClick={handleResendOtp}>
+                Resend OTP
+              </button>
+            )}
+
+            {!otpSent && (
+              <div className="auth-toggle">
+                <span>{action === "Login" ? "New here?" : "Already have an account?"}</span>
+                <button
+                  type="button"
+                  className="toggle-btn"
+                  onClick={() => {
+                    setAction(action === "Login" ? "Sign up" : "Login");
+                    setError("");
+                  }}
+                >
+                  {action === "Login" ? "Sign Up" : "Login"}
+                </button>
+              </div>
+            )}
+
+            {action === "Login" && !otpSent && (
+              <Link to="/forgot-password" size="small" className="forgot-pw">Forgot your password?</Link>
+            )}
+
+            {otpSent && (
               <button
                 type="button"
-                className="toggle-btn"
+                className="toggle-btn back-btn"
                 onClick={() => {
-                  setAction(action === "Login" ? "Sign up" : "Login");
-                  setError("");
+                  setOtpSent(false);
+                  setOtp("");
                 }}
               >
-                {action === "Login" ? "Sign Up" : "Login"}
+                Back to {action}
               </button>
-            </div>
-
-            {action === "Login" && (
-              <Link to="/forgot-password" size="small" className="forgot-pw">Forgot your password?</Link>
             )}
           </div>
         </form>

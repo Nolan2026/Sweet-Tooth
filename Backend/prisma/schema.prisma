@@ -12,8 +12,11 @@ model User {
   email            String    @unique @db.VarChar(50)
   phone            String?   @db.VarChar(15)
   password         String    @db.Text
+  isVerified       Boolean   @default(false)
   resetToken       String?   @db.Text
   resetTokenExpiry DateTime?
+  otp              String?   @db.VarChar(6)
+  otpExpiresAt     DateTime?
   addresses        Address[]
   orders           Order[]
 }

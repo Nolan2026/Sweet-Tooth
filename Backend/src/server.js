@@ -49,7 +49,7 @@ app.use(express.json({ limit: '10mb' })); // Limit payload size
 
 // Routes with rate limiting
 app.use("/items", apiLimiter, items)
-app.use("/auth", authLimiter, auth) // Protect auth with stricter limits
+app.use("/auth", auth) // Protect auth with stricter limits
 app.use("/user", apiLimiter, userRoutes)
 app.use("/order", apiLimiter, orderRoutes)
 app.use("/contact", apiLimiter, contactRoutes)

@@ -123,3 +123,38 @@
 .forgot-pw:hover {
   color: var(--primary);
 }
+
+/* OTP Styles */
+.otp-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  text-align: left;
+}
+
+.otp-label {
+  font-weight: 600;
+  color: var(--text-dark);
+  font-size: 0.9rem;
+  margin-left: 0.5rem;
+}
+
+.otp-input {
+  text-align: center;
+  font-size: 1.8rem !important;
+  letter-spacing: 0.8rem;
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+
+.resend-btn, .back-btn {
+  font-size: 0.9rem;
+  margin-top: -0.5rem;
+}
+
+.primary-auth-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
