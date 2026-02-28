@@ -37,50 +37,51 @@
 - 🛍️ Browse products by categories (Regular, Milk Sweets, Dry Fruit Sweets, Cool Sweets, Snacks)
 - 🛒 Shopping cart with flexible weight selection (250g, 500g, 750g, 1kg)
 - 👤 User authentication and profile management
-- 📍 Multiple address management
+- 📍 Advanced address management (Street, Area, District, Pin Code)
 - 📦 Order tracking with unique tracking IDs
 - 💰 Coupon code support for discounts
-- 📱 Fully responsive design for mobile and desktop
+- 📱 Fully responsive design for mobile and desktop (95% optimized zoom)
 - 📧 Contact form for customer inquiries
+- 🌍 Global country support for shipping
 
 ### Admin Panel Features
-- 📊 Order management and status updates
-- 📦 Inventory management with stock control
-- 💵 Billing system with payment mode tracking
-- 👥 Employee management and attendance tracking
-- 🏷️ Product label printing
-- 📮 Shipping label generation with barcodes
-- 💬 Customer message management
-- 🎟️ Coupon creation and management
-- 📈 Business profile and branding customization
-- 📜 Order history and reports
+- 📊 **High-density Order Management**: Optimized ultra-compact layout for status updates
+- 📦 **Inventory Control**: Real-time stock management and availability toggles
+- 💵 **Professional Billing**: Modern POS interface with print-optimized styles
+- 👥 **Employee Tracking**: Attendance management and profile controls
+- 🏷️ **Labels Hub**: High-contrast product and shipping labels with QR codes
+- 💳 **UPI Integration**: Dynamic QR code generation for Scan & Pay (Admin Profile controlled)
+- 🖨️ **Bill History**: One-click re-printing of historical bills with professional layout
+- 🗑️ **POS Controls**: "Clear All" functionality for fast billing reset
+- 📱 **Responsive Dashboard**: Fully functional on mobile, tablet, and desktop (95% zoom layout)
+- 🎨 **Unified Design**: Standardized button sizes and high-contrast data visualization
+- 📜 **Audit History**: Detailed logging for orders, bills, and messages
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Frontend
-- **React** 18.x with Vite
-- **Redux Toolkit** for state management
-- **React Router** for navigation
-- **Axios** for API calls
-- **CSS3** for styling
+### Frontend & Admin
+- **React 18** with **Vite** (HMR enabled)
+- **Redux Toolkit** for sophisticated state management
+- **React Router 6** for seamless navigation
+- **Axios** with centralized API configuration
+- **Vanilla CSS3** with modern design tokens and utility patterns
 
 ### Backend
-- **Node.js** (v16+)
-- **Express.js** for REST API
-- **Prisma ORM** for database management
-- **PostgreSQL** database
-- **JWT** for authentication
-- **bcryptjs** for password hashing
-- **Multer** for file uploads
+- **Node.js** (v16+) with **Express.js**
+- **Prisma ORM** for type-safe database interactions
+- **PostgreSQL** for reliable data persistence
+- **JWT** (JSON Web Tokens) for stateless authentication
+- **bcryptjs** (10 salt rounds) for industry-standard security
 
-### Security
-- Rate limiting
-- CORS protection
-- Security headers (XSS, Clickjacking, etc.)
-- Input validation and sanitization
-- Error handling without information leakage
+### 🛡️ Security (Production Ready)
+- **Helmet**: Integrated security headers (XSS, Clickjacking, CSP)
+- **HPP**: Protection against HTTP Parameter Pollution
+- **Rate Limiting**: Tiered limits for Auth and General API routes
+- **Payload Sanitization**: 10KB strict request body limits
+- **Fail-Safe Startup**: Production checks for critical env variables
+- **Endpoint Audit**: Removed all debug/test routes for deployment
 
 ---
 
@@ -299,34 +300,10 @@ npm run dev
 
 ## 📚 API Documentation
 
-See [PUBLIC_API.md](./docs/PUBLIC_API.md) for public API reference.
+See [PUBLIC_API.md](./Gdocs/PUBLIC_API.md) for public API reference.
 
 > **Note:** Complete internal API documentation (including admin endpoints) is available in 
-> `docs/API_DOCUMENTATION.md` but should NOT be deployed publicly for security reasons.
-
-### Public API Endpoints
-
-#### Authentication
-- `POST /auth/register` - Register new user
-- `POST /auth/login` - User login
-
-#### Products
-- `GET /items` - Get all items
-- `GET /items/:id` - Get item by ID
-- `POST /items` - Add new item (Admin)
-- `PUT /items/:id` - Update item (Admin)
-- `DELETE /items/:id` - Delete item (Admin)
-
-#### Orders
-- `POST /order/validate` - Validate cart
-- `POST /order/create` - Create order
-- `GET /order/my-orders` - Get user orders
-- `DELETE /order/cancel/:id` - Cancel order
-
-#### User Profile
-- `GET /user/profile` - Get user profile
-- `POST /user/address` - Add/Update address
-- `DELETE /user/address/:id` - Delete address
+> `Gdocs/API_DOCUMENTATION.md` but should NOT be deployed publicly for security reasons.
 
 ---
 
@@ -335,46 +312,39 @@ See [PUBLIC_API.md](./docs/PUBLIC_API.md) for public API reference.
 This application implements multiple layers of security:
 
 ### Authentication & Authorization
-- JWT-based authentication
-- Secure password hashing using bcryptjs
-- Token expiration (24 hours)
-- Separate admin authentication
+- **JWT-based authentication**: Secure token-based access.
+- **Secure password hashing**: Using `bcryptjs` for all user and admin passwords.
+- **Token expiration**: Short-lived tokens to minimize risk.
+- **Admin Verification**: Dedicated middleware for admin-only routes.
 
-### Input Validation
-- Server-side validation for all inputs
-- Email format validation
-- Password strength requirements
-- SQL injection protection via Prisma ORM
+### Input Protection
+- **Server-side validation**: Robust validation for all inputs via `inputValidator.js`.
+- **CORS restricted**: Only allowed origins can access the API.
+- **Sanitization**: Protection against XSS and injection attacks.
+- **SQL Injection protection**: Guaranteed by Prisma ORM.
 
-### Rate Limiting
-- Authentication endpoints: 5 attempts per 15 minutes
-- API endpoints: 100 requests per minute
-- Protection against brute force attacks
+### Rate Limiting & DoS Protection
+- **Authentication endpoints**: Stricter limits (10 attempts per 15 minutes).
+- **API endpoints**: 100 requests per minute per IP.
+- **Payload limits**: Restricted JSON body size to prevent memory exhaustion.
 
-### Security Headers
-- XSS Protection
-- Clickjacking Prevention
-- MIME Type Sniffing Prevention
-- Content Security Policy
-- HTTPS enforcement in production
-
-### Data Protection
-- Sensitive data excluded from responses
-- Error messages don't leak system information
-- CORS restricted to allowed origins
-- File upload validation and size limits
+### Security Headers (Helmet)
+- **Content Security Policy (CSP)**
+- **X-Frame-Options (Clickjacking protection)**
+- **X-Content-Type-Options (MIME sniffing protection)**
+- **X-XSS-Protection**
+- **Strict-Transport-Security (HSTS)**
 
 ### Best Practices
-- Environment variables for sensitive data
-- Secure session management
-- Regular dependency updates
-- Audit logs for admin actions
+- **Environment variables**: All secrets are stored in `.env` (never committed).
+- **No data leakage**: Generic error messages to prevent information disclosure.
+- **HTTPS Enforcement**: Recommended for all production deployments.
 
 ---
 
 ## 🌐 Deployment
 
-See [DEPLOYMENT.md](./docs/DEPLOYMENT.md) for detailed deployment instructions.
+See [DEPLOYMENT.md](./Gdocs/DEPLOYMENT.md) for detailed deployment instructions.
 
 ### Quick Deployment Checklist
 

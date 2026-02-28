@@ -25,7 +25,7 @@ router.post("/register", validateRegistration, async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, salt);
 
         const otp = generateOTP();
-        const expiry = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
+        const expiry = new Date(Date.now() + 3 * 60 * 1000); // 3 mins
 
         // Create user with isVerified: false
         await prisma.user.create({
@@ -69,7 +69,7 @@ router.post("/login", validateLogin, async (req, res) => {
 
         // Generate OTP for login
         const otp = generateOTP();
-        const expiry = new Date(Date.now() + 10 * 60 * 1000);
+        const expiry = new Date(Date.now() + 3 * 60 * 1000); // 3 mins
 
         await prisma.user.update({
             where: { email: cleanEmail },
@@ -123,9 +123,17 @@ router.post("/verify-otp", async (req, res) => {
             data: updateData
         });
 
+        const secret = process.env.JWT_SECRET;
+        if (!secret) {
+            if (process.env.NODE_ENV === 'production') {
+                throw new Error("JWT_SECRET is required in production");
+            }
+            console.warn("WARNING: JWT_SECRET not set, using default for development");
+        }
+
         const token = jwt.sign(
             { id: user.id, email: user.email },
-            process.env.JWT_SECRET || "default_secret",
+            secret || "default_secret",
             { expiresIn: "1d" }
         );
 
@@ -154,7 +162,7 @@ router.post("/resend-otp", async (req, res) => {
         if (!user) return res.status(404).json({ message: "User not found" });
 
         const otp = generateOTP();
-        const expiry = new Date(Date.now() + 10 * 60 * 1000);
+        const expiry = new Date(Date.now() + 3 * 60 * 1000); // 3 mins
 
         await prisma.user.update({
             where: { email: cleanEmail },
@@ -188,7 +196,7 @@ router.post("/forgot-password", async (req, res) => {
         }
 
         const otp = generateOTP();
-        const expiry = new Date(Date.now() + 15 * 60 * 1000);
+        const expiry = new Date(Date.now() + 3 * 60 * 1000); // 3 mins
 
         await prisma.user.update({
             where: { id: user.id },

@@ -687,3 +687,19 @@ thead tr {
     transition: none;
   }
 }
+
+/* UPI QR Section Styles */
+.upi-qr-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+@media print {
+  .upi-qr-section {
+    page-break-inside: avoid;
+    border-color: #000 !important;
+    color: #000 !important;
+  }
+}

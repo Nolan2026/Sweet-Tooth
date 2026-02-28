@@ -10,7 +10,7 @@ function Attend() {
   const confirm = useConfirm();
   const [employees, setEmployees] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState('');
-  const [isPresent, setIsPresent] = useState(true);
+  const [attendanceStatus, setAttendanceStatus] = useState('PRESENT');
   const [attendanceDate, setAttendanceDate] = useState(new Date().toISOString().split('T')[0]);
   const [attendanceRecords, setAttendanceRecords] = useState([]);
 
@@ -65,8 +65,8 @@ function Attend() {
       return;
     }
 
-    if (!newEmployee.phone || newEmployee.phone.length !== 10) {
-      showToast('Phone number must be 10 digits', 'warning');
+    if (newEmployee.phone && newEmployee.phone.length !== 10) {
+      showToast('Phone number must be exactly 10 digits', 'warning');
       return;
     }
 
@@ -105,11 +105,12 @@ function Attend() {
     try {
       await api.post('/admin/attendance', {
         employeeId: selectedEmployee,
-        isPresent: isPresent,
+        status: attendanceStatus,
         date: attendanceDate
       });
       showToast('Attendance recorded successfully', 'success');
       setSelectedEmployee('');
+      fetchEmployees(); // Refresh counts
       fetchAttendance();
     } catch (err) {
       console.error('Mark attendance error:', err);
@@ -141,10 +142,16 @@ function Attend() {
             required
           />
           <input
-            type="number"
-            placeholder="Phone Number"
+            type="tel"
+            placeholder="Phone Number (10 digits)"
             value={newEmployee.phone}
-            onChange={(e) => setNewEmployee({ ...newEmployee, phone: e.target.value })}
+            onChange={(e) => {
+              const val = e.target.value.replace(/\D/g, ''); // Only numbers
+              if (val.length <= 10) {
+                setNewEmployee({ ...newEmployee, phone: val });
+              }
+            }}
+            maxLength="10"
           />
           <select
             value={newEmployee.role}
@@ -170,7 +177,6 @@ function Attend() {
                 <thead>
                   <tr>
                     <th>Name</th>
-                    <th>Phone</th>
                     <th>Role</th>
                     <th>Action</th>
                   </tr>
@@ -179,7 +185,6 @@ function Attend() {
                   {employees.map(emp => (
                     <tr key={emp.id}>
                       <td>{emp.name}</td>
-                      <td>{emp.phone || 'N/A'}</td>
                       <td>{emp.role}</td>
                       <td>
                         <button
@@ -220,26 +225,34 @@ function Attend() {
             required
           />
 
-          <div className="radio-group">
-            <label>
+          <div className="radio-group holiday-radios">
+            <label className={attendanceStatus === 'PRESENT' ? 'radio-active present' : ''}>
               <input
                 type="radio"
-                checked={isPresent === true}
-                onChange={() => setIsPresent(true)}
+                checked={attendanceStatus === 'PRESENT'}
+                onChange={() => setAttendanceStatus('PRESENT')}
               />
               Present
             </label>
-            <label>
+            <label className={attendanceStatus === 'HALF_DAY' ? 'radio-active half' : ''}>
               <input
                 type="radio"
-                checked={isPresent === false}
-                onChange={() => setIsPresent(false)}
+                checked={attendanceStatus === 'HALF_DAY'}
+                onChange={() => setAttendanceStatus('HALF_DAY')}
+              />
+              Half Day
+            </label>
+            <label className={attendanceStatus === 'ABSENT' ? 'radio-active absent' : ''}>
+              <input
+                type="radio"
+                checked={attendanceStatus === 'ABSENT'}
+                onChange={() => setAttendanceStatus('ABSENT')}
               />
               Absent
             </label>
           </div>
 
-          <button type="submit" className="submit-btn">✅ Mark Attendance</button>
+          <button type="submit" className="submit-btn mark-btn">✅ Mark Attendance</button>
         </form>
       </div>
 
@@ -277,6 +290,29 @@ function Attend() {
           </button>
         </div>
 
+        {/* Attendance Summary Stats */}
+        {attendanceRecords.length > 0 && (
+          <div className="attendance-summary-stats">
+            <div className="stat-pill present">
+              <span className="stat-label">Total Present:</span>
+              <span className="stat-value">
+                {attendanceRecords.reduce((acc, rec) => {
+                  const status = rec.status?.toUpperCase();
+                  if (status === 'PRESENT') return acc + 1;
+                  if (status === 'HALF_DAY') return acc + 0.5;
+                  return acc;
+                }, 0).toFixed(1)} Days
+              </span>
+            </div>
+            <div className="stat-pill absent">
+              <span className="stat-label">Total Absent:</span>
+              <span className="stat-value">
+                {attendanceRecords.filter(rec => rec.status?.toUpperCase() === 'ABSENT').length} Days
+              </span>
+            </div>
+          </div>
+        )}
+
         <div className="records-table-container">
           {attendanceRecords.length === 0 ? (
             <p>No records found. Click "Fetch Records" to load data.</p>
@@ -296,8 +332,8 @@ function Attend() {
                       <td>{record.employee.name}</td>
                       <td>{formatDate(record.date)}</td>
                       <td>
-                        <span className={record.isPresent ? 'status-present' : 'status-absent'}>
-                          {record.isPresent ? 'Present' : 'Absent'}
+                        <span className={`status-badge status-${record.status?.toLowerCase()}`}>
+                          {record.status}
                         </span>
                       </td>
                     </tr>

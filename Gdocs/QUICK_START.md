@@ -51,8 +51,8 @@ CREATE DATABASE SweetTooth;
 cd Backend
 
 # .env already exists, but verify these settings:
-# DATABASE_URL="postgresql://postgres:sql123@localhost:5432/SweetTooth"
-# JWT_SECRET="sweet_tooth_secret_key_2026"  
+# DATABASE_URL="postgresql://username:password@localhost:5432/SweetTooth"
+# JWT_SECRET="your_secure_random_secret_at_least_64_chars"  
 # PORT=5016
 # NODE_ENV=development
 ```

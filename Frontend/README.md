@@ -1,16 +1,43 @@
-# React + Vite
+# Sweet Tooth - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the customer-facing website for the Sweet Tooth e-commerce platform. It provides a seamless shopping experience for browsing and ordering sweets and snacks.
 
-Currently, two official plugins are available:
+## 🛍️ Features
+- **Product Catalog**: Browse products by categories with detailed information.
+- **Weight Selection**: 250g, 500g, 1kg options for products.
+- **Shopping Cart**: Manage items and quantities before checkout.
+- **Secure Checkout**: Order validation and creation.
+- **User Profiles**: Manage addresses and view order history.
+- **Responsive Design**: Optimized for mobile and desktop devices.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🛠️ Getting Started
 
-## React Compiler
+### Prerequisites
+- Node.js v16+
+- Backend service running at `http://localhost:5016`
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Setup
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Configure environment:
+   Create a `.env` file:
+   ```env
+   VITE_API_BASE_URL=http://localhost:5016
+   ```
+3. Run in development:
+   ```bash
+   npm run dev
+   ```
 
-## Expanding the ESLint configuration
+## 🏗️ Building for Production
+```bash
+npm run build
+```
+The production-ready files will be in the `/dist` directory.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🔒 Security
+- JWT-based authentication for user features.
+- Secure API calls via Axios.
+- Input validation on all customer forms.

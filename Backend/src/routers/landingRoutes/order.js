@@ -2,6 +2,7 @@ import express from "express";
 import prisma from "../../prismaClient.js";
 import jwt from "jsonwebtoken";
 import generateTrackingId from "../../middleware/authentication/trakingId.js";
+import { sendOrderPlaced } from "../adminRoutes/sendOtp.js";
 
 const router = express.Router();
 
@@ -76,6 +77,10 @@ router.post("/create", authenticateToken, async (req, res) => {
             include: { addresses: true }
         });
 
+        if (!userWithAddress) {
+            return res.status(404).json({ message: "User not found. Please register or login again." });
+        }
+
         if (!userWithAddress.addresses || userWithAddress.addresses.length === 0) {
             return res.status(400).json({ message: "Address required. Please add an address in your profile." });
         }
@@ -104,6 +109,7 @@ router.post("/create", authenticateToken, async (req, res) => {
                 name: dbItem.item_name,
                 weight: item.selectedWeight,
                 quantity: item.quantity,
+                isKilo: dbItem.iskilo,
                 pricePerUnit: itemPrice,
                 subtotal: subtotal
             });
@@ -113,12 +119,17 @@ router.post("/create", authenticateToken, async (req, res) => {
         const order = await prisma.order.create({
             data: {
                 userId: userId,
-                total: req.body.total || total, // Use frontend calculated total (with GST/Shipping) if provided
+                total: req.body.total || total,
                 status: "Pending",
-                items: processedItems, // Stored as JSON
-                trackingId: generateTrackingId() // traking id for shipping label
+                items: processedItems,
+                paymentMethod: req.body.paymentMethod || "COD",
+                paymentDetails: req.body.paymentDetails || {},
+                trackingId: generateTrackingId()
             }
         });
+
+        // console.log(order);
+        await sendOrderPlaced(order.id);
 
         // 4. Update coupon usage if used
         if (req.body.couponCode) {

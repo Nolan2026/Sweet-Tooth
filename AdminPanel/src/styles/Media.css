@@ -8,6 +8,11 @@
     margin-top: 2.5rem;
     margin-bottom: 2.5rem;
     text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
 }
 
 .media-header h1 {
@@ -42,8 +47,27 @@
 }
 
 .media-card:hover {
-    transform: translateY(-8px);
+    --transform: translateY(-8px);
     box-shadow: var(--shadow-lg);
+}
+
+.media-card.selected {
+    border: 3px solid #3b82f6;
+    background: #f0f7ff;
+}
+
+.media-select-overlay {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 10;
+    cursor: pointer;
+}
+
+.media-select-overlay input {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
 }
 
 .media-img-wrapper {
@@ -89,7 +113,8 @@
     display: flex;
     justify-content: space-between;
     font-size: 0.85rem;
-    color: var(--text-light);
+    color: black;
+    --color: var(--text-light);
 }
 
 .media-actions {
@@ -190,4 +215,49 @@
     .media-actions {
         grid-template-columns: 1fr;
     }
+}
+
+/* Selection & Bulk Actions */
+.media-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.select-all-btn {
+    padding: 0.6rem 1.2rem;
+    border: 2px solid #3b82f6;
+    background: transparent;
+    color: #3b82f6;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.select-all-btn:hover {
+    background: #e0eeff;
+}
+
+.select-all-btn.active {
+    background: #3b82f6;
+    color: white;
+}
+
+.bulk-delete-btn {
+    padding: 0.6rem 1.2rem;
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    transition: all 0.2s;
+}
+
+.bulk-delete-btn:hover {
+    background: #dc2626;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(239, 68, 68, 0.4);
 }

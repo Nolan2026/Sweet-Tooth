@@ -31,10 +31,50 @@ router.get("/", async (req, res) => {
             },
             orderBy: { createdAt: 'desc' }
         });
-
         res.json(orders);
     } catch (error) {
         console.error("Error fetching orders:", error);
+        res.status(500).json({ message: "Error fetching orders", error: error.message });
+    }
+});
+
+// get Order Details with order id
+router.get("/:id", async (req, res) => {
+    const { id } = req.params;
+    try {
+
+        if (!id || isNaN(id)) {
+            return res.status(400).json({ message: "Invalid Order Id" });
+        }
+
+        const orderbyId = await prisma.order.findUnique({
+            where: {
+                id: Number(id)
+            },
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        username: true,
+                        email: true,
+                        phone: true,
+                        addresses: {
+                            select: {
+                                street: true,
+                                area: true,
+                                district: true,
+                                state: true,
+                                pinCode: true,
+                                country: true,
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        res.json(orderbyId);
+    } catch (error) {
+        console.error(`Error in Fetching Order By Id: ${id}`, error);
         res.status(500).json({ message: "Error fetching orders", error: error.message });
     }
 });
@@ -45,8 +85,19 @@ router.patch("/:id/status", async (req, res) => {
         const { id } = req.params;
         const { status } = req.body;
 
+        const orderId = parseInt(id);
+        if (isNaN(orderId)) {
+            return res.status(400).json({ message: "Invalid order ID" });
+        }
+
+        if (!status) {
+            return res.status(400).json({ message: "Status is required" });
+        }
+
+        console.log(`Updating order ${orderId} status to: ${status}`);
+
         const order = await prisma.order.update({
-            where: { id: parseInt(id) },
+            where: { id: orderId },
             data: { status }
         });
 

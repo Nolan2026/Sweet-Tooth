@@ -3,16 +3,16 @@
  * Provides validation and sanitization for user inputs
  */
 
-// Email validation
+// Email validation (Only Gmail allowed)
 export const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    const emailRegex = /^[^\s@]+@gmail\.com$/;
+    return emailRegex.test(email.toLowerCase());
 };
 
-// Phone validation (10-15 digits with optional country code)
+// Phone validation (10-15 digits)
 export const validatePhone = (phone) => {
-    const phoneRegex = /^[\d\s\-\+\(\)]{10,15}$/;
-    return phoneRegex.test(phone);
+    const phoneRegex = /^\d{10,15}$/;
+    return phoneRegex.test(phone.replace(/[\s\-\+\(\)]/g, ''));
 };
 
 // Password strength validation
@@ -56,7 +56,7 @@ export const validateRegistration = (req, res, next) => {
     }
 
     if (!validateEmail(email)) {
-        return res.status(400).json({ message: "Invalid email format" });
+        return res.status(400).json({ message: "Only Gmail addresses are accepted" });
     }
 
     if (!validatePassword(password)) {
@@ -66,7 +66,7 @@ export const validateRegistration = (req, res, next) => {
     }
 
     if (phone && !validatePhone(phone)) {
-        return res.status(400).json({ message: "Invalid phone number format" });
+        return res.status(400).json({ message: "Phone number must be exactly 10 digits" });
     }
 
     next();

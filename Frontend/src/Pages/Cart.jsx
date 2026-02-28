@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../Context/CartContext';
 import api from "../api/axios";
+import { useToast } from '../Context/ToastContext';
 import '../styles/Cart.css';
 
 function Cart() {
@@ -11,22 +12,68 @@ function Cart() {
   const [couponCode, setCouponCode] = React.useState('');
   const [discountData, setDiscountData] = React.useState(null);
   const [couponError, setCouponError] = React.useState('');
+  const [availableCoupons, setAvailableCoupons] = React.useState([]);
+  const { showToast } = useToast();
+
+  React.useEffect(() => {
+    fetchCoupons();
+  }, []);
+
+  // Monitor cart total and remove coupon if criteria no longer met
+  React.useEffect(() => {
+    if (discountData && availableCoupons.length > 0) {
+      const activeCoupon = availableCoupons.find(c => c.code === discountData.code);
+      if (activeCoupon && getCartTotal() < activeCoupon.minOrderValue) {
+        setDiscountData(null);
+        setCouponCode('');
+        showToast(`Coupon removed: Minimum order of ₹${activeCoupon.minOrderValue} required`, 'warning');
+      }
+    }
+  }, [cartItems, availableCoupons]);
+
+  const fetchCoupons = async () => {
+    try {
+      const res = await api.get('/coupons');
+      setAvailableCoupons(res.data);
+    } catch (err) {
+      console.error('Error fetching coupons:', err);
+    }
+  };
+
 
   const formatPrice = (p) => `₹${Math.round(p)}`;
 
-  const handleApplyCoupon = async () => {
+  const handleApplyCoupon = async (codeToApply) => {
+    const code = (codeToApply || couponCode).toUpperCase();
+    if (!code) return;
+
     setCouponError('');
+
+    // Quick local check for criteria
+    const coupon = availableCoupons.find(c => c.code === code);
+    if (coupon) {
+      if (getCartTotal() < coupon.minOrderValue) {
+        showToast(`This coupon requires a minimum order of ₹${coupon.minOrderValue}`, 'error');
+        return;
+      }
+    }
+
     try {
       const res = await api.post('/coupons/validate', {
-        code: couponCode.toUpperCase(),
+        code: code,
         cartTotal: getCartTotal()
       });
       setDiscountData(res.data);
+      setCouponCode(code);
+      showToast('Coupon applied successfully!', 'success');
     } catch (err) {
-      setCouponError(err.response?.data?.error || 'Invalid coupon');
+      const errorMsg = err.response?.data?.error || 'Invalid coupon';
+      setCouponError(errorMsg);
+      showToast(errorMsg, 'error');
       setDiscountData(null);
     }
   };
+
 
   const calculateFinalTotal = () => {
     const total = getCartTotal();
@@ -109,6 +156,31 @@ function Cart() {
                   </div>
                 </div>
               ))}
+            </div>
+          )}
+
+          {availableCoupons.length > 0 && cartItems.length > 0 && (
+            <div className="available-coupons">
+              <h3>Available Offers</h3>
+              <div className="coupons-grid">
+                {availableCoupons.map((coupon) => (
+                  <div
+                    key={coupon.id}
+                    className={`coupon-card ${discountData?.code === coupon.code ? 'applied' : ''}`}
+                    onClick={() => handleApplyCoupon(coupon.code)}
+                  >
+                    <div className="coupon-card-header">
+                      <span className="coupon-code">{coupon.code}</span>
+                      <span className="coupon-discount">
+                        {coupon.discountType === 'percentage' ? `${coupon.discountValue}% OFF` : `₹${coupon.discountValue} OFF`}
+                      </span>
+                    </div>
+                    <p>{coupon.discountType === 'percentage' ? `Get ${coupon.discountValue}% off on your order.` : `Flat ₹${coupon.discountValue} off on your sweet treats.`}</p>
+                    <p className="min-order">Min Order: ₹{coupon.minOrderValue}</p>
+                    <p style={{ fontSize: '0.7rem', opacity: 0.6 }}>Valid till: {new Date(coupon.expiryDate).toLocaleDateString()}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </main>

@@ -198,8 +198,8 @@ function Payment() {
                         {address ? (
                             <div className="address-card">
                                 <p><strong>{address.label}</strong></p>
-                                <p>{address.street}</p>
-                                <p>{address.city}, {address.state} - {address.zipCode}</p>
+                                <p>{address.street}, {address.area}</p>
+                                <p>{address.district}, {address.state} - {address.pinCode}</p>
                                 <p>{address.country}</p>
                                 <Link to="/profile" className="edit-addr-btn">Change Address</Link>
                             </div>

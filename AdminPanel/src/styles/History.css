@@ -30,7 +30,7 @@ h6 {
 .filters-section {
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 1.5rem;
   margin: 0 auto 2rem;
   padding: 1.5rem;
@@ -39,10 +39,8 @@ h6 {
   box-shadow: var(--shadow-md);
   flex-wrap: wrap;
   align-items: flex-end;
-  max-width: 1400px;
-  /* Increased width */
+  max-width: 1200px;
   width: 95%;
-  /* Responsive width */
 }
 
 .filter-group {
@@ -170,7 +168,7 @@ tbody tr:hover {
 
 /* Button Styling */
 button {
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 0.8rem;
   margin: 0.25rem;
   border: none;
   border-radius: var(--border-radius-sm);
@@ -180,6 +178,11 @@ button {
   transition: all var(--transition-base);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  min-width: 90px;
+  /* Same size for all buttons */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .view-btn {
@@ -204,7 +207,33 @@ button {
   box-shadow: 0 4px 10px rgba(239, 68, 68, 0.4);
 }
 
+.print-btn {
+  background: #4ade80;
+  color: white;
+  border-radius: 5px !important;
+  box-shadow: 0 2px 6px rgba(74, 222, 128, 0.3);
+}
+
+.print-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(74, 222, 128, 0.4);
+}
+
+@media (max-width: 1024px) {
+  .filters-section {
+    justify-content: center;
+  }
+}
+
 @media (max-width: 768px) {
+  .billHead {
+    font-size: 1.5rem;
+  }
+
+  .arrow {
+    margin-left: 20px !important;
+  }
+
   .bill-table {
     margin: 0;
     width: 100%;
@@ -212,17 +241,41 @@ button {
   }
 
   table {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
   }
 
   thead th,
   tbody td {
-    padding: 0.75rem 0.5rem;
+    padding: 0.75rem 0.4rem;
   }
 
   .filters-section {
     flex-direction: column;
     align-items: stretch;
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .filter-group input,
+  .filter-group select {
+    min-width: unset;
+    width: 100%;
+  }
+
+  .apply-filter-btn {
+    width: 100%;
+  }
+
+  .btns {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.5rem 0;
+  }
+
+  button {
+    width: 100%;
+    margin: 2px 0;
   }
 }
 
@@ -234,8 +287,10 @@ button {
   left: 50%;
   transform: translate(-50%, -50%);
   width: 90%;
-  max-width: 600px;
-  padding: 2rem;
+  max-width: 450px;
+  /* Reduced from 600px */
+  padding: 1.25rem;
+  /* Reduced from 2rem */
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-lg);
   background: var(--bg-card);
@@ -247,13 +302,16 @@ button {
 
 .bill-view h3 {
   font-weight: 800;
-  font-size: 1.5rem;
+  font-size: 1.1rem;
+  /* Reduced from 1.5rem */
   margin-top: 0;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
+  /* Reduced from 1.5rem */
   color: var(--primary-dark);
   text-align: center;
   border-bottom: 2px solid var(--border-color);
-  padding-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  /* Reduced from 1rem */
 }
 
 .exit {
@@ -272,12 +330,16 @@ button {
 }
 
 .bill-view p {
-  margin: 0.75rem 0;
+  margin: 0.4rem 0;
+  /* Reduced from 0.75rem */
   color: var(--text-primary);
   font-weight: 600;
+  font-size: 0.85rem;
+  /* Added smaller font size */
   display: flex;
   justify-content: space-between;
-  padding: 0.5rem;
+  padding: 0.35rem;
+  /* Reduced from 0.5rem */
   background: var(--bg-light);
   border-radius: var(--border-radius-sm);
 }
@@ -290,9 +352,11 @@ button {
 
 /* Detailed Bill Table */
 .view-table {
-  width: 100%;
+  width: 90%;
+  /* Reduced width to fit data better */
+  margin: 1rem auto 0;
+  /* Center the table */
   border-collapse: collapse;
-  margin-top: 1.5rem;
   border-radius: var(--border-radius-sm);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
@@ -300,9 +364,29 @@ button {
 
 .view-table th,
 .view-table td {
-  padding: 0.875rem;
+  padding: 0.4rem;
+  /* Tightened padding */
   text-align: center;
+  font-size: 0.75rem;
+  /* Slightly smaller font */
   border: 1px solid var(--border-color);
+}
+
+/* Specific alignments for better data fit */
+.view-table th:first-child,
+.view-table td:first-child {
+  text-align: left;
+  /* Item name left aligned */
+  padding-left: 0.75rem;
+}
+
+.view-table th:last-child,
+.view-table td:last-child,
+.view-table th:nth-child(3),
+.view-table td:nth-child(3) {
+  text-align: right;
+  /* Rates and Amounts right aligned */
+  padding-right: 0.75rem;
 }
 
 .view-table th {
@@ -315,4 +399,46 @@ button {
 
 .view-table tr:nth-child(even) {
   background: var(--bg-light);
+}
+
+/* Print Styling */
+.print-only-bill {
+  display: none;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .print-only-bill,
+  .print-only-bill * {
+    visibility: visible;
+  }
+
+  .print-only-bill {
+    display: block !important;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+    background: white;
+  }
+
+  /* Reset some table borders for better clarity on paper */
+  .print-only-bill table,
+  .print-only-bill th,
+  .print-only-bill td {
+    border: 1px solid #000 !important;
+    color: #000 !important;
+  }
+
+  /* Ensure colors that represent branding are somewhat preserved if printer supports it */
+  .print-only-bill h1 {
+    color: #ff69b4 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 }

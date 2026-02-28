@@ -3,6 +3,24 @@ import prisma from "../../prismaClient.js";
 
 const router = express.Router();
 
+// Fetch all active, non-expired coupons
+router.get("/", async (req, res) => {
+    try {
+        const coupons = await prisma.coupon.findMany({
+            where: {
+                active: true,
+                expiryDate: {
+                    gt: new Date()
+                }
+            }
+        });
+        res.json(coupons);
+    } catch (error) {
+        console.error("Error fetching coupons:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
 // Validate and apply coupon
 router.post("/validate", async (req, res) => {
     try {

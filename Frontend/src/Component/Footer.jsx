@@ -35,12 +35,12 @@ function Footer() {
                 </div>
 
                 <div className="footer-links">
-                    <h3>Collections</h3>
+                    <h3>Legal</h3>
                     <ul>
-                        <li><Link to="/">Ghee Sweets</Link></li>
-                        <li><Link to="/">Milk Delicacies</Link></li>
-                        <li><Link to="/">Premium Dry Fruits</Link></li>
-                        <li><Link to="/">Artisanal Snacks</Link></li>
+                        <li><Link to="/privacy-policy">Privacy Policy</Link></li>
+                        <li><Link to="/shipping-policy">Shipping Policy</Link></li>
+                        <li><Link to="/terms-and-conditions">Terms & Conditions</Link></li>
+                        <li><Link to="/return-refund-policy">Return & Refund</Link></li>
                     </ul>
                 </div>
 

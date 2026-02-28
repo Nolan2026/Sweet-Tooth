@@ -42,9 +42,15 @@
 }
 
 .profile-info p {
-    margin: 5px 0 0;
-    color: #888;
-    font-size: 1.1rem;
+    margin: 8px 0 0;
+    color: #4b5563;
+    /* Darker color for better readability */
+    font-size: 1.05rem;
+    background: #fdf2f2;
+    /* Light peach/red background to highlight */
+    padding: 8px 15px;
+    border-radius: 10px;
+    display: inline-block;
 }
 
 .profile-sections {
@@ -238,10 +244,20 @@
     color: #e71d36;
 }
 
+.address-body {
+    background: #f9fafb;
+    /* Subtle background for the data area */
+    padding: 12px;
+    border-radius: 12px;
+    margin-top: 10px;
+}
+
 .address-body p {
-    margin: 4px 0;
-    color: #555;
-    font-size: 1rem;
+    margin: 6px 0;
+    color: #2d3436;
+    /* High contrast color */
+    font-size: 0.95rem;
+    font-weight: 500;
 }
 
 .order-list {
@@ -260,9 +276,22 @@
     border: 1px solid #f1f1f1;
 }
 
+.order-details {
+    background: #f0f7ff;
+    /* Light blue background for order data */
+    padding: 10px 15px;
+    border-radius: 12px;
+    flex: 1;
+}
+
 .order-details p {
     margin: 3px 0;
     font-size: 0.95rem;
+    color: #1e293b;
+}
+
+.order-details p strong {
+    color: #2563eb;
 }
 
 .order-status {

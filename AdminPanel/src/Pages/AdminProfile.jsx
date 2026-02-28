@@ -22,7 +22,13 @@ export default function AdminProfile() {
         whatsapp: "",
         business_email: "",
         instagram_url: "",
-        facebook_url: ""
+        facebook_url: "",
+        smtp_email: "",
+        smtp_password: "",
+        order_receiver: "",
+        cod_limit: "",
+        upi_id: "",
+        upi_message: ""
     });
 
     const DEFAULT_IMAGES = {
@@ -50,7 +56,13 @@ export default function AdminProfile() {
                     whatsapp: res.data.whatsapp || "",
                     business_email: res.data.business_email || "",
                     instagram_url: res.data.instagram_url || "",
-                    facebook_url: res.data.facebook_url || ""
+                    facebook_url: res.data.facebook_url || "",
+                    smtp_email: res.data.smtp_email || "",
+                    smtp_password: "", // Always clear password field for security
+                    order_receiver: res.data.order_receiver || "",
+                    cod_limit: res.data.cod_limit || "",
+                    upi_id: res.data.upi_id || "",
+                    upi_message: res.data.upi_message || ""
                 });
             }
         } catch (err) {
@@ -80,6 +92,16 @@ export default function AdminProfile() {
         fd.append("business_email", form.business_email);
         fd.append("instagram_url", form.instagram_url);
         fd.append("facebook_url", form.facebook_url);
+        fd.append("smtp_email", form.smtp_email);
+        fd.append("order_receiver", form.order_receiver);
+        fd.append("cod_limit", form.cod_limit);
+        fd.append("upi_id", form.upi_id);
+        fd.append("upi_message", form.upi_message);
+
+
+        if (form.smtp_password) {
+            fd.append("smtp_password", form.smtp_password);
+        }
 
         Object.keys(images).forEach(k => fd.append(k, images[k]));
 
@@ -197,6 +219,70 @@ export default function AdminProfile() {
                             value={form.facebook_url}
                             onChange={e => setForm({ ...form, facebook_url: e.target.value })}
                         />
+                    </div>
+
+                    <div className="input-group">
+                        <label>Company Email (Sender)</label>
+                        <input
+                            type="email"
+                            placeholder="Email to send OTP/Orders"
+                            value={form.smtp_email}
+                            onChange={e => setForm({ ...form, smtp_email: e.target.value })}
+                            autoComplete="off"
+                        />
+                    </div>
+
+                    <div className="input-group">
+                        <label>Company Email Password</label>
+                        <input
+                            type="password"
+                            placeholder="App Password for Gmail"
+                            value={form.smtp_password}
+                            onChange={e => setForm({ ...form, smtp_password: e.target.value })}
+                            autoComplete="new-password"
+                        />
+                        <small style={{ color: '#666', fontSize: '11px' }}>Only enter if you want to update it. This is secured.</small>
+                    </div>
+
+                    <div className="input-group">
+                        <label>Order Receiver Email</label>
+                        <input
+                            type="email"
+                            placeholder="Email to receive order data"
+                            value={form.order_receiver}
+                            onChange={e => setForm({ ...form, order_receiver: e.target.value })}
+                        />
+                    </div>
+
+                    <div className="input-group">
+                        <label>COD Order Limit (₹)</label>
+                        <input
+                            type="number"
+                            placeholder="e.g. 1000"
+                            value={form.cod_limit}
+                            onChange={e => setForm({ ...form, cod_limit: e.target.value })}
+                        />
+                        <small style={{ color: '#666', fontSize: '11px' }}>Maximum amount allowed for Cash on Delivery</small>
+                    </div>
+
+                    <div className="input-group">
+                        <label>UPI ID (for payments)</label>
+                        <input
+                            placeholder="e.g. yourname@upi"
+                            value={form.upi_id}
+                            onChange={e => setForm({ ...form, upi_id: e.target.value })}
+                        />
+                        <small style={{ color: '#666', fontSize: '11px' }}>Used for QR code generation on bills</small>
+                    </div>
+
+                    <div className="input-group">
+                        <label>UPI Message / Note</label>
+                        <input
+                            placeholder="e.g. Thanks for shopping"
+                            value={form.upi_message}
+                            onChange={e => setForm({ ...form, upi_message: e.target.value })}
+                        />
+                        <small style={{ color: '#666', fontSize: '11px' }}>Short note that appears in the QR payment</small>
                     </div>
                 </div>
 

@@ -69,15 +69,9 @@ function Header() {
             </div>
           </button>
           <Link to="/" className="logo-link">
-            {profile?.frontend_logo ? (
-              <img
-                src={`${BASE}/uploads/${profile.frontend_logo}`}
-                alt={profile.business_name}
-                className="header-logo-img"
-              />
-            ) : (
+            {
               <h1 className="logo-text">{profile?.business_name && profile.business_name !== "" ? profile.business_name : "Sweet Tooth"}</h1>
-            )}
+            }
           </Link>
         </div>
 

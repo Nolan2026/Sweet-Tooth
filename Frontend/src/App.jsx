@@ -13,6 +13,10 @@ import Payment from './Pages/Payment';
 import Footer from './Component/Footer';
 import ForgotPassword from './Pages/ForgotPassword';
 import ResetPassword from './Pages/ResetPassword';
+import PrivacyPolicy from './Pages/PrivacyPolicy';
+import ShippingPolicy from './Pages/ShippingPolicy';
+import TermsAndConditions from './Pages/TermsAndConditions';
+import RefundPolicy from './Pages/RefundPolicy';
 import './App.css';
 
 function App() {
@@ -33,6 +37,10 @@ function App() {
                 <Route path="/payment" element={<Payment />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/shipping-policy" element={<ShippingPolicy />} />
+                <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+                <Route path="/return-refund-policy" element={<RefundPolicy />} />
               </Routes>
             </main>
             <Footer />

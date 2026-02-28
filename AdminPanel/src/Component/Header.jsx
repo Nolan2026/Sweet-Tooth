@@ -76,17 +76,9 @@ function Header() {
   return (
     <header className="head">
       <div className="admin-logo-section" onClick={gohome}>
-        {profile?.backend_logo ? (
-          <img
-            src={`${BASE}/uploads/${profile.backend_logo}`}
-            alt={profile.business_name}
-            className="admin-header-logo"
-          />
-        ) : (
           <h2 className="gradient-text">
             {profile?.business_name && profile.business_name !== "" ? `${profile.business_name} Admin` : "Sweet Tooth"}
           </h2>
-        )}
       </div>
 
       {/* Hamburger Menu */}

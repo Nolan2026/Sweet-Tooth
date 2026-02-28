@@ -1,12 +1,43 @@
-# React + Vite
+# Sweet Tooth - Admin Panel
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the administrative interface for the Sweet Tooth e-commerce platform. It allows administrators to manage products, orders, customers, and business settings.
 
-Currently, two official plugins are available:
+## 🚀 Features
+- **Dashboard**: Overview of orders and revenue.
+- **Order Management**: Process and update order statuses.
+- **Inventory Control**: Add, edit, and toggle product availability.
+- **Billing**: Manage in-store sales and billing.
+- **Employee Management**: Track attendance and employee details.
+- **Reports**: Generate business reports and summaries.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🛠️ Getting Started
 
-## Expanding the ESLint configuration
+### Prerequisites
+- Node.js v16+
+- Backend service running at `http://localhost:5016` (configure in `.env`)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Setup
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Configure environment:
+   Create a `.env` file:
+   ```env
+   VITE_API_BASE_URL=http://localhost:5016
+   ```
+3. Run in development:
+   ```bash
+   npm run dev
+   ```
+
+## 🏗️ Building for Production
+```bash
+npm run build
+```
+The production-ready files will be in the `/dist` directory.
+
+## 🔒 Security
+- Authentication required via Admin JWT token.
+- Role-based access control implemented on the backend.
+- Secure API communication via Axios.

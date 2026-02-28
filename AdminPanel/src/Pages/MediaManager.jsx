@@ -3,17 +3,22 @@ import api from '../api/axios';
 import { useToast } from '../Context/ToastContext';
 import { useConfirm } from '../Context/ConfirmContext';
 import '../styles/Media.css';
+import { useNavigate } from 'react-router-dom';
 
 const MediaManager = () => {
     const [images, setImages] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [selectedImages, setSelectedImages] = useState([]);
     const { showToast } = useToast();
     const confirm = useConfirm();
+
+    const navigate = useNavigate();
 
     const fetchImages = async () => {
         try {
             const res = await api.get('/admin/media');
             setImages(res.data);
+            setSelectedImages([]); // Reset selection on fetch
         } catch (err) {
             showToast("Failed to fetch images", "error");
         } finally {
@@ -24,6 +29,22 @@ const MediaManager = () => {
     useEffect(() => {
         fetchImages();
     }, []);
+
+    const toggleSelect = (filename) => {
+        setSelectedImages(prev =>
+            prev.includes(filename)
+                ? prev.filter(f => f !== filename)
+                : [...prev, filename]
+        );
+    };
+
+    const toggleSelectAll = () => {
+        if (selectedImages.length === images.length) {
+            setSelectedImages([]);
+        } else {
+            setSelectedImages(images.map(img => img.filename));
+        }
+    };
 
     const handleDelete = async (filename) => {
         const isConfirmed = await confirm(
@@ -37,8 +58,29 @@ const MediaManager = () => {
             await api.delete(`/admin/media/${filename}`);
             showToast("Image deleted successfully", "success");
             setImages(images.filter(img => img.filename !== filename));
+            setSelectedImages(selectedImages.filter(f => f !== filename));
         } catch (err) {
             showToast("Delete failed", "error");
+        }
+    };
+
+    const handleBulkDelete = async () => {
+        if (selectedImages.length === 0) return;
+
+        const isConfirmed = await confirm(
+            "Bulk Delete",
+            `Are you sure you want to delete ${selectedImages.length} selected images? This action cannot be undone.`
+        );
+
+        if (!isConfirmed) return;
+
+        try {
+            await api.post('/admin/media/bulk-delete', { filenames: selectedImages });
+            showToast(`Successfully deleted ${selectedImages.length} images`, "success");
+            setImages(images.filter(img => !selectedImages.includes(img.filename)));
+            setSelectedImages([]);
+        } catch (err) {
+            showToast("Bulk delete failed", "error");
         }
     };
 
@@ -63,8 +105,31 @@ const MediaManager = () => {
     return (
         <div className="media-manager-container">
             <div className="media-header">
-                <h1>Media Gallery</h1>
-                <p>Manage and organize all your business images in one place</p>
+                    <span onClick={() => { navigate("/admin/profile") }} className="arrow">⬅ <h6>Back to Profile</h6></span>
+                <div>
+                    <h1>Media Gallery</h1>
+                    <p>Manage and organize all your business images in one place</p>
+                </div>
+
+                {images.length > 0 && (
+                    <div className="media-controls">
+                        <button
+                            className={`select-all-btn ${selectedImages.length === images.length ? 'active' : ''}`}
+                            onClick={toggleSelectAll}
+                        >
+                            {selectedImages.length === images.length ? 'Unselect All' : 'Select All'}
+                        </button>
+
+                        {selectedImages.length > 0 && (
+                            <button
+                                className="bulk-delete-btn"
+                                onClick={handleBulkDelete}
+                            >
+                                Delete Selected ({selectedImages.length})
+                            </button>
+                        )}
+                    </div>
+                )}
             </div>
 
             {loading ? (
@@ -75,8 +140,15 @@ const MediaManager = () => {
             ) : (
                 <div className="media-grid">
                     {images.map((img) => (
-                        <div key={img.filename} className="media-card">
-                            <div className="media-img-wrapper">
+                        <div key={img.filename} className={`media-card ${selectedImages.includes(img.filename) ? 'selected' : ''}`}>
+                            <div className="media-select-overlay" onClick={() => toggleSelect(img.filename)}>
+                                <input
+                                    type="checkbox"
+                                    checked={selectedImages.includes(img.filename)}
+                                    onChange={() => { }} // Controlled by parent div click
+                                />
+                            </div>
+                            <div className="media-img-wrapper" onClick={() => toggleSelect(img.filename)}>
                                 <img
                                     src={`${api.defaults.baseURL}${img.url}`}
                                     alt={img.filename}
@@ -103,7 +175,10 @@ const MediaManager = () => {
                                 </label>
                                 <button
                                     className="delete-media-btn"
-                                    onClick={() => handleDelete(img.filename)}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDelete(img.filename);
+                                    }}
                                 >
                                     Delete
                                 </button>

@@ -95,9 +95,10 @@ Stores user delivery addresses.
 | label   | VARCHAR(20)  | DEFAULT 'Home'    | Address label (Home/Office)    |
 | userId  | INT          | FK, NOT NULL      | Reference to User.id           |
 | street  | VARCHAR(100) | NOT NULL          | Street address                 |
-| city    | VARCHAR(50)  | NOT NULL          | City name                      |
-| state   | VARCHAR(50)  | NOT NULL          | State/Province                 |
-| zipCode | VARCHAR(10)  | NOT NULL          | Postal code                    |
+| area    | VARCHAR(100) | NOT NULL          | Area/Locality                  |
+| district| VARCHAR(50)  | NOT NULL          | District/City                  |
+| state   | VARCHAR(50)  | NOT NULL          | State                          |
+| pinCode | VARCHAR(10)  | NOT NULL          | Postal PIN code                |
 | country | VARCHAR(50)  | NOT NULL          | Country name                   |
 
 **Relationships:**
@@ -314,6 +315,9 @@ Stores business profile and branding settings.
 | phone              | TEXT        | NULLABLE          | Business phone                 |
 | whatsapp           | TEXT        | NULLABLE          | WhatsApp number                |
 | business_email     | TEXT        | NULLABLE          | Business email                 |
+| smtp_email         | TEXT        | NULLABLE          | SMTP sender email              |
+| smtp_password      | TEXT        | NULLABLE          | SMTP password (encrypted)       |
+| order_receiver     | TEXT        | NULLABLE          | Admin email for notifications  |
 | instagram_url      | TEXT        | NULLABLE          | Instagram profile              |
 | facebook_url       | TEXT        | NULLABLE          | Facebook page                  |
 | frontend_logo      | TEXT        | NULLABLE          | Customer site logo path        |
@@ -321,6 +325,9 @@ Stores business profile and branding settings.
 | business_logo      | TEXT        | NULLABLE          | General business logo          |
 | Collections_image  | TEXT        | NULLABLE          | Collections page image         |
 | OurStory_image     | TEXT        | NULLABLE          | About page image               |
+| cod_limit          | INT         | DEFAULT 1000      | Max amount for COD orders      |
+| upi_id             | TEXT        | NULLABLE          | VPA/UPI ID for QR payments     |
+| upi_message        | TEXT        | NULLABLE          | Default message on QR scan     |
 | created_at         | TIMESTAMP   | DEFAULT NOW()     | Profile creation               |
 | updated_at         | TIMESTAMP   | AUTO_UPDATE       | Last update                    |
 

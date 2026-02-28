@@ -80,20 +80,26 @@ a {
 .input-group textarea {
     width: 100%;
     padding: 0.875rem 1rem;
-    border: 2px solid var(--border-color);
+    border: 2px solid #e2e8f0;
+    /* More defined border */
     border-radius: var(--border-radius-sm);
     font-size: 1rem;
     transition: all 0.2s ease;
-    background: var(--bg-light);
-    color: var(--text-primary);
+    background: #f8fafc;
+    /* Subtle light blue/gray background to highlight data area */
+    color: #1e293b;
+    /* Stronger text color */
+    font-weight: 500;
 }
 
 .input-group input:focus,
 .input-group textarea:focus {
     outline: none;
-    border-color: var(--primary-dark);
-    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-    background: var(--bg-card);
+    border-color: #6366f1;
+    /* More distinct focus color */
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    background: white;
+    /* Flip to white on focus to show active state */
 }
 
 .images-grid {

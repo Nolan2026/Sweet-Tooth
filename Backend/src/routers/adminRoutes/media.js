@@ -17,7 +17,7 @@ router.get("/", authenticateAdmin, async (req, res) => {
         const files = fs.readdirSync(uploadDir);
         const images = files.filter(file => {
             const ext = path.extname(file).toLowerCase();
-            return [".jpg", ".jpeg", ".png", ".webp", ".gif"].includes(ext);
+            return [".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif", ".svg"].includes(ext);
         }).map(file => ({
             filename: file,
             url: `/uploads/${file}`,
@@ -50,6 +50,42 @@ router.delete("/:filename", authenticateAdmin, async (req, res) => {
     } catch (error) {
         console.error("Error deleting media:", error);
         res.status(500).json({ message: "Error deleting media" });
+    }
+});
+
+// Bulk delete images
+router.post("/bulk-delete", authenticateAdmin, async (req, res) => {
+    try {
+        const { filenames } = req.body;
+        if (!Array.isArray(filenames)) {
+            return res.status(400).json({ message: "Invalid request. Expected array of filenames." });
+        }
+
+        const deleted = [];
+        const failed = [];
+
+        filenames.forEach(filename => {
+            try {
+                const filePath = path.join(uploadDir, filename);
+                if (fs.existsSync(filePath)) {
+                    fs.unlinkSync(filePath);
+                    deleted.push(filename);
+                } else {
+                    failed.push({ filename, reason: "File not found" });
+                }
+            } catch (err) {
+                failed.push({ filename, reason: err.message });
+            }
+        });
+
+        res.json({
+            message: `Deleted ${deleted.length} files. ${failed.length} failed.`,
+            deleted,
+            failed
+        });
+    } catch (error) {
+        console.error("Error bulk deleting media:", error);
+        res.status(500).json({ message: "Error during bulk delete" });
     }
 });
 

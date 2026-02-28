@@ -2,20 +2,28 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../styles/Profile.css';
 import profileAvatar from '../assets/profile_avatar.png';
+import { useToast } from '../Context/ToastContext';
 
 const Profile = () => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [editingId, setEditingId] = useState(null);
+    const { showToast } = useToast();
     const [formData, setFormData] = useState({
         label: 'Home',
         street: '',
-        city: '',
+        area: '',
+        district: '',
         state: '',
-        zipCode: '',
-        country: ''
+        pinCode: '',
+        country: 'India'
     });
+
+    const countries = [
+        "India", "United States", "United Kingdom", "United Arab Emirates", "Canada", "Australia", "Singapore", "Germany", "France", "Italy", "Japan", "South Korea", "China", "Brazil", "Russia", "South Africa", "Saudi Arabia", "Qatar", "Kuwait", "Oman", "Bahrain", "Malaysia", "Thailand", "Indonesia", "Vietnam", "Philippines", "New Zealand", "Netherlands", "Switzerland", "Spain", "Portugal", "Mexico", "Argentina", "Chile", "Colombia", "Peru", "Egypt", "Nigeria", "Kenya", "Ghana", "Turkey", "Israel", "Norway", "Sweden", "Denmark", "Finland", "Ireland", "Belgium", "Austria", "Greece"
+    ]; // Truncated but sufficient for now or I can add more if needed. Let's add more common ones.
+
 
     const fetchProfile = async () => {
         try {
@@ -58,11 +66,12 @@ const Profile = () => {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
-            showToast(editingId ? 'Address updated!' : 'Address added!', 'success');
-            setShowForm(false);
-            setEditingId(null);
-            setFormData({ label: 'Home', street: '', city: '', state: '', zipCode: '', country: '' });
-            fetchProfile();
+            showToast(editingId ? 'Address updated successfully!' : 'Address added successfully!', 'success');
+
+            // Immediate refresh for better UX
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
         } catch (error) {
             console.error('Error saving address:', error);
             showToast('Failed to save address.', 'error');
@@ -73,9 +82,10 @@ const Profile = () => {
         setFormData({
             label: addr.label,
             street: addr.street,
-            city: addr.city,
+            area: addr.area || '',
+            district: addr.district || '',
             state: addr.state,
-            zipCode: addr.zipCode,
+            pinCode: addr.pinCode || '',
             country: addr.country
         });
         setEditingId(addr.id);
@@ -155,7 +165,7 @@ const Profile = () => {
                                 onClick={() => {
                                     setShowForm(!showForm);
                                     setEditingId(null);
-                                    setFormData({ label: 'Home', street: '', city: '', state: '', zipCode: '', country: '' });
+                                    setFormData({ label: 'Home', street: '', area: '', district: '', state: '', pinCode: '', country: 'India' });
                                 }}
                             >
                                 {showForm ? 'Cancel' : '+ Add New'}
@@ -182,12 +192,21 @@ const Profile = () => {
                                 </div>
                                 <div className="grid-2">
                                     <div className="form-group">
-                                        <label>City</label>
+                                        <label>Area</label>
                                         <input
-                                            type="text" name="city" value={formData.city}
+                                            type="text" name="area" value={formData.area}
                                             onChange={handleChange} className="profile-input" required
                                         />
                                     </div>
+                                    <div className="form-group">
+                                        <label>District</label>
+                                        <input
+                                            type="text" name="district" value={formData.district}
+                                            onChange={handleChange} className="profile-input" required
+                                        />
+                                    </div>
+                                </div>
+                                <div className="grid-2">
                                     <div className="form-group">
                                         <label>State</label>
                                         <input
@@ -195,22 +214,23 @@ const Profile = () => {
                                             onChange={handleChange} className="profile-input" required
                                         />
                                     </div>
+                                    <div className="form-group">
+                                        <label>Pin Code</label>
+                                        <input
+                                            type="text" name="pinCode" value={formData.pinCode}
+                                            onChange={handleChange} className="profile-input" required
+                                        />
+                                    </div>
                                 </div>
-                                <div className="grid-2">
-                                    <div className="form-group">
-                                        <label>Zip Code</label>
-                                        <input
-                                            type="text" name="zipCode" value={formData.zipCode}
-                                            onChange={handleChange} className="profile-input" required
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Country</label>
-                                        <input
-                                            type="text" name="country" value={formData.country}
-                                            onChange={handleChange} className="profile-input" required
-                                        />
-                                    </div>
+                                <div className="form-group">
+                                    <label>Country</label>
+                                    <select
+                                        name="country" value={formData.country}
+                                        onChange={handleChange} className="profile-input" required
+                                    >
+                                        <option value="">Select Country</option>
+                                        {countries.sort().map(c => <option key={c} value={c}>{c}</option>)}
+                                    </select>
                                 </div>
                                 <button type="submit" className="update-btn">
                                     {editingId ? 'Save Changes' : 'Add Address'}
@@ -230,8 +250,8 @@ const Profile = () => {
                                             </div>
                                         </div>
                                         <div className="address-body">
-                                            <p>{addr.street}</p>
-                                            <p>{addr.city}, {addr.state} {addr.zipCode}</p>
+                                            <p>{addr.street}, {addr.area}</p>
+                                            <p>{addr.district}, {addr.state} - {addr.pinCode}</p>
                                             <p>{addr.country}</p>
                                         </div>
                                     </div>

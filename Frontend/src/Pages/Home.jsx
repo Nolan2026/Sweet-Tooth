@@ -164,12 +164,20 @@ function Home() {
 
   const API_BASE = api.defaults.baseURL;
 
-  const groupByCategory = (items = []) =>
-    items.reduce((acc, item) => {
+  const groupByCategory = (items = []) => {
+    const grouped = items.reduce((acc, item) => {
       acc[item.category] = acc[item.category] || [];
       acc[item.category].push(item);
       return acc;
     }, {});
+
+    // Sort items within each category: available first, out-of-stock last
+    Object.keys(grouped).forEach(category => {
+      grouped[category].sort((a, b) => Number(b.isavailable) - Number(a.isavailable));
+    });
+
+    return grouped;
+  };
 
   const groupedData = groupByCategory(data);
 

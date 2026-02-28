@@ -6,10 +6,17 @@ const authenticateAdmin = (req, res, next) => {
 
     if (!token) return res.status(401).json({ message: "Access denied. No token provided." });
 
-    jwt.verify(token, process.env.JWT_SECRET || "default_secret", (err, user) => {
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+        if (process.env.NODE_ENV === 'production') {
+            return res.status(500).json({ message: "Internal server error: Security configuration missing" });
+        }
+        console.warn("WARNING: JWT_SECRET not set, using default for development only");
+    }
+
+    jwt.verify(token, secret || "default_secret", (err, user) => {
         if (err) return res.status(403).json({ message: "Invalid or expired token." });
 
-        // You could also check for an 'isAdmin' flag here if your JWT payload has it
         req.user = user;
         next();
     });

@@ -86,36 +86,36 @@ export default function Orders() {
 
                 </div>
                 <div className="filter-layout">
-                <div className="filter-group">
-                    <label>Status:</label>
-                    <select
-                        value={filter.status}
-                        onChange={(e) => setFilter({ ...filter, status: e.target.value })}
-                    >
-                        <option value="">All</option>
-                        <option value="Pending">Pending</option>
-                        <option value="Delivered">Delivered</option>
-                        <option value="Cancelled">Cancelled</option>
-                    </select>
-                </div>
+                    <div className="filter-group">
+                        <label>Status:</label>
+                        <select
+                            value={filter.status}
+                            onChange={(e) => setFilter({ ...filter, status: e.target.value })}
+                        >
+                            <option value="">All</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
 
-                <div className="filter-group">
-                    <label>From:</label>
-                    <input
-                        type="date"
-                        value={filter.startDate}
-                        onChange={(e) => setFilter({ ...filter, startDate: e.target.value })}
-                    />
-                </div>
+                    <div className="filter-group">
+                        <label>From:</label>
+                        <input
+                            type="date"
+                            value={filter.startDate}
+                            onChange={(e) => setFilter({ ...filter, startDate: e.target.value })}
+                        />
+                    </div>
 
-                <div className="filter-group">
-                    <label>To:</label>
-                    <input
-                        type="date"
-                        value={filter.endDate}
-                        onChange={(e) => setFilter({ ...filter, endDate: e.target.value })}
-                    />
-                </div>
+                    <div className="filter-group">
+                        <label>To:</label>
+                        <input
+                            type="date"
+                            value={filter.endDate}
+                            onChange={(e) => setFilter({ ...filter, endDate: e.target.value })}
+                        />
+                    </div>
                 </div>
 
                 <button onClick={fetchOrders} className="apply-filter-btn">
@@ -136,8 +136,17 @@ export default function Orders() {
                             <div key={order.id} className="order-card">
                                 <div className="order-header">
                                     <div className="order-id">Order #{order.id}</div>
-                                    <div className={`order-status status-${order.status.toLowerCase()}`}>
-                                        {order.status}
+                                    <div className="header-actions">
+                                        <div className={`order-status status-${order.status.toLowerCase()}`}>
+                                            {order.status}
+                                        </div>
+                                        <button
+                                            className="order-delete-btn-sm"
+                                            onClick={() => handleDelete(order.id)}
+                                            title="Delete Record"
+                                        >
+                                            Delete
+                                        </button>
                                     </div>
                                 </div>
 
@@ -168,32 +177,42 @@ export default function Orders() {
                                             </li>
                                         ))}
                                     </ul>
+                                    {(() => {
+                                        const subtotal = order.items.reduce((acc, item) => acc + item.subtotal, 0);
+                                        const discount = subtotal - order.total;
+                                        if (discount > 0) {
+                                            return (
+                                                <div className="order-breakdown" style={{ fontSize: '0.85rem', color: '#666', borderTop: '1px dashed #eee', marginTop: '5px', paddingTop: '5px' }}>
+                                                    <div>Subtotal: ₹{subtotal}</div>
+                                                    <div style={{ color: '#e71d36' }}>Discount: -₹{discount}</div>
+                                                </div>
+                                            );
+                                        }
+                                        return null;
+                                    })()}
                                 </div>
 
-                                <div className="addres">
-                                    <strong>Street <span>{order.user.addresses[0]?.street}</span></strong>
-                                    <strong>City <span>{order.user.addresses[0]?.city}</span></strong>
-                                    <strong>State <span>{order.user.addresses[0]?.state}</span></strong>
-                                    <strong>Zipcode <span>{order.user.addresses[0]?.zipCode}</span></strong>
+                                <div className="address-compact">
+                                    <div className="addr-field"><strong>STREET:</strong> {order.user.addresses?.[0]?.street}</div>
+                                    <div className="addr-field"><strong>AREA:</strong> {order.user.addresses?.[0]?.area}</div>
+                                    <div className="addr-field"><strong>DISTRICT:</strong> {order.user.addresses?.[0]?.district}</div>
+                                    <div className="addr-field"><strong>STATE:</strong> {order.user.addresses?.[0]?.state}</div>
+                                    <div className="addr-field"><strong>PINCODE:</strong> {order.user.addresses?.[0]?.pinCode}</div>
                                 </div>
 
-                                <div className="order-actions">
-                                    <label>Update Status:</label>
-                                    <select
-                                        value={order.status}
-                                        onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                                        disabled={order.status === "Cancelled"}
-                                    >
-                                        <option value="Pending">Pending</option>
-                                        <option value="Delivered">Delivered</option>
-                                        <option value="Cancelled">Cancelled</option>
-                                    </select>
-                                    <button
-                                        className="order-delete-btn"
-                                        onClick={() => handleDelete(order.id)}
-                                    >
-                                        Delete Record
-                                    </button>
+                                <div className="order-actions-row">
+                                    <div className="status-update-box">
+                                        <label>Status:</label>
+                                        <select
+                                            value={order.status}
+                                            onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                                            disabled={order.status === "Cancelled"}
+                                        >
+                                            <option value="Pending">Pending</option>
+                                            <option value="Delivered">Delivered</option>
+                                            <option value="Cancelled">Cancelled</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         ))

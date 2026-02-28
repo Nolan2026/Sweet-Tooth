@@ -5,8 +5,20 @@ import path from "path";
 import prisma from "../../prismaClient.js";
 import authenticateAdmin from "../../middleware/authentication/adminAuth.js";
 
+import { encrypt, decrypt } from "../../utils/encryption.js";
+
 const router = express.Router();
 const uploadDir = path.join(process.cwd(), "uploads");
+
+// Helper to sanitize profile (remove sensitive data)
+const sanitizeProfile = (profile) => {
+    if (!profile) return profile;
+    const { smtp_password, ...safeProfile } = profile;
+    return {
+        ...safeProfile,
+        has_smtp_config: !!(profile.smtp_email && profile.smtp_password)
+    };
+};
 
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
@@ -44,7 +56,7 @@ router.get("/admin-profile", async (req, res) => {
                 }
             });
         }
-        res.json(profile);
+        res.json(sanitizeProfile(profile));
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -59,7 +71,12 @@ router.post("/admin-profile", authenticateAdmin, upload.fields([
     { name: "OurStory_image", maxCount: 1 }
 ]), async (req, res) => {
     try {
-        const { business_name, address, gstin, phone, whatsapp, business_email, instagram_url, facebook_url } = req.body;
+        const {
+            business_name, address, gstin, phone, whatsapp,
+            business_email, instagram_url, facebook_url,
+            smtp_email, smtp_password, order_receiver, cod_limit,
+            upi_id, upi_message
+        } = req.body;
         const files = req.files;
 
         const data = {
@@ -70,8 +87,18 @@ router.post("/admin-profile", authenticateAdmin, upload.fields([
             whatsapp,
             business_email,
             instagram_url,
-            facebook_url
+            facebook_url,
+            smtp_email,
+            order_receiver,
+            cod_limit: cod_limit ? parseInt(cod_limit) : undefined,
+            upi_id,
+            upi_message
         };
+
+        // Only update password if provided
+        if (smtp_password) {
+            data.smtp_password = encrypt(smtp_password);
+        }
 
         if (files) {
             if (files.frontend_logo) data.frontend_logo = files.frontend_logo[0].filename;
@@ -83,18 +110,18 @@ router.post("/admin-profile", authenticateAdmin, upload.fields([
 
         const existing = await prisma.adminProfile.findFirst();
 
+        let profile;
         if (existing) {
-            const updated = await prisma.adminProfile.update({
+            profile = await prisma.adminProfile.update({
                 where: { id: existing.id },
                 data
             });
-            res.json(updated);
         } else {
-            const created = await prisma.adminProfile.create({
+            profile = await prisma.adminProfile.create({
                 data
             });
-            res.json(created);
         }
+        res.json(sanitizeProfile(profile));
     } catch (err) {
         console.error("Profile update error:", err);
         res.status(500).json({ error: err.message });

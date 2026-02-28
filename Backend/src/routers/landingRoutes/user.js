@@ -73,7 +73,7 @@ router.get("/address/:id", async (req, res) => {
 // Add or Update Address
 router.post("/address", authenticateToken, async (req, res) => {
     try {
-        const { id, label, street, city, state, zipCode, country } = req.body;
+        const { id, label, street, area, district, state, pinCode, country } = req.body;
         const userId = parseInt(req.user.id);
 
         let address;
@@ -81,7 +81,7 @@ router.post("/address", authenticateToken, async (req, res) => {
             // Update existing
             address = await prisma.address.update({
                 where: { id: parseInt(id), userId: userId },
-                data: { label, street, city, state, zipCode, country }
+                data: { label, street, area, district, state, pinCode, country }
             });
         } else {
             // Create new
@@ -90,9 +90,10 @@ router.post("/address", authenticateToken, async (req, res) => {
                     userId: userId,
                     label: label || "Home",
                     street,
-                    city,
+                    area,
+                    district,
                     state,
-                    zipCode,
+                    pinCode,
                     country
                 }
             });

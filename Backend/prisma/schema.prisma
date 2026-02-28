@@ -22,26 +22,29 @@ model User {
 }
 
 model Address {
-  id      Int    @id @default(autoincrement())
-  label   String @default("Home") @db.VarChar(20)
-  userId  Int
-  user    User   @relation(fields: [userId], references: [id])
-  street  String @db.VarChar(100)
-  city    String @db.VarChar(50)
-  state   String @db.VarChar(50)
-  zipCode String @db.VarChar(10)
-  country String @db.VarChar(50)
+  id       Int    @id @default(autoincrement())
+  label    String @default("Home") @db.VarChar(20)
+  userId   Int
+  user     User   @relation(fields: [userId], references: [id])
+  street   String @db.VarChar(100)
+  area     String @db.VarChar(100)
+  district String @db.VarChar(50)
+  state    String @db.VarChar(50)
+  pinCode  String @db.VarChar(10)
+  country  String @db.VarChar(50)
 }
 
 model Order {
-  id         Int      @id @default(autoincrement())
-  userId     Int
-  user       User     @relation(fields: [userId], references: [id])
-  total      Int
-  status     String   @default("Pending") @db.VarChar(20)
-  items      Json
-  trackingId String?  @unique @db.VarChar(50)
-  createdAt  DateTime @default(now())
+  id             Int      @id @default(autoincrement())
+  userId         Int
+  user           User     @relation(fields: [userId], references: [id])
+  total          Int
+  status         String   @default("Pending") @db.VarChar(20)
+  items          Json
+  paymentMethod  String?  @db.VarChar(20)
+  paymentDetails Json?
+  trackingId     String?  @unique @db.VarChar(50)
+  createdAt      DateTime @default(now())
 }
 
 model Item {
@@ -75,7 +78,7 @@ model Bill {
 model Employee {
   id          Int          @id @default(autoincrement())
   name        String       @db.VarChar(50)
-  phone       String?      @db.VarChar(15)
+  phone       String?      @unique @db.VarChar(15)
   role        String       @default("Staff") @db.VarChar(30)
   isActive    Boolean      @default(true)
   createdAt   DateTime     @default(now())
@@ -87,7 +90,7 @@ model Attendance {
   employeeId Int
   employee   Employee @relation(fields: [employeeId], references: [id])
   date       DateTime @default(now())
-  isPresent  Boolean  @default(true)
+  status     String   @default("PRESENT") @db.VarChar(20) // PRESENT, ABSENT, HALF_DAY
 }
 
 model AdminProfile {
@@ -100,6 +103,10 @@ model AdminProfile {
   whatsapp       String?
   business_email String?
 
+  smtp_email     String?
+  smtp_password  String?
+  order_receiver String?
+
   instagram_url String?
   facebook_url  String?
 
@@ -109,6 +116,10 @@ model AdminProfile {
 
   Collections_image String?
   OurStory_image    String?
+  cod_limit         Int?    @default(1000)
+
+  upi_id      String?
+  upi_message String?
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
