@@ -4,9 +4,10 @@ async function test() {
     try {
         const contact = await prisma.contact.create({
             data: {
-                name: "Test",
-                email: "test@example.com",
-                message: "Test message"
+                name: "Leo Nardo",
+                email: "leo@example.com",
+                subject: "Sweet FeedBack From LeoNado Dicrapio",
+                message: "i have recently tasted your seweets i liked soo much. i recomend it to my friends",
             }
         });
         console.log("Success:", contact);

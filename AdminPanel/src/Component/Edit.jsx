@@ -65,7 +65,7 @@ function Edit() {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      console.log(res.data);
+      // console.log(res.data);
       navigate("/admin/inventory");
     } catch (err) {
       console.error(err);

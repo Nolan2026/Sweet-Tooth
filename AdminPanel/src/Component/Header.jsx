@@ -76,9 +76,9 @@ function Header() {
   return (
     <header className="head">
       <div className="admin-logo-section" onClick={gohome}>
-          <h2 className="gradient-text">
-            {profile?.business_name && profile.business_name !== "" ? `${profile.business_name} Admin` : "Sweet Tooth"}
-          </h2>
+        <h2 className="gradient-text">
+          {profile?.business_name && profile.business_name !== "" ? `${profile.business_name} Admin` : "Sweet Tooth"}
+        </h2>
       </div>
 
       {/* Hamburger Menu */}

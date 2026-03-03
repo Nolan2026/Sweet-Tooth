@@ -19,6 +19,7 @@ model User {
   otpExpiresAt     DateTime?
   addresses        Address[]
   orders           Order[]
+  role             String    @default("USER")
 }
 
 model Address {

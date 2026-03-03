@@ -73,7 +73,7 @@ export const sendOtp = async (email, otp) => {
     });
 };
 
-export const sendOrderPlaced = async (id) => {
+export const sendOrderPlaced = async ({ id, paymentMethod, paymentDetails}) => {
     try {
         const orderData = await prisma.order.findUnique({
             where: {
@@ -117,18 +117,18 @@ export const sendOrderPlaced = async (id) => {
 
         const discountAmount = itemsSubtotal - orderData.total;
 
-        const { transporter, fromEmail, orderReceiver } = await getTransporter();
+        let { transporter, fromEmail, orderReceiver } = await getTransporter();
 
         // Format Payment Info
-        let paymentInfoHtml = `<p style="margin: 5px 0;"><strong>Method:</strong> ${orderData.paymentMethod || 'N/A'}</p>`;
-        if (orderData.paymentMethod === 'UPI' && orderData.paymentDetails?.upiId) {
-            paymentInfoHtml += `<p style="margin: 5px 0;"><strong>UPI ID:</strong> ${orderData.paymentDetails.upiId}</p>`;
-        } else if (orderData.paymentMethod === 'Card' && orderData.paymentDetails?.cardNumber) {
-            const cardNumber = String(orderData.paymentDetails.cardNumber);
+        let paymentInfoHtml = `<p style="margin: 5px 0;"><strong>Method:</strong> ${paymentMethod || 'N/A'}</p>`;
+        if (paymentMethod === 'UPI' && paymentDetails?.upiId) {
+            paymentInfoHtml += `<p style="margin: 5px 0;"><strong>UPI ID:</strong> ${paymentDetails.upiId}</p>`;
+        } else if (paymentMethod === 'Card' && paymentDetails?.cardNumber) {
+            const cardNumber = String(paymentDetails.cardNumber);
             const maskedCard = cardNumber.slice(-4).padStart(cardNumber.length, '*');
             paymentInfoHtml += `<p style="margin: 5px 0;"><strong>Card:</strong> ${maskedCard}</p>`;
-        }
-
+        } else if (paymentMethod === 'COD'){ paymentMethod += `<div> </div>`}
+        
         return transporter.sendMail({
             from: fromEmail,
             to: orderReceiver,
@@ -149,7 +149,8 @@ export const sendOrderPlaced = async (id) => {
                                 <p style="margin: 5px 0; font-size: 14px;"><strong>Name:</strong> ${orderData.user.username}</p>
                                 <p style="margin: 5px 0; font-size: 14px;"><strong>Phone:</strong> ${orderData.user.phone}</p>
                                 <p style="margin: 5px 0; font-size: 14px;"><strong>Date:</strong> ${new Date(orderData.createdAt).toLocaleString()}</p>
-                                <p style="margin: 5px 0; font-size: 14px;"><strong>Payment Method:</strong> ${orderData.paymentMethod}</p>
+                                <p style="margin: 5px 0; font-size: 14px;"><strong>Payment Method:</strong> ${paymentMethod}</p>
+                                ${paymentInfoHtml}
                             </td>
                             <td width="50%" valign="top" style="padding-left: 10px;">
                                 <h3 style="border-bottom: 2px solid #ff69b4; padding-bottom: 5px; color: #ff69b4; font-size: 16px;">Shipping Address</h3>
@@ -206,5 +207,6 @@ export const sendOrderPlaced = async (id) => {
         console.error("Error in sendOrderPlaced:", error);
     }
 };
+
 
 export default sendOtp;

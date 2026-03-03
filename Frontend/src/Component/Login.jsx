@@ -47,7 +47,8 @@ export default function Login() {
         username: formData.name,
         email: formData.email,
         phone: formData.phone,
-        password: formData.password
+        password: formData.password,
+        panel: 'USER'
       });
       showToast(res.data.message || "OTP sent to your email", "success");
       setOtpSent(true);

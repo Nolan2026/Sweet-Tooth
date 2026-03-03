@@ -17,6 +17,10 @@ const authenticateAdmin = (req, res, next) => {
     jwt.verify(token, secret || "default_secret", (err, user) => {
         if (err) return res.status(403).json({ message: "Invalid or expired token." });
 
+        if (user.role !== "ADMIN") {
+            return res.status(403).json({ message: "Access denied. Admin privileges required." });
+        }
+
         req.user = user;
         next();
     });

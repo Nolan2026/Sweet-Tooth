@@ -3,6 +3,7 @@ import prisma from "../../prismaClient.js";
 import jwt from "jsonwebtoken";
 import generateTrackingId from "../../middleware/authentication/trakingId.js";
 import { sendOrderPlaced } from "../adminRoutes/sendOtp.js";
+import { useState } from "react";
 
 const router = express.Router();
 
@@ -65,7 +66,7 @@ router.post("/validate", authenticateToken, async (req, res) => {
 router.post("/create", authenticateToken, async (req, res) => {
     try {
         const userId = parseInt(req.user.id);
-        const { cartItems } = req.body;
+        const { cartItems, paymentMethod, paymentDetails } = req.body;
 
         if (!cartItems || cartItems.length === 0) {
             return res.status(400).json({ message: "Cart is empty" });
@@ -127,9 +128,8 @@ router.post("/create", authenticateToken, async (req, res) => {
                 trackingId: generateTrackingId()
             }
         });
-
-        // console.log(order);
-        await sendOrderPlaced(order.id);
+        
+        await sendOrderPlaced({id:order.id, paymentMethod, paymentDetails});
 
         // 4. Update coupon usage if used
         if (req.body.couponCode) {

@@ -138,6 +138,7 @@ const CategorySection = ({ title, items }) => {
 
 function Home() {
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState(null);
 
   useEffect(() => {
@@ -157,6 +158,8 @@ function Home() {
         setData(res.data);
       } catch (error) {
         console.error("Error in fetching", error);
+      } finally {
+        setLoading(false);
       }
     };
     allitems();
@@ -203,19 +206,34 @@ function Home() {
           <p>Carefully curated sweets and snacks for every occasion</p>
         </div>
 
-        <div className='allCat'>
-          {Object.entries(groupedData).map(([category, items]) => (
-            <a href={`#${category}`} className='singleCat' key={category}>
-              <h4>{category}</h4>
-            </a>
-          ))}
-        </div>
+        {loading ? (
+          <div className="loading-container">
+            <div className="spinner"></div>
+            <p>Loading collections...</p>
+          </div>
+        ) : (
+          <div className="orders-list">
+            {Object.keys(groupedData).length === 0 ? (
+              <p className="no-collections">No collections found</p>
+            ) : (
+              <div className="catalog-container">
+                <div className="allCat">
+                  {Object.entries(groupedData).map(([category, items]) => (
+                    <a href={`#${category}`} className="singleCat" key={category}>
+                      <h4>{category}</h4>
+                    </a>
+                  ))}
+                </div>
 
-        <div className="catalog-content">
-          {Object.entries(groupedData).map(([category, items]) => (
-            <CategorySection key={category} title={category} items={items} />
-          ))}
-        </div>
+                <div className="catalog-content">
+                  {Object.entries(groupedData).map(([category, items]) => (
+                    <CategorySection key={category} title={category} items={items} />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </main>
     </div>
   );

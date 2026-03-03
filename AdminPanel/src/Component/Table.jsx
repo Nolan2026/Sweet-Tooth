@@ -107,7 +107,7 @@ export default function Tab({ items, total, date, customerName, phoneNumber, pay
                 size={120}
               />
             </div>
-            <p style={{ fontSize: '10px', fontSize: '12px', marginTop: '5px', fontWeight: 'bold', color: '#ff69b4', textTransform: 'uppercase' }}>Scan & Pay ₹{total}</p>
+            <p style={{ fontSize: '10px', marginTop: '5px', fontWeight: 'bold', color: '#ff69b4', textTransform: 'uppercase' }}>Scan & Pay ₹{total}</p>
           </div>
         )}
       </div>

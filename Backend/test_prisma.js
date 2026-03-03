@@ -5,7 +5,6 @@ async function main() {
         console.log("Checking fields on User model...");
         // This will throw if the client doesn't have the otp field
         const userFields = Object.keys(prisma.user);
-        console.log("User model methods:", userFields);
 
         // Try a dummy update (but with a non-existent email so it doesn't do anything)
         await prisma.user.update({

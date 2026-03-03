@@ -41,7 +41,7 @@ const Register = () => {
 
         setLoading(true);
         try {
-            const res = await api.post('/auth/register', formData);
+            const res = await api.post('/auth/register', { ...formData, panel: 'ADMIN' });
             showToast(res.data.message || "OTP sent to your email", "success");
             setOtpSent(true);
         } catch (err) {
@@ -58,7 +58,8 @@ const Register = () => {
             const res = await api.post('/auth/verify-otp', {
                 email: formData.email,
                 otp,
-                type: 'register'
+                type: 'register',
+                panel: 'ADMIN'
             });
             dispatch(loginSuccess(res.data.token));
             showToast("Registration and Verification Successful", "success");
@@ -108,7 +109,7 @@ const Register = () => {
                                 />
                             </div>
                             <div className="input-group">
-                                <label>Phone</label>
+                                <label>Phone</label>w
                                 <input
                                     type="text"
                                     name="phone"

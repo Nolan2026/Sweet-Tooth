@@ -42,7 +42,7 @@ function Payment() {
     useEffect(() => {
         if (finalTotal > COD_LIMIT && paymentMethod === 'COD') {
             setPaymentMethod('UPI');
-            showToast('COD is not available for orders above ₹999', 'error');
+            showToast(`COD is not available for orders above ₹500`, 'error');
         }
     }, [finalTotal, paymentMethod]);
 
@@ -71,7 +71,7 @@ function Payment() {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ cartItems })
+                body: JSON.stringify({ cartItems, paymentMethod, paymentDetails })
             });
 
             if (!valRes.ok) {
@@ -128,7 +128,9 @@ function Payment() {
                 body: JSON.stringify({
                     cartItems,
                     total: finalTotal,
-                    couponCode: couponData?.code
+                    couponCode: couponData?.code,
+                    paymentMethod, 
+                    paymentDetails,
                 })
             });
 

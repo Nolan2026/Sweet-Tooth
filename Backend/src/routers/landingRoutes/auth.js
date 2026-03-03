@@ -12,7 +12,7 @@ const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString()
 // 1. Initial Registration Request
 router.post("/register", validateRegistration, async (req, res) => {
     try {
-        const { username, email, password, phone } = req.body;
+        const { username, email, password, phone, panel } = req.body;
         const cleanEmail = email.trim().toLowerCase();
         const cleanUsername = username.trim();
 
@@ -35,6 +35,7 @@ router.post("/register", validateRegistration, async (req, res) => {
                 phone: phone.trim(),
                 password: hashedPassword,
                 isVerified: false,
+                role: panel === "ADMIN" ? "ADMIN" : "USER",
                 otp: otp,
                 otpExpiresAt: expiry
             }
@@ -58,11 +59,15 @@ router.post("/register", validateRegistration, async (req, res) => {
 // 2. Initial Login Request
 router.post("/login", validateLogin, async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email, password, panel } = req.body;
         const cleanEmail = email.trim().toLowerCase();
 
         const user = await prisma.user.findUnique({ where: { email: cleanEmail } });
         if (!user) return res.status(401).json({ message: "Invalid email or password" });
+
+        if (panel === "ADMIN" && user.role !== "ADMIN") {
+            return res.status(403).json({ message: "Access denied. Admin privileges required." });
+        }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(401).json({ message: "Invalid email or password" });
@@ -108,6 +113,10 @@ router.post("/verify-otp", async (req, res) => {
             return res.status(400).json({ message: "Invalid or expired OTP" });
         }
 
+        if (req.body.panel === "ADMIN" && user.role !== "ADMIN") {
+            return res.status(403).json({ message: "Access denied. Admin privileges required." });
+        }
+
         // Clear OTP after successful verification
         const updateData = {
             otp: null,
@@ -132,7 +141,7 @@ router.post("/verify-otp", async (req, res) => {
         }
 
         const token = jwt.sign(
-            { id: user.id, email: user.email },
+            { id: user.id, email: user.email, role: user.role },
             secret || "default_secret",
             { expiresIn: "1d" }
         );

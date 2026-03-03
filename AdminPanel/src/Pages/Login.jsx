@@ -36,7 +36,7 @@ const Login = () => {
 
         dispatch(loginStart());
         try {
-            const res = await api.post('/auth/login', credentials);
+            const res = await api.post('/auth/login', { ...credentials, panel: 'ADMIN' });
             if (res.data.requiresOtp) {
                 showToast(res.data.message || "OTP sent to your email", "success");
                 setOtpSent(true);
@@ -59,7 +59,8 @@ const Login = () => {
             const res = await api.post('/auth/verify-otp', {
                 email: credentials.email,
                 otp,
-                type: 'login'
+                type: 'login',
+                panel: 'ADMIN'
             });
             dispatch(loginSuccess(res.data.token));
             showToast("Login Successful", "success");
