@@ -395,6 +395,6 @@ For support, email support@sweettooth.com or open an issue in the repository.
 
 <div align="center">
 
-**Made with ❤️ for sweet tooth lovers**
+**Made with ❤️ for Sweet Tooth Lovers**
 
 </div>

@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useToast } from '../Context/ToastContext';
 import '../styles/Contact.css';
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5016";
+
 function Contact() {
   const { showToast } = useToast();
   const [profile, setProfile] = useState(null);
@@ -15,7 +17,7 @@ function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    axios.get("http://localhost:5016/admin/admin-profile")
+    axios.get(`${API_BASE}/admin/admin-profile`)
       .then(res => setProfile(res.data))
       .catch(err => console.error(err));
   }, []);
@@ -28,7 +30,7 @@ function Contact() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await axios.post('http://localhost:5016/contact/submit', formData);
+      const response = await axios.post(`${API_BASE}/contact/submit`, formData);
       showToast(response.data.message, 'success');
       setFormData({ name: '', email: '', subject: '', message: '' });
     } catch (error) {

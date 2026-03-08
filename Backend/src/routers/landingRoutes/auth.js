@@ -35,13 +35,14 @@ router.post("/register", validateRegistration, async (req, res) => {
                 phone: phone.trim(),
                 password: hashedPassword,
                 isVerified: false,
-                role: panel === "ADMIN" ? "ADMIN" : "USER",
+                role: "USER", // Force all public registrations to be USER role
                 otp: otp,
                 otpExpiresAt: expiry
             }
         });
 
-        await sendOtp(cleanEmail, otp);
+        // Send OTP in background to reduce latency
+        sendOtp(cleanEmail, otp).catch(e => console.error("Background OTP Error:", e));
 
         res.status(201).json({
             message: "OTP sent to your email for verification.",
@@ -65,8 +66,11 @@ router.post("/login", validateLogin, async (req, res) => {
         const user = await prisma.user.findUnique({ where: { email: cleanEmail } });
         if (!user) return res.status(401).json({ message: "Invalid email or password" });
 
-        if (panel === "ADMIN" && user.role !== "ADMIN") {
-            return res.status(403).json({ message: "Access denied. Admin privileges required." });
+        // Strictly enforce: If logging into ADMIN panel, MUST have ADMIN role
+        if (panel === "ADMIN") {
+            if (user.role !== "ADMIN") {
+                return res.status(403).json({ message: "Access denied. Admin privileges required." });
+            }
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
@@ -84,7 +88,8 @@ router.post("/login", validateLogin, async (req, res) => {
             }
         });
 
-        await sendOtp(cleanEmail, otp);
+        // Send OTP in background to reduce latency
+        sendOtp(cleanEmail, otp).catch(e => console.error("Background Login OTP Error:", e));
 
         res.status(200).json({
             message: "OTP sent to your email for login verification.",
@@ -100,7 +105,7 @@ router.post("/login", validateLogin, async (req, res) => {
 // 3. Verify OTP (Shared for Registration and Login)
 router.post("/verify-otp", async (req, res) => {
     try {
-        const { email, otp, type } = req.body; // type: 'register' or 'login'
+        const { email, otp, type, panel } = req.body; // type: 'register' or 'login'
         const cleanEmail = email?.trim().toLowerCase();
 
         if (!cleanEmail || !otp) {
@@ -113,8 +118,11 @@ router.post("/verify-otp", async (req, res) => {
             return res.status(400).json({ message: "Invalid or expired OTP" });
         }
 
-        if (req.body.panel === "ADMIN" && user.role !== "ADMIN") {
-            return res.status(403).json({ message: "Access denied. Admin privileges required." });
+        // Strictly enforce: If completing login for ADMIN panel, MUST have ADMIN role
+        if (panel === "ADMIN") {
+            if (user.role !== "ADMIN") {
+                return res.status(403).json({ message: "Access denied. Admin privileges required." });
+            }
         }
 
         // Clear OTP after successful verification
@@ -134,16 +142,14 @@ router.post("/verify-otp", async (req, res) => {
 
         const secret = process.env.JWT_SECRET;
         if (!secret) {
-            if (process.env.NODE_ENV === 'production') {
-                throw new Error("JWT_SECRET is required in production");
-            }
-            console.warn("WARNING: JWT_SECRET not set, using default for development");
+            console.error("JWT_SECRET is required");
+            return res.status(500).json({ message: "Internal server error" });
         }
 
         const token = jwt.sign(
             { id: user.id, email: user.email, role: user.role },
-            secret || "default_secret",
-            { expiresIn: "1d" }
+            secret,
+            { expiresIn: panel === "ADMIN" ? "2d" : "1d" } // 2 days for admin, 1 day for users
         );
 
         res.status(200).json({
@@ -181,7 +187,8 @@ router.post("/resend-otp", async (req, res) => {
             }
         });
 
-        await sendOtp(cleanEmail, otp);
+        // Send OTP in background to reduce latency
+        sendOtp(cleanEmail, otp).catch(e => console.error("Background Resend OTP Error:", e));
 
         res.status(200).json({ message: "OTP resent successfully" });
     } catch (error) {
@@ -215,7 +222,8 @@ router.post("/forgot-password", async (req, res) => {
             }
         });
 
-        await sendOtp(cleanEmail, otp);
+        // Send OTP in background to reduce latency
+        sendOtp(cleanEmail, otp).catch(e => console.error("Background Forgot Password OTP Error:", e));
         res.json({ message: "OTP sent to your email" });
     } catch (error) {
         console.error("Forgot Password Error:", error);

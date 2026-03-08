@@ -14,7 +14,7 @@ import History from './Pages/BillHistory';
 import Label from './Pages/Labels';
 import AddItem from './Pages/AddItem';
 import Edit from './Component/Edit';
-import UploadTest from './Pages/UploadTest.jsx';
+// import UploadTest from './Pages/UploadTest.jsx';
 import OrderLabel from './Pages/OrderLabel.jsx';
 import AdminProfile from './Pages/AdminProfile.jsx';
 import Coupons from './Pages/Coupons';
@@ -43,7 +43,7 @@ function App() {
         <Route path="/admin/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
         <Route path="/admin/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
         <Route path="/admin/profile" element={<ProtectedRoute><AdminProfile /></ProtectedRoute>} />
-        <Route path="/admin/uploads" element={<ProtectedRoute><UploadTest /></ProtectedRoute>} />
+        {/* <Route path="/admin/uploads" element={<ProtectedRoute><UploadTest /></ProtectedRoute>} /> */}
         <Route path="/admin/shipLabel" element={<ProtectedRoute><OrderLabel /></ProtectedRoute>} />
         <Route path="/admin/inventory" element={<ProtectedRoute><Inventory /></ProtectedRoute>} />
         <Route path="/admin/edit/:id" element={<ProtectedRoute><Edit /></ProtectedRoute>} />

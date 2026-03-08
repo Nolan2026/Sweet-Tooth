@@ -28,3 +28,24 @@ Thumbs.db
 # Build outputs
 dist/
 build/
+
+# Documentation
+API_DOCUMENTATION.MD
+PUBLIC_API.md
+VULNERABILITY_FIX_INFO_DISCLOSURE.md
+
+# Testing
+coverage/
+*.spec.js
+*.test.js
+test-*.js
+test_*.js
+debug_*.js
+fix_profile.js
+prisma.config.js
+setupAdmin.js
+test-contact.js
+test_prisma.js
+debug_db.js
+fix_profile.js 
+.env.example

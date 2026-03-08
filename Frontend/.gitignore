@@ -22,3 +22,26 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Documentation
+API_DOCUMENTATION.MD
+PUBLIC_API.md
+VULNERABILITY_FIX_INFO_DISCLOSURE.md
+
+# Testing
+coverage/
+cypress/videos/
+cypress/screenshots/
+*.spec.js
+*.spec.jsx
+*.test.js
+*.test.jsx
+test-*.js
+test_*.js
+debug_*.js
+prisma.config.js
+setupAdmin.js
+test-contact.js
+test_prisma.js
+debug_db.js
+fix_profile.js 

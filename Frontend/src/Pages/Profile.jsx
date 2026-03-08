@@ -3,6 +3,9 @@ import axios from 'axios';
 import '../styles/Profile.css';
 import profileAvatar from '../assets/profile_avatar.png';
 import { useToast } from '../Context/ToastContext';
+import { useConfirm } from '../Context/ConfirmContext';
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5016";
 
 const Profile = () => {
     const [user, setUser] = useState(null);
@@ -10,6 +13,7 @@ const Profile = () => {
     const [showForm, setShowForm] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const { showToast } = useToast();
+    const confirm = useConfirm();
     const [formData, setFormData] = useState({
         label: 'Home',
         street: '',
@@ -33,7 +37,7 @@ const Profile = () => {
                 return;
             }
 
-            const res = await axios.get('http://localhost:5016/user/profile', {
+            const res = await axios.get(`${API_BASE}/user/profile`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             setUser(res.data);
@@ -62,16 +66,16 @@ const Profile = () => {
             const token = localStorage.getItem('userToken');
             const dataToSend = editingId ? { ...formData, id: editingId } : formData;
 
-            await axios.post('http://localhost:5016/user/address', dataToSend, {
+            await axios.post(`${API_BASE}/user/address`, dataToSend, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
             showToast(editingId ? 'Address updated successfully!' : 'Address added successfully!', 'success');
 
-            // Immediate refresh for better UX
-            setTimeout(() => {
-                window.location.reload();
-            }, 500);
+            // Reactive refresh
+            fetchProfile();
+            setShowForm(false);
+            setEditingId(null);
         } catch (error) {
             console.error('Error saving address:', error);
             showToast('Failed to save address.', 'error');
@@ -93,10 +97,11 @@ const Profile = () => {
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm('Are you sure you want to delete this address?')) return;
+        const isConfirmed = await confirm('Delete Address', 'Are you sure you want to delete this address?');
+        if (!isConfirmed) return;
         try {
             const token = localStorage.getItem('userToken');
-            await axios.delete(`http://localhost:5016/user/address/${id}`, {
+            await axios.delete(`${API_BASE}/user/address/${id}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             fetchProfile();
@@ -108,14 +113,17 @@ const Profile = () => {
     };
 
     const handleCancelOrder = async (orderId) => {
-        if (!window.confirm('Are you sure you want to cancel this order?')) return;
+        const isConfirmed = await confirm('Cancel Order', 'Are you sure you want to cancel this order?');
+        if (!isConfirmed) return;
         try {
             const token = localStorage.getItem('userToken');
-            await axios.delete(`http://localhost:5016/order/cancel/${orderId}`, {
+            const res = await axios.delete(`${API_BASE}/order/cancel/${orderId}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-            showToast('Order cancelled successfully', 'success');
-            fetchProfile(); // Refresh profile to show updated status
+            showToast(res.data.message || 'Order cancelled successfully', 'success');
+
+            // Reactive way to refresh data without hard reload
+            fetchProfile();
         } catch (error) {
             console.error('Error cancelling order:', error);
             const msg = error.response?.data?.message || 'Failed to cancel order';
@@ -272,6 +280,7 @@ const Profile = () => {
                                             <p><strong>Order #{order.id}</strong></p>
                                             <p>{new Date(order.createdAt).toLocaleDateString()}</p>
                                             <p>Total: ₹{order.total}</p>
+                                            <p style={{ fontSize: '0.85em', color: '#666', marginTop: '4px' }}>T-Code: {order.trackingId || 'N/A'}</p>
                                         </div>
                                         <div className="order-actions-status">
                                             <span className={`order-status ${order.status.toLowerCase()}`}>{order.status}</span>

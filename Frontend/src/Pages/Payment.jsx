@@ -5,8 +5,10 @@ import { useToast } from '../Context/ToastContext';
 import { useLocation } from 'react-router-dom';
 import '../styles/Payment.css';
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5016";
+
 function Payment() {
-    const { cartItems, getCartTotal, clearCart } = useCart();
+    const { cartItems, clearCart } = useCart();
     const navigate = useNavigate();
     const { showToast } = useToast();
     const location = useLocation();
@@ -21,13 +23,15 @@ function Payment() {
     const [paymentMethod, setPaymentMethod] = useState('COD'); // 'COD', 'UPI', 'CARD'
     const [paymentDetails, setPaymentDetails] = useState({
         upiId: '',
+        transactionId: '',
         cardNumber: '',
         cardExpiry: '',
         cardCvv: ''
     });
 
+    const [codLimit, setCodLimit] = useState(999);
+    const [adminUpiId, setAdminUpiId] = useState('merchant@upi');
     const SHIPPING_CHARGE = 50;
-    const COD_LIMIT = 999;
 
     const subtotal = confirmedTotal;
     const shipping = subtotal < 500 ? SHIPPING_CHARGE : 0;
@@ -36,15 +40,16 @@ function Payment() {
 
     useEffect(() => {
         initializeCheckout();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // Disable COD if price > 999
+    // Disable COD if price > codLimit
     useEffect(() => {
-        if (finalTotal > COD_LIMIT && paymentMethod === 'COD') {
+        if (finalTotal > codLimit && paymentMethod === 'COD') {
             setPaymentMethod('UPI');
-            showToast(`COD is not available for orders above ₹500`, 'error');
+            showToast(`COD is not available for orders above ₹${codLimit}`, 'error');
         }
-    }, [finalTotal, paymentMethod]);
+    }, [finalTotal, paymentMethod, showToast, codLimit]);
 
     const initializeCheckout = async () => {
         setLoading(true);
@@ -56,7 +61,7 @@ function Payment() {
 
         try {
             // 1. Fetch Profile
-            const profRes = await fetch('http://localhost:5016/user/profile', {
+            const profRes = await fetch(`${API_BASE}/user/profile`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -65,7 +70,7 @@ function Payment() {
             setProfile(profData);
 
             // 2. Validate Cart with DB Prices
-            const valRes = await fetch('http://localhost:5016/order/validate', {
+            const valRes = await fetch(`${API_BASE}/order/validate`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -82,6 +87,8 @@ function Payment() {
             const valData = await valRes.json();
             setValidatedItems(valData.items);
             setConfirmedTotal(valData.total);
+            if (valData.codLimit !== undefined) setCodLimit(valData.codLimit);
+            if (valData.upiId) setAdminUpiId(valData.upiId);
 
         } catch (err) {
             setError(err.message);
@@ -102,6 +109,10 @@ function Payment() {
                 setError('Please enter a valid UPI ID (e.g., name@okaxis)');
                 return;
             }
+            if (!paymentDetails.transactionId || paymentDetails.transactionId.length < 12 || paymentDetails.transactionId.length > 27) {
+                setError('Please enter a valid Transaction ID (12-27 characters)');
+                return;
+            }
         } else if (paymentMethod === 'CARD') {
             if (paymentDetails.cardNumber.length < 16 || !paymentDetails.cardExpiry || paymentDetails.cardCvv.length < 3) {
                 setError('Please enter valid Card details');
@@ -119,7 +130,7 @@ function Payment() {
 
         try {
             const token = localStorage.getItem('userToken');
-            const response = await fetch('http://localhost:5016/order/create', {
+            const response = await fetch(`${API_BASE}/order/create`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -129,7 +140,7 @@ function Payment() {
                     cartItems,
                     total: finalTotal,
                     couponCode: couponData?.code,
-                    paymentMethod, 
+                    paymentMethod,
                     paymentDetails,
                 })
             });
@@ -145,6 +156,7 @@ function Payment() {
                 setError(data.message || 'Failed to place order.');
             }
         } catch (err) {
+            console.error(err);
             setError('Failed to connect to server.');
         } finally {
             setIsProcessing(false);
@@ -217,19 +229,19 @@ function Payment() {
                         <h3>Payment Method</h3>
                         <div className="methods-list">
                             <div
-                                className={`method-card ${paymentMethod === 'COD' ? 'active' : ''} ${finalTotal > COD_LIMIT ? 'disabled' : ''}`}
-                                onClick={() => finalTotal <= COD_LIMIT && setPaymentMethod('COD')}
+                                className={`method-card ${paymentMethod === 'COD' ? 'active' : ''} ${finalTotal > codLimit ? 'disabled' : ''}`}
+                                onClick={() => finalTotal <= codLimit && setPaymentMethod('COD')}
                             >
                                 <div className="method-icon">🚚</div>
                                 <div className="method-info">
                                     <p><strong>Cash on Delivery</strong></p>
                                     <p className="method-sub">
-                                        {finalTotal > COD_LIMIT
-                                            ? "Not available for orders > ₹999"
+                                        {finalTotal > codLimit
+                                            ? `Not available for orders > ₹${codLimit}`
                                             : "Pay when your sweets arrive"}
                                     </p>
                                 </div>
-                                {paymentMethod === 'COD' && finalTotal <= COD_LIMIT && <div className="method-check">✓</div>}
+                                {paymentMethod === 'COD' && finalTotal <= codLimit && <div className="method-check">✓</div>}
                             </div>
 
                             <div
@@ -245,15 +257,42 @@ function Payment() {
                             </div>
 
                             {paymentMethod === 'UPI' && (
-                                <div className="payment-details-form animate-in">
-                                    <label>UPI ID</label>
-                                    <input
-                                        type="text"
-                                        placeholder="e.g. username@okaxis"
-                                        value={paymentDetails.upiId}
-                                        onChange={(e) => setPaymentDetails({ ...paymentDetails, upiId: e.target.value })}
-                                        className="payment-input"
-                                    />
+                                <div className="payment-details-form animate-in" style={{ textAlign: 'center' }}>
+                                    <p style={{ marginBottom: '15px', color: '#555', fontSize: '1rem' }}>
+                                        Scan the QR code to pay <strong>₹{finalTotal}</strong> securely
+                                    </p>
+                                    <div className="qr-code-container" style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                                        <img
+                                            src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(`upi://pay?pa=${adminUpiId}&pn=SweetTooth&am=${finalTotal}&cu=INR`)}`}
+                                            alt="UPI QR Code"
+                                            style={{ borderRadius: '10px', padding: '10px', background: 'white', border: '1px solid #eee', width: '200px', height: '200px' }}
+                                        />
+                                    </div>
+                                    <div style={{ textAlign: 'left', marginBottom: '10px' }}>
+                                        <label>Enter your UPI ID to confirm</label>
+                                        <input
+                                            type="text"
+                                            placeholder="e.g. username@okaxis"
+                                            value={paymentDetails.upiId}
+                                            onChange={(e) => setPaymentDetails({ ...paymentDetails, upiId: e.target.value })}
+                                            className="payment-input"
+                                        />
+                                    </div>
+                                    <div style={{ textAlign: 'left' }}>
+                                        <label>Transaction ID / UTR Number</label>
+                                        <input
+                                            type="text"
+                                            placeholder="Min 12, Max 27 chars"
+                                            maxLength="27"
+                                            minLength="12"
+                                            value={paymentDetails.transactionId}
+                                            onChange={(e) => setPaymentDetails({ ...paymentDetails, transactionId: e.target.value.toUpperCase() })}
+                                            className="payment-input"
+                                        />
+                                    </div>
+                                    <p style={{ marginTop: '15px', fontSize: '0.85em', color: '#888', textAlign: 'left' }}>
+                                        Please complete the payment on your device before confirming the order.
+                                    </p>
                                 </div>
                             )}
 

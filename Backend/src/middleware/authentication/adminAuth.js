@@ -8,13 +8,10 @@ const authenticateAdmin = (req, res, next) => {
 
     const secret = process.env.JWT_SECRET;
     if (!secret) {
-        if (process.env.NODE_ENV === 'production') {
-            return res.status(500).json({ message: "Internal server error: Security configuration missing" });
-        }
-        console.warn("WARNING: JWT_SECRET not set, using default for development only");
+        return res.status(500).json({ message: "Internal server error: Security configuration missing" });
     }
 
-    jwt.verify(token, secret || "default_secret", (err, user) => {
+    jwt.verify(token, secret, (err, user) => {
         if (err) return res.status(403).json({ message: "Invalid or expired token." });
 
         if (user.role !== "ADMIN") {

@@ -4,6 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { loginSuccess } from '../Store/authSlice';
 import { useToast } from '../Context/ToastContext';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import '../styles/Login.css';
 
 const Register = () => {
@@ -16,6 +17,7 @@ const Register = () => {
     const [otpSent, setOtpSent] = useState(false);
     const [otp, setOtp] = useState("");
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { showToast } = useToast();
@@ -109,7 +111,7 @@ const Register = () => {
                                 />
                             </div>
                             <div className="input-group">
-                                <label>Phone</label>w
+                                <label>Phone</label>
                                 <input
                                     type="text"
                                     name="phone"
@@ -120,13 +122,18 @@ const Register = () => {
                             </div>
                             <div className="input-group">
                                 <label>Password</label>
-                                <input
-                                    type="password"
-                                    name="password"
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                    required
-                                />
+                                <div className="password-wrapper">
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        name="password"
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                    <span className="password-toggle" onClick={() => setShowPassword(!showPassword)}>
+                                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                    </span>
+                                </div>
                             </div>
                         </>
                     ) : (

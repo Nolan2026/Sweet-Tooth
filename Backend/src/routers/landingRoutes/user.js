@@ -11,7 +11,12 @@ const authenticateToken = (req, res, next) => {
 
     if (!token) return res.sendStatus(401);
 
-    jwt.verify(token, process.env.JWT_SECRET || "default_secret", (err, user) => {
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+        return res.status(500).json({ message: "Internal server error: Security configuration missing" });
+    }
+
+    jwt.verify(token, secret, (err, user) => {
         if (err) return res.sendStatus(403);
         req.user = user;
         next();

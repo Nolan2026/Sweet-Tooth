@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useToast } from "../Context/ToastContext";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "../styles/Form.css";
 import api from "../api/axios";
 
@@ -23,6 +24,7 @@ export default function Login() {
   const [otpType, setOtpType] = useState(""); // 'register' or 'login'
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setFormData(prev => ({
@@ -189,14 +191,19 @@ export default function Login() {
                   />
                 )}
 
-                <input
-                  type="password"
-                  name="password"
-                  className="login-input"
-                  placeholder="Password"
-                  value={formData.password}
-                  onChange={handleChange}
-                />
+                <div className="password-wrapper">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    className="login-input"
+                    placeholder="Password"
+                    value={formData.password}
+                    onChange={handleChange}
+                  />
+                  <span className="password-toggle" onClick={() => setShowPassword(!showPassword)}>
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </span>
+                </div>
               </>
             ) : (
               <div className="otp-group">

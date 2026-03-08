@@ -2,8 +2,8 @@ import express from "express";
 import prisma from "../../prismaClient.js";
 import jwt from "jsonwebtoken";
 import generateTrackingId from "../../middleware/authentication/trakingId.js";
-import { sendOrderPlaced } from "../adminRoutes/sendOtp.js";
-import { useState } from "react";
+import { sendOrderPlaced, sendOrderCancelled } from "../adminRoutes/sendOtp.js";
+
 
 const router = express.Router();
 
@@ -14,7 +14,12 @@ const authenticateToken = (req, res, next) => {
 
     if (!token) return res.status(401).json({ message: "Login required" });
 
-    jwt.verify(token, process.env.JWT_SECRET || "default_secret", (err, user) => {
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+        return res.status(500).json({ message: "Internal server error: Security configuration missing" });
+    }
+
+    jwt.verify(token, secret, (err, user) => {
         if (err) return res.status(403).json({ message: "Session expired" });
         req.user = user;
         next();
@@ -53,9 +58,13 @@ router.post("/validate", authenticateToken, async (req, res) => {
             });
         }
 
+        const adminProfile = await prisma.adminProfile.findFirst();
+
         res.json({
             items: processedItems,
-            total: total
+            total: total,
+            codLimit: adminProfile?.cod_limit || 999,
+            upiId: adminProfile?.upi_id || 'merchant@upi'
         });
     } catch (error) {
         res.status(500).json({ message: "Error validating cart" });
@@ -128,8 +137,9 @@ router.post("/create", authenticateToken, async (req, res) => {
                 trackingId: generateTrackingId()
             }
         });
-        
-        await sendOrderPlaced({id:order.id, paymentMethod, paymentDetails});
+
+        // Send email in background to reduce latency
+        sendOrderPlaced({ id: order.id, paymentMethod, paymentDetails }).catch(e => console.error("Background Order Placed Email Error:", e));
 
         // 4. Update coupon usage if used
         if (req.body.couponCode) {
@@ -195,6 +205,9 @@ router.delete("/cancel/:id", authenticateToken, async (req, res) => {
             where: { id: orderId },
             data: { status: "Cancelled" }
         });
+
+        // Send email in background to reduce latency
+        sendOrderCancelled(orderId).catch(e => console.error("Background Order Cancelled Email Error:", e));
 
         res.json({ message: "Order cancelled successfully" });
     } catch (error) {

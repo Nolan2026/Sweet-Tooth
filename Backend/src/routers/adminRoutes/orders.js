@@ -1,5 +1,6 @@
 import express from "express";
 import prisma from "../../prismaClient.js";
+import { sendOrderCancelled } from "./sendOtp.js";
 
 const router = express.Router();
 
@@ -94,12 +95,17 @@ router.patch("/:id/status", async (req, res) => {
             return res.status(400).json({ message: "Status is required" });
         }
 
-        console.log(`Updating order ${orderId} status to: ${status}`);
+        // console.log(`Updating order ${orderId} status to: ${status}`);
 
         const order = await prisma.order.update({
             where: { id: orderId },
             data: { status }
         });
+
+        if (status === "Cancelled") {
+            // Send email in background to reduce latency
+            sendOrderCancelled(orderId).catch(e => console.error("Admin: Background Order Cancelled Email Error:", e));
+        }
 
         res.json({ message: "Order status updated", order });
     } catch (error) {

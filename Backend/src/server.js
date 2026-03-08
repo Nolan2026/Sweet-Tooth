@@ -38,14 +38,11 @@ const app = express();
 const PORT = process.env.PORT || 5016;
 
 if (!process.env.JWT_SECRET) {
-    if (process.env.NODE_ENV === 'production') {
-        throw new Error("FATAL: JWT_SECRET is not set. Application cannot start in production without it.");
-    }
-    console.warn("WARNING: JWT_SECRET is not set. Using default settings for development.");
+    throw new Error("FATAL: JWT_SECRET is not set. Application cannot start without it.");
 }
 
-if (!process.env.DATABASE_URL && process.env.NODE_ENV === 'production') {
-    throw new Error("FATAL: DATABASE_URL is not set. Application cannot start in production without it.");
+if (!process.env.DATABASE_URL) {
+    throw new Error("FATAL: DATABASE_URL is not set. Application cannot start without it.");
 }
 
 // Security middleware

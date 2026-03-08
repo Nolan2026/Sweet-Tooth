@@ -116,10 +116,10 @@ router.put("/:id", img.single("image"), async (req, res) => {
             data,
         });
 
-        console.log(
+        /* console.log(
             `[${new Date().toISOString()}] Item updated`,
             updatedItem
-        );
+        ); */
 
         res.status(200).json(updatedItem);
     } catch (error) {

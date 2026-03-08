@@ -229,3 +229,30 @@
         font-size: 1.75rem;
     }
 }
+
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 1.25rem;
+    color: #94a3b8;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+    transition: all 0.2s ease;
+    z-index: 5;
+}
+
+.password-toggle:hover {
+    color: var(--login-primary);
+}
+
+.password-wrapper input {
+    width: 100%;
+    padding-right: 3.5rem !important;
+}

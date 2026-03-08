@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { useToast } from '../Context/ToastContext';
 import '../styles/Login.css';
@@ -8,6 +8,7 @@ const ForgotPassword = () => {
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
     const { showToast } = useToast();
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -15,6 +16,8 @@ const ForgotPassword = () => {
         try {
             const res = await api.post('/auth/forgot-password', { email });
             showToast(res.data.message, "success");
+            // Auto navigate to reset
+            navigate('/admin/reset-password', { state: { email } });
         } catch (err) {
             const msg = err.response?.data?.message || "Something went wrong";
             showToast(msg, "error");

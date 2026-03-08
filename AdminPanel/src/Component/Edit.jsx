@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import "../styles/Edits.css";
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5016";
+
 function Edit() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -97,7 +99,7 @@ function Edit() {
         {/* 🔥 Existing image preview */}
         {existingImage && !newImage && (
           <img
-            src={`http://localhost:5016${existingImage}`}
+            src={`${API_BASE}${existingImage}`}
             alt="Current"
             className="edit-image-preview"
           />

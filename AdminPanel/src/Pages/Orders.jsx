@@ -43,9 +43,11 @@ export default function Orders() {
 
     const handleStatusChange = async (orderId, newStatus) => {
         try {
-            await api.patch(`/admin/orders/${orderId}/status`, { status: newStatus });
-            fetchOrders(); // Refresh the list
-            showToast("Order status updated successfully", 'success');
+            const res = await api.patch(`/admin/orders/${orderId}/status`, { status: newStatus });
+            showToast(res.data.message || "Order status updated successfully", 'success');
+
+            // Re-fetch data reactive way
+            fetchOrders();
         } catch (err) {
             console.error("Status update error:", err);
             showToast("Failed to update order status", 'error');
@@ -165,6 +167,13 @@ export default function Orders() {
                                     </div>
                                     <div className="detail-row">
                                         <strong>Total:</strong> ₹{order.total}
+                                    </div>
+                                    <div className="detail-row">
+                                        <strong>Track id:</strong> {order.trackingId || 'N/A'}
+                                    </div>
+                                    <div className="detail-row">
+                                        <strong>Pay Method:</strong> {order.paymentMethod || 'N/A'}
+                                        {order.paymentDetails?.transactionId && ` (Txn: ${order.paymentDetails.transactionId})`}
                                     </div>
                                 </div>
 

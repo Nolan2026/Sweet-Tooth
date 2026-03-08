@@ -5,6 +5,8 @@ import api from "../api/axios";
 import { useToast } from '../Context/ToastContext';
 import '../styles/Cart.css';
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5016";
+
 function Cart() {
   const { cartItems, removeFromCart, updateQuantity, updateItemWeight, getCartTotal } = useCart();
   const navigate = useNavigate();
@@ -116,7 +118,7 @@ function Cart() {
                 <div key={`${item.id}-${item.selectedWeight}`} className="cart-item">
                   <div className="cart-item-image">
                     {item.image_url ? (
-                      <img src={`http://localhost:5016${item.image_url}`} alt={item.item_name} />
+                      <img src={`${API_BASE}${item.image_url}`} alt={item.item_name} />
                     ) : (
                       <div className="placeholder">🍬</div>
                     )}

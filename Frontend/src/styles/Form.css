@@ -147,7 +147,8 @@
   color: var(--primary-dark);
 }
 
-.resend-btn, .back-btn {
+.resend-btn,
+.back-btn {
   font-size: 0.9rem;
   margin-top: -0.5rem;
 }
@@ -157,4 +158,29 @@
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+}
+
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 1.2rem;
+  color: #888;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 1.1rem;
+  transition: var(--transition);
+}
+
+.password-toggle:hover {
+  color: var(--primary);
+}
+
+.password-wrapper .login-input {
+  padding-right: 3.5rem;
 }

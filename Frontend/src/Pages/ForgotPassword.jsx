@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useToast } from '../Context/ToastContext';
 import '../styles/Form.css';
@@ -8,6 +8,7 @@ const ForgotPassword = () => {
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
     const { showToast } = useToast();
+    const navigate = useNavigate();
     const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5016";
 
     const handleSubmit = async (e) => {
@@ -16,6 +17,8 @@ const ForgotPassword = () => {
         try {
             const res = await axios.post(`${API_BASE}/auth/forgot-password`, { email });
             showToast(res.data.message, "success");
+            // Automatically push to reset page with email
+            navigate('/reset-password', { state: { email } });
         } catch (err) {
             const msg = err.response?.data?.message || "Something went wrong";
             showToast(msg, "error");

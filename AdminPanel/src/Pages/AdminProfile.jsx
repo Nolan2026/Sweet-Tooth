@@ -4,6 +4,7 @@ import "../styles/AdminProfile.css";
 import { useToast } from "../Context/ToastContext";
 import { useConfirm } from "../Context/ConfirmContext";
 import { Link } from "react-router-dom";
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5016";
 
@@ -14,6 +15,7 @@ export default function AdminProfile() {
     const [images, setImages] = useState({});
     const [preview, setPreview] = useState({});
     const [loading, setLoading] = useState(false);
+    const [showSmtpPassword, setShowSmtpPassword] = useState(false);
     const [form, setForm] = useState({
         business_name: "",
         address: "",
@@ -234,13 +236,18 @@ export default function AdminProfile() {
 
                     <div className="input-group">
                         <label>Company Email Password</label>
-                        <input
-                            type="password"
-                            placeholder="App Password for Gmail"
-                            value={form.smtp_password}
-                            onChange={e => setForm({ ...form, smtp_password: e.target.value })}
-                            autoComplete="new-password"
-                        />
+                        <div className="password-wrapper">
+                            <input
+                                type={showSmtpPassword ? "text" : "password"}
+                                placeholder="App Password for Gmail"
+                                value={form.smtp_password}
+                                onChange={e => setForm({ ...form, smtp_password: e.target.value })}
+                                autoComplete="new-password"
+                            />
+                            <span className="password-toggle" onClick={() => setShowSmtpPassword(!showSmtpPassword)}>
+                                {showSmtpPassword ? <FaEyeSlash /> : <FaEye />}
+                            </span>
+                        </div>
                         <small style={{ color: '#666', fontSize: '11px' }}>Only enter if you want to update it. This is secured.</small>
                     </div>
 
