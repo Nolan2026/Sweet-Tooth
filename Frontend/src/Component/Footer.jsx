@@ -57,13 +57,13 @@ function Footer() {
             <div className="footer-bottom">
                 <p>&copy; 2026 {profile?.business_name && profile.business_name !== "" ? profile.business_name : "Sweet Tooth"}. All rights reserved.</p>
                 <div className="social-icons">
-                    <a href={profile?.instagram_url || "https://instagram.com"} target="_blank" rel="noreferrer" className="social-icon" title="Instagram">
+                    <a href={profile?.instagram_url || "https://instagram.com"} target="_blank" rel="noopener noreferrer" className="social-icon" title="Instagram">
                         <FaInstagram size={24} style={{ color: 'var(--text-light)' }} />
                     </a>
-                    <a href={profile?.facebook_url || "https://facebook.com"} target="_blank" rel="noreferrer" className="social-icon" title="Facebook">
+                    <a href={profile?.facebook_url || "https://facebook.com"} target="_blank" rel="noopener noreferrer" className="social-icon" title="Facebook">
                         <FaFacebook size={24} style={{ color: 'var(--text-light)' }} />
                     </a>
-                    <a href={profile?.whatsapp ? `https://wa.me/${profile.whatsapp.replace(/\+/g, '').replace(/\s/g, '')}` : "#"} target="_blank" rel="noreferrer" className="social-icon" title="WhatsApp">
+                    <a href={profile?.whatsapp ? `https://wa.me/${profile.whatsapp.replace(/\+/g, '').replace(/\s/g, '')}` : "#"} target="_blank" rel="noopener noreferrer" className="social-icon" title="WhatsApp">
                         <FaWhatsapp size={24} style={{ color: 'var(--text-light)' }} />
                     </a>
                 </div>

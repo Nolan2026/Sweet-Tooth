@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useToast } from '../Context/ToastContext';
+import useSEO from '../Component/useSEO';
 import '../styles/Contact.css';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5016";
@@ -21,6 +22,12 @@ function Contact() {
       .then(res => setProfile(res.data))
       .catch(err => console.error(err));
   }, []);
+
+  useSEO({
+    title: `Contact Us | ${profile?.business_name || 'Sweet Tooth'}`,
+    description: "Get in touch for bulk orders, custom gift boxes, or general inquiries about our authentic Indian sweets and namkeen deliveries.",
+    url: "https://sweettooth.com/contact"
+  });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

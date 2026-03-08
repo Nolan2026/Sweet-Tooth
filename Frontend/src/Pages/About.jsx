@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import api from '../api/axios';
+import useSEO from '../Component/useSEO';
 
 import '../styles/About.css';
 import heroImage from '../assets/frontend_About_img.jpg';
@@ -12,6 +13,12 @@ function About() {
       .then(res => setProfile(res.data))
       .catch(err => console.error(err));
   }, []);
+
+  useSEO({
+    title: `About Us | ${profile?.business_name || 'Sweet Tooth'}`,
+    description: "Learn about our legacy of crafting authentic Indian sweets and snacks since 1990. Discover our pure ingredients and family recipes.",
+    url: "https://sweettooth.com/about"
+  });
 
   const API_BASE = api.defaults.baseURL;
 

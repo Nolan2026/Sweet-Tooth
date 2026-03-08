@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /cart
+Disallow: /checkout
+Disallow: /account
+Disallow: /api
+Sitemap: https://sweettooth.com/sitemap.xml

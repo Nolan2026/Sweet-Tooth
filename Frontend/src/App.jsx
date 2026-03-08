@@ -17,6 +17,10 @@ import PrivacyPolicy from './Pages/PrivacyPolicy';
 import ShippingPolicy from './Pages/ShippingPolicy';
 import TermsAndConditions from './Pages/TermsAndConditions';
 import RefundPolicy from './Pages/RefundPolicy';
+import CategoryPage from './Pages/CategoryPage';
+import ProductPage from './Pages/ProductPage';
+import BlogIndexPage, { BlogPostPage } from './Pages/Blog';
+import NotFound from './Pages/NotFound';
 import './App.css';
 
 function App() {
@@ -41,6 +45,13 @@ function App() {
                 <Route path="/shipping-policy" element={<ShippingPolicy />} />
                 <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
                 <Route path="/return-refund-policy" element={<RefundPolicy />} />
+
+                {/* SEO Pages */}
+                <Route path="/:categorySlug" element={<CategoryPage />} />
+                <Route path="/product/:id" element={<ProductPage />} />
+                <Route path="/blog" element={<BlogIndexPage />} />
+                <Route path="/blog/:slug" element={<BlogPostPage />} />
+                <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
             <Footer />

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import api from "../api/axios";
 import { useCart } from '../Context/CartContext';
 import '../styles/Home.css';
+import { Link } from 'react-router-dom';
 import homeImg from '../assets/frontend_home_img.jpg';
 const ProductCard = ({ item }) => {
   const { addToCart } = useCart();
@@ -37,8 +38,11 @@ const ProductCard = ({ item }) => {
         {item.image_url ? (
           <img
             src={`${API_BASE}${item.image_url}`}
-            alt={item.item_name}
+            alt={`${item.item_name} — Buy Online | Sweet Tooth`}
             className="product-image"
+            loading="lazy"
+            width="300"
+            height="300"
           />
         ) : (
           <span className="product-image-placeholder">🍬</span>
@@ -190,11 +194,18 @@ function Home() {
         <img
           src={profile?.Collections_image ? `${API_BASE}/uploads/${profile.Collections_image}` : homeImg}
           className="hero-image"
-          alt="Premium Sweets"
+          alt="Buy Authentic Indian Sweets, Snacks & Homemade Pickles Online"
+          width="1200"
+          height="600"
+          fetchpriority="high"
         />
         <div className="hero-content">
-          <h2>{profile?.business_name && profile.business_name !== "" ? `Welcome to ${profile.business_name}` : "Indulgence in Every Bite"}</h2>
-          <p>Handcrafted with love, using traditional recipes passed down through generations. Authentic taste, premium ingredients.</p>
+          <h1>Buy Authentic Indian Sweets, Snacks & Homemade Pickles Online</h1>
+          <p>
+            Welcome to {profile?.business_name && profile.business_name !== "" ? profile.business_name : "our traditional kitchen"}.
+            Enjoy authentic <strong>homemade Indian sweets</strong>, crispy <strong>traditional snacks</strong>, and tangy <strong>natural pickles</strong> made with pure ingredients and no artificial preservatives.
+            Order online anywhere in India and experience rich, homemade flavors delivered fresh to your doorstep with <strong>free delivery</strong>.
+          </p>
           <button className="btn btn-primary">Explore Collection</button>
         </div>
       </section>
@@ -218,11 +229,20 @@ function Home() {
             ) : (
               <div className="catalog-container">
                 <div className="allCat">
-                  {Object.entries(groupedData).map(([category, items]) => (
-                    <a href={`#${category}`} className="singleCat" key={category}>
-                      <h4>{category}</h4>
-                    </a>
-                  ))}
+                  {Object.entries(groupedData).map(([category, items]) => {
+                    let anchorText = category;
+                    if (category.toLowerCase() === 'sweets') anchorText = 'Homemade Indian Sweets';
+                    if (category.toLowerCase() === 'snacks') anchorText = 'Authentic Snacks & Namkeen';
+                    if (category.toLowerCase() === 'pickles') anchorText = 'Traditional Homemade Pickles';
+                    return (
+                      <Link to={`/${category.toLowerCase()}`} className="singleCat" key={category} title={`Buy ${anchorText} Online`}>
+                        <h4>{anchorText}</h4>
+                      </Link>
+                    );
+                  })}
+                  <Link to="/gift-boxes" className="singleCat" key="gift-boxes" title="Order Sweets & Pickles Gift Boxes">
+                    <h4>Festive Gift Boxes</h4>
+                  </Link>
                 </div>
 
                 <div className="catalog-content">
@@ -234,6 +254,49 @@ function Home() {
             )}
           </div>
         )}
+
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', marginTop: '2rem' }}>
+          <section className="why-choose-us-section" style={{ flex: '1 1 400px', padding: '3rem 2rem', backgroundColor: '#fdfbf7', borderRadius: '12px' }}>
+            <div className="section-header">
+              <h2>Why Choose Us?</h2>
+            </div>
+            <p style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center', lineHeight: '1.8', fontSize: '1.1rem', color: '#555' }}>
+              At {profile?.business_name || "Sweet Tooth"}, we believe that true taste lies in tradition. Every product is crafted using a treasured <strong>family recipe</strong> that has been perfected over decades. We take pride in offering <strong>fresh homemade</strong> delicacies, completely free from artificial colors and <strong>no preservatives</strong>. Every batch is <strong>made with love</strong>, carefully bringing out the <strong>authentic Indian flavors</strong> you grew up with. Experience the warmth of home in every bite, delivered safely from our kitchen to yours.
+            </p>
+          </section>
+
+          <section className="faq-section" style={{ flex: '1 1 400px', padding: '3rem 2rem' }}>
+            <div className="section-header">
+              <h2>Frequently Asked Questions</h2>
+            </div>
+            <div className="faq-list">
+              <details style={{ marginBottom: '1rem', padding: '1rem', border: '1px solid #eee', borderRadius: '8px' }}>
+                <summary style={{ fontWeight: 'bold', cursor: 'pointer', outline: 'none' }}>What types of Indian sweets can I order online?</summary>
+                <p style={{ marginTop: '0.5rem', color: '#666' }}>We offer a wide variety of homemade Indian sweets, including Kaju Katli, traditional laddoos, barfis, and seasonal specialties.</p>
+              </details>
+              <details style={{ marginBottom: '1rem', padding: '1rem', border: '1px solid #eee', borderRadius: '8px' }}>
+                <summary style={{ fontWeight: 'bold', cursor: 'pointer', outline: 'none' }}>Do you offer home delivery for pickles and snacks across India?</summary>
+                <p style={{ marginTop: '0.5rem', color: '#666' }}>Yes! We ship our authentic achaar and crispy namkeen securely across India with fast home delivery.</p>
+              </details>
+              <details style={{ marginBottom: '1rem', padding: '1rem', border: '1px solid #eee', borderRadius: '8px' }}>
+                <summary style={{ fontWeight: 'bold', cursor: 'pointer', outline: 'none' }}>Are the sweets and snacks homemade or factory-made?</summary>
+                <p style={{ marginTop: '0.5rem', color: '#666' }}>All our products are freshly homemade in small batches using traditional family recipes to preserve authentic flavors.</p>
+              </details>
+              <details style={{ marginBottom: '1rem', padding: '1rem', border: '1px solid #eee', borderRadius: '8px' }}>
+                <summary style={{ fontWeight: 'bold', cursor: 'pointer', outline: 'none' }}>Can I order a custom sweet hamper or gift box online?</summary>
+                <p style={{ marginTop: '0.5rem', color: '#666' }}>Yes, we create custom Indian sweets and snacks gift boxes perfect for weddings, corporate gifting, and festive occasions.</p>
+              </details>
+              <details style={{ marginBottom: '1rem', padding: '1rem', border: '1px solid #eee', borderRadius: '8px' }}>
+                <summary style={{ fontWeight: 'bold', cursor: 'pointer', outline: 'none' }}>What is the shelf life of your pickles and snacks?</summary>
+                <p style={{ marginTop: '0.5rem', color: '#666' }}>Our homemade namkeen stays fresh for 3-4 weeks, and traditional pickles last up to 6 months without artificial preservatives.</p>
+              </details>
+              <details style={{ marginBottom: '1rem', padding: '1rem', border: '1px solid #eee', borderRadius: '8px' }}>
+                <summary style={{ fontWeight: 'bold', cursor: 'pointer', outline: 'none' }}>Do you offer bulk orders for weddings and festivals?</summary>
+                <p style={{ marginTop: '0.5rem', color: '#666' }}>Absolutely! We cater to bulk orders for traditional Indian sweets and namkeen for Diwali, weddings, and special events.</p>
+              </details>
+            </div>
+          </section>
+        </div>
       </main>
     </div>
   );

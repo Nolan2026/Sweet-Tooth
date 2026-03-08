@@ -53,7 +53,8 @@
     opacity: 0;
     animation: fadeIn 1s ease 0.5s forwards;
 }
-.loading-container{
+
+.loading-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -61,12 +62,14 @@
     width: 100%;
     font-family: 'Outfit', sans-serif;
 }
-.loading-container p{
+
+.loading-container p {
     font-size: 1.2rem;
     font-weight: 600;
     color: var(--text-dark);
 }
-.loading-container .spinner{
+
+.loading-container .spinner {
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -75,22 +78,26 @@
     border-top-color: transparent;
     animation: spin 1s linear infinite;
 }
+
 @keyframes spin {
     to {
         transform: rotate(360deg);
     }
 }
-.no-collections{
+
+.no-collections {
     text-align: center;
     font-size: 1.2rem;
     font-weight: 600;
     color: var(--text-dark);
-}   
-.orders-list{
+}
+
+.orders-list {
     display: flex;
     flex-direction: column;
-    gap: 2rem;  
+    gap: 2rem;
 }
+
 /* Categories Section */
 .categories-container {
     padding: 2rem 5%;
@@ -250,13 +257,11 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    transform: scale(0.7);
 }
 
 .product-image {
-    --width: 100%;
+    width: 100%;
     height: 100%;
-    margin-bottom: 210px;
     object-fit: cover;
 }
 
@@ -273,7 +278,8 @@
 
 .product-name {
     font-size: 1.3rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0;
+    margin-top: 0;
     font-family: cursive;
     color: var(--text-dark);
 }
@@ -282,7 +288,8 @@
     font-size: 1.6rem;
     font-weight: 800;
     color: var(--primary);
-    margin-bottom: 1rem;
+    margin-top: 0.2rem;
+    margin-bottom: 0.5rem;
 }
 
 .weight-selector-bar {
@@ -397,8 +404,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        transform: scale(0.85);
-        /* Slightly larger on mobile */
     }
 
     .product-card.has-image {
@@ -503,15 +508,15 @@
 
 .product-card.has-image .product-image-container {
     position: absolute;
-    top: 0;
+    top: -5%;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 75%;
     z-index: 1;
 }
 
 .product-card.has-image .product-image {
-    --width: 100%;
+    width: 100%;
     height: 100%;
     margin-top: 0;
     object-fit: cover;
@@ -522,9 +527,10 @@
     z-index: 2;
     background: linear-gradient(to top,
             white 0%,
-            rgba(255, 255, 255, 0.95) 70%,
+            white 50%,
+            rgba(255, 255, 255, 0.95) 75%,
             rgba(255, 255, 255, 0) 100%);
-    padding: 2rem 1.5rem 1.5rem;
+    padding: 1.5rem 1.5rem 1rem;
 }
 
 /* Animations */
