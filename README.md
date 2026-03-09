@@ -2,12 +2,12 @@
 
 <div align="center">
 
-![Sweet Tooth Logo](./logo.png)
+![Sweet Tooth Logo](./Frontend/public/frontend_img.png)
 
 **A full-stack e-commerce platform for selling sweets and snacks online with comprehensive admin panel**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node.js](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen)](https://nod ejs.org/)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen)](https://nodejs.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-%3E%3D14.0-blue)](https://www.postgresql.org/)
 
 </div>
