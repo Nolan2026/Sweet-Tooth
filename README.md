@@ -361,30 +361,6 @@ See [DEPLOYMENT.md](./Gdocs/DEPLOYMENT.md) for detailed deployment instructions.
 
 ---
 
-## 🤝 Contributing
-
-We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
-
----
-
-## 📞 Support
-
-For support, email support@sweettooth.com or open an issue in the repository.
-
----
-
-## 👥 Authors
-
-- **Your Name** - *Initial work* - [YourGitHub](https://github.com/yourusername)
-
----
-
 ## 🙏 Acknowledgments
 
 - Icons from Font Awesome
