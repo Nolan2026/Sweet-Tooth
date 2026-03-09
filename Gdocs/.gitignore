@@ -12,3 +12,8 @@ _site/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Documentation
+API_DOCUMENTATION.MD
+PUBLIC_API.md
+VULNERABILITY_FIX_INFO_DISCLOSURE.md
