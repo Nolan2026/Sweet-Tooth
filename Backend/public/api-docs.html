@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation | Sweet Tooth</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            --primary: #ff4d6d;
+            --bg: #0f0f12;
+            --sidebar: #16161a;
+            --card: rgba(255, 255, 255, 0.05);
+            --text: #ffffff;
+            --text-dim: #a0a0a0;
+            --accent: #00f5d4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        aside {
+            background-color: var(--sidebar);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem 1.5rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 2.5rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        nav ul {
+            list-style: none;
+        }
+
+        nav li {
+            margin-bottom: 0.8rem;
+        }
+
+        nav a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+            display: block;
+            padding: 0.5rem 0.8rem;
+            border-radius: 8px;
+        }
+
+        nav a:hover {
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Main Content */
+        main {
+            padding: 3rem;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        #content {
+            line-height: 1.6;
+        }
+
+        #content a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        #content a::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 1.5px;
+            bottom: -2px;
+            left: 0;
+            background-color: var(--primary);
+            transform: scaleX(0.3);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+            opacity: 0.6;
+        }
+
+        #content a:hover {
+            color: var(--accent);
+        }
+
+        #content a:hover::after {
+            transform: scaleX(1);
+            background-color: var(--accent);
+            opacity: 1;
+        }
+
+        h1, h2, h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        h1 { font-size: 2.5rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 1rem; }
+        h2 { font-size: 1.8rem; color: var(--primary); }
+
+        pre {
+            background: #1e1e24 !important;
+            padding: 1.5rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .back-home {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--primary);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 10px 20px rgba(255, 77, 109, 0.3);
+            transition: transform 0.3s;
+        }
+
+        .back-home:hover { transform: translateY(-3px); }
+
+        blockquote {
+            background: rgba(255, 245, 0, 0.05);
+            border-left: 4px solid #ffd700;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 768px) {
+            body { grid-template-columns: 1fr; }
+            aside { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <aside>
+        <div class="logo">🍰 Sweet Tooth Docs</div>
+        <nav id="sidebar-nav">
+            <!-- Navigation will be populated by JS -->
+        </nav>
+    </aside>
+
+    <main>
+        <div id="content">Loading documentation...</div>
+    </main>
+
+    <a href="/" class="back-home">Back to Home</a>
+
+    <script>
+        async function loadDocs() {
+            const contentEl = document.getElementById('content');
+            let pass = sessionStorage.getItem('doc_pass');
+            
+            if (!pass) {
+                pass = prompt("🍰 Restricted Access: Enter password to view API docs");
+                if (!pass) {
+                    contentEl.innerHTML = `
+                        <div style="background: rgba(255,100,0,0.1); padding: 3rem; border-radius: 20px; text-align: center; border: 1px dashed var(--primary);">
+                            <h2 style="color: var(--primary); margin-bottom: 1rem;">🔒 Restricted Content</h2>
+                            <p>This documentation contains sensitive API information and is password protected.</p>
+                            <button onclick="location.reload()" style="margin-top: 2rem; padding: 0.8rem 2rem; background: var(--primary); color: white; border: none; border-radius: 50px; cursor: pointer; font-weight: 600;">Enter Password</button>
+                        </div>
+                    `;
+                    return;
+                }
+                sessionStorage.setItem('doc_pass', pass);
+            }
+
+            try {
+                const res = await fetch(`/api/docs-data?pass=${encodeURIComponent(pass)}&t=` + Date.now());
+                
+                if (res.status === 401) {
+                    sessionStorage.removeItem('doc_pass');
+                    alert("Invalid password. Please try again.");
+                    return loadDocs();
+                }
+
+                if (!res.ok) throw new Error('Failed to fetch documentation');
+                
+                const data = await res.json();
+                
+                // Configure marked options for better rendering
+                marked.setOptions({
+                    headerIds: true,
+                    gfm: true,
+                    breaks: true
+                });
+
+                contentEl.innerHTML = marked.parse(data.content);
+                
+                // Generate sidebar from headings (H2 and H3)
+                const headings = contentEl.querySelectorAll('h2, h3');
+                const nav = document.getElementById('sidebar-nav');
+                const ul = document.createElement('ul');
+                
+                headings.forEach((h, i) => {
+                    const id = h.id || 'section-' + i;
+                    h.id = id;
+                    
+                    const li = document.createElement('li');
+                    li.style.marginLeft = h.tagName === 'H3' ? '1rem' : '0';
+                    
+                    const a = document.createElement('a');
+                    a.href = '#' + id;
+                    a.textContent = h.textContent;
+                    a.style.fontSize = h.tagName === 'H3' ? '0.85rem' : '0.95rem';
+                    
+                    li.appendChild(a);
+                    ul.appendChild(li);
+                });
+                nav.innerHTML = '';
+                nav.appendChild(ul);
+            } catch (err) {
+                console.error('Docs load error:', err);
+                contentEl.innerHTML = `
+                    <div style="background: rgba(255,0,0,0.1); padding: 2rem; border-radius: 12px; border: 1px solid rgba(255,0,0,0.2);">
+                        <h2>Error loading documentation</h2>
+                        <p>${err.message}</p>
+                        <button onclick="sessionStorage.removeItem('doc_pass'); location.reload();" style="margin-top: 1rem; padding: 0.5rem 1rem; border-radius: 4px; border: none; background: var(--primary); color: white; cursor: pointer;">Retry with Password</button>
+                    </div>
+                `;
+            }
+        }
+
+        loadDocs();
+    </script>
+</body>
+</html>

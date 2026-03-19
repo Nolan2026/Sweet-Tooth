@@ -4,6 +4,7 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from 'url';
+import fs from "fs/promises";
 
 const __filename = fileURLToPath(import.meta.url);
 const __backendDir = path.join(path.dirname(__filename), '..'); // Points to Backend directory
@@ -52,6 +53,9 @@ app.use(helmet({
             ...helmet.contentSecurityPolicy.getDefaultDirectives(),
             "img-src": ["'self'", "data:", "https:", "http:", "*"], // Allow all for images
             "connect-src": ["'self'", "*"],
+            "script-src": ["'self'", "'unsafe-inline'", "https:"],
+            "style-src": ["'self'", "'unsafe-inline'", "https:"],
+            "font-src": ["'self'", "https:", "data:"],
         },
     },
     crossOriginResourcePolicy: { policy: "cross-origin" }, // Allow cross-origin images
@@ -108,14 +112,70 @@ app.use("/api/uploads", uploadRoutes);
 
 
 // Health check route
-app.get("/health", (req, res) => {
-    res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
+app.get("/health", async (req, res) => {
+    console.log("Health check hit");
+    let dbStatus = "Checking...";
+
+    try {
+        // Add a 3-second timeout to the DB check
+        const dbCheck = prisma.$queryRaw`SELECT 1`;
+        const timeout = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Database timeout')), 3000)
+        );
+
+        await Promise.race([dbCheck, timeout]);
+        dbStatus = "Connected";
+    } catch (err) {
+        dbStatus = "Disconnected or Slow: " + err.message;
+    }
+
+    // If request asks for JSON or has a query param 'json=true', return JSON
+    if (req.headers.accept?.includes('application/json') || req.query.json) {
+        return res.status(200).json({
+            status: "ok",
+            database: dbStatus,
+            timestamp: new Date().toISOString(),
+            uptime: Math.floor(process.uptime()),
+            platform: process.platform,
+            nodeVersion: process.version
+        });
+    }
+    // Otherwise serve the styled HTML page
+    res.sendFile(path.join(__backendDir, "public", "health.html"));
 });
+
+// API Documentation Page
+app.get(["/docs", "/api-docs"], (req, res) => {
+    res.sendFile(path.join(__backendDir, "public", "api-docs.html"));
+});
+
+// API Documentation Data Route
+app.get("/api/docs-data", async (req, res) => {
+    const password = req.query.pass || req.headers['x-api-password'];
+    
+    // Simple password check
+    if (password !== "nolan2026") {
+        return res.status(401).json({ error: "Unauthorized. Password required." });
+    }
+
+    try {
+        // Try to find API_DOCUMENTATION.md in Gdocs folder (parent of Backend)
+        const gdocsPath = path.join(__backendDir, "..", "Gdocs", "API_DOCUMENTATION.md");
+        const content = await fs.readFile(gdocsPath, "utf-8");
+        res.status(200).json({ content });
+    } catch (err) {
+        console.error("Documentation fetch error:", err);
+        res.status(404).json({ error: "Documentation not found", details: err.message });
+    }
+});
+
+// Serve public static files (index.html, health.html, api-docs.html)
+app.use(express.static(path.join(__backendDir, "public")));
 
 app.get("/", async (req, res) => {
     try {
         await prisma.$queryRaw`SELECT 1`;
-        res.send("Welcome to Sweet Tooth Backend - DB Connected!");
+        res.sendFile(path.join(__backendDir, "public", "index.html"));
     } catch (err) {
         res.status(500).send("Backend is up, but DB is down: " + err.message);
     }
