@@ -292,9 +292,9 @@ npm run dev
 
 ### Access the Applications
 
-- **Frontend (Customer Site):** http://localhost:5173
-- **Admin Panel:** http://localhost:3000
-- **Backend API:** http://localhost:5016
+- **Frontend (Customer Site):** https://sweets-tooth.netlify.app/
+- **Admin Panel:** http://localhost:3000 I Didnt Deploy it because it a Admin panel 
+- **Backend API:** https://sweet-tooth-1.onrender.com
 
 ---
 
