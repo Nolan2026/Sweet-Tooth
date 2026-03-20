@@ -35,15 +35,23 @@ API_DOCUMENTATION.MD
 PUBLIC_API.md
 VULNERABILITY_FIX_INFO_DISCLOSURE.md
 
-# Testing
+# Testing & Development Scripts
 coverage/
 *.spec.js
 *.test.js
 test-*.js
 test_*.js
 debug_*.js
+fix_*.js
+setup*.js
+
+# Ignore all specific root scripts
+/*.js
+!/prisma.config.js
+!/package.json
+!/package-lock.json
+!/src/
 fix_profile.js
-prisma.config.js
 setupAdmin.js
 test-contact.js
 test_prisma.js

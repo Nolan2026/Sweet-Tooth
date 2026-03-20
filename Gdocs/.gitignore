@@ -17,3 +17,11 @@ Thumbs.db
 API_DOCUMENTATION.MD
 PUBLIC_API.md
 VULNERABILITY_FIX_INFO_DISCLOSURE.md
+
+# files to remove
+fix_profile.js
+setupAdmin.js
+test-contact.js
+test_prisma.js
+debug_db.js
+fix_profile.js 
