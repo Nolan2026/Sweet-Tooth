@@ -4,6 +4,7 @@ import "../styles/Inv.css";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useToast } from '../Context/ToastContext';
 import { useConfirm } from '../Context/ConfirmContext';
+import { getImageUrl } from "../api/imageUtils.js";
 
 export default function Inventory() {
   const { showToast } = useToast();
@@ -160,7 +161,7 @@ export default function Inventory() {
                   <tr key={item.id}>
                     <td className="invImg" data-label="Image">
                       <img
-                        src={`${API_BASE}${item.image_url}`}
+                        src={getImageUrl(item.image_url, API_BASE)}
                         alt={item.item_name}
                         loading="lazy"
                       />

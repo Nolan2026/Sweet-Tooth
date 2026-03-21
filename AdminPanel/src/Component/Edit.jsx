@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import "../styles/Edits.css";
+import { getImageUrl } from "../api/imageUtils.js";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5016";
 
@@ -99,7 +100,7 @@ function Edit() {
         {/* 🔥 Existing image preview */}
         {existingImage && !newImage && (
           <img
-            src={`${API_BASE}${existingImage}`}
+            src={getImageUrl(existingImage, API_BASE)}
             alt="Current"
             className="edit-image-preview"
           />

@@ -222,7 +222,7 @@ PORT=5016
 NODE_ENV=development
 
 # CORS Configuration
-ALLOWED_ORIGINS="http://localhost:5173,http://localhost:3000"
+ALLOWED_ORIGINS="http://localhost:5173,http://localhost:3000,https://sweets-tooth.netlify.app/"
 
 # File Upload Configuration
 MAX_FILE_SIZE=5242880
@@ -292,9 +292,9 @@ npm run dev
 
 ### Access the Applications
 
-- **Frontend (Customer Site):** https://sweets-tooth.netlify.app/
+- **Frontend (Customer Site):** https://sweets-tooth.netlify.app
 - **Admin Panel:** http://localhost:3000 I Didnt Deploy it because it a Admin panel 
-- **Backend API:** https://sweet-tooth-1.onrender.com
+- **Backend API:** https://sweet-tooth-bcgk.onrender.com
 
 ---
 

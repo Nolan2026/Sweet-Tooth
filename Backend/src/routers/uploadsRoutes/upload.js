@@ -10,7 +10,8 @@ router.post("/", upload.single("image"), (req, res) => {
 
     res.json({
         message: "Image uploaded successfully",
-        filename: req.file.filename,
+        filename: req.file.path, // Return the Cloudinary URL
+        public_id: req.file.filename // Return the public_id as filename
     });
 });
 

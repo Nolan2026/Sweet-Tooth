@@ -4,6 +4,7 @@ import { useCart } from '../Context/CartContext';
 import '../styles/Home.css';
 import { Link } from 'react-router-dom';
 import homeImg from '../assets/frontend_home_img.jpg';
+import { getImageUrl } from '../api/imageUtils';
 const ProductCard = ({ item }) => {
   const { addToCart } = useCart();
   const [selectedWeight, setSelectedWeight] = useState(1);
@@ -37,7 +38,7 @@ const ProductCard = ({ item }) => {
       <div className="product-image-container">
         {item.image_url ? (
           <img
-            src={`${API_BASE}${item.image_url}`}
+            src={getImageUrl(item.image_url, API_BASE)}
             alt={`${item.item_name} — Buy Online | Sweet Tooth`}
             className="product-image"
             loading="lazy"
@@ -192,7 +193,7 @@ function Home() {
     <div className="home-page">
       <section className="hero-section">
         <img
-          src={profile?.Collections_image ? `${API_BASE}/uploads/${profile.Collections_image}` : homeImg}
+          src={profile?.Collections_image ? getImageUrl(profile.Collections_image, API_BASE) : homeImg}
           className="hero-image"
           alt="Buy Authentic Indian Sweets, Snacks & Homemade Pickles Online"
           width="1200"

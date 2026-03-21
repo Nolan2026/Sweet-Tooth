@@ -1,6 +1,7 @@
 import express from "express"
 import prisma from "../../prismaClient.js";
 import img from "../../media/Images.js";
+import { deleteFromCloudinary, extractPublicId } from "../../utils/cloudinary.js";
 
 const router = express.Router();
 
@@ -42,7 +43,7 @@ router.post("/", img.single("image"), async (req, res) => {
         const { category, item_name, price } = req.body;
 
         const image_url = req.file
-            ? `/uploads/${req.file.filename}`
+            ? req.file.path
             : null;
 
         const newItem = await prisma.item.create({
@@ -107,7 +108,18 @@ router.put("/:id", img.single("image"), async (req, res) => {
 
     // ✅ Only update image if new file uploaded
     if (req.file) {
-        data.image_url = `/uploads/${req.file.filename}`;
+        // Find existing item to delete old image
+        try {
+            const existingItem = await prisma.item.findUnique({ where: { id: Number(id) } });
+            if (existingItem && existingItem.image_url) {
+                const publicId = extractPublicId(existingItem.image_url);
+                if (publicId) await deleteFromCloudinary(publicId);
+            }
+        } catch (err) {
+            console.error("Error deleting old image during update:", err);
+        }
+        
+        data.image_url = req.file.path;
     }
 
     try {
@@ -140,6 +152,14 @@ router.put("/:id", img.single("image"), async (req, res) => {
 router.delete("/:id", async (req, res) => {
     const { id } = req.params;
     try {
+        // Find item to get image_url
+        const item = await prisma.item.findUnique({ where: { id: Number(id) } });
+        
+        if (item && item.image_url) {
+            const publicId = extractPublicId(item.image_url);
+            if (publicId) await deleteFromCloudinary(publicId);
+        }
+
         await prisma.item.delete({ where: { id: Number(id) } });
         res.status(200).json({ message: "Item deleted successfully" });
     } catch (error) {

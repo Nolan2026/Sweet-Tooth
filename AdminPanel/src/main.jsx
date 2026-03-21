@@ -8,16 +8,19 @@ import './index.css'
 import App from './App.jsx'
 import axios from 'axios';
 
+import { getImageUrl } from './api/imageUtils.js';
+
 const DynamicLogo = ({ type }) => {
   useEffect(() => {
     const fetchLogo = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/admin/admin-profile`);
+        const baseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5016";
+        const res = await axios.get(`${baseURL}/admin/admin-profile`);
         const logoPath = type === 'backend' ? res.data.backend_logo : res.data.frontend_logo;
         if (logoPath) {
           const link = document.querySelector("link[rel~='icon']");
           if (link) {
-            link.href = `${import.meta.env.VITE_API_BASE_URL}/uploads/${logoPath}`;
+            link.href = getImageUrl(logoPath, baseURL);
           }
         }
       } catch (err) {

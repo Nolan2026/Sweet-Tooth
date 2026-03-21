@@ -1,14 +1,11 @@
 import express from "express";
-import multer from "multer";
-import fs from "fs";
-import path from "path";
 import prisma from "../../prismaClient.js";
 import authenticateAdmin from "../../middleware/authentication/adminAuth.js";
-
-import { encrypt, decrypt } from "../../utils/encryption.js";
+import { encrypt } from "../../utils/encryption.js";
+import upload from "../../media/Images.js";
+import { deleteFromCloudinary, extractPublicId } from "../../utils/cloudinary.js";
 
 const router = express.Router();
-const uploadDir = path.join(process.cwd(), "uploads");
 
 // Helper to sanitize profile (remove sensitive data)
 const sanitizeProfile = (profile) => {
@@ -19,23 +16,6 @@ const sanitizeProfile = (profile) => {
         has_smtp_config: !!(profile.smtp_email && profile.smtp_password)
     };
 };
-
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, uploadDir),
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname);
-        cb(null, `${file.fieldname}-${Date.now()}${ext}`);
-    }
-});
-
-const upload = multer({
-    storage,
-    limits: { fileSize: 5 * 1024 * 1024 }
-});
 
 // GET profile
 router.get("/admin-profile", async (req, res) => {
@@ -101,11 +81,11 @@ router.post("/admin-profile", authenticateAdmin, upload.fields([
         }
 
         if (files) {
-            if (files.frontend_logo) data.frontend_logo = files.frontend_logo[0].filename;
-            if (files.backend_logo) data.backend_logo = files.backend_logo[0].filename;
-            if (files.business_logo) data.business_logo = files.business_logo[0].filename;
-            if (files.Collections_image) data.Collections_image = files.Collections_image[0].filename;
-            if (files.OurStory_image) data.OurStory_image = files.OurStory_image[0].filename;
+            if (files.frontend_logo) data.frontend_logo = files.frontend_logo[0].path;
+            if (files.backend_logo) data.backend_logo = files.backend_logo[0].path;
+            if (files.business_logo) data.business_logo = files.business_logo[0].path;
+            if (files.Collections_image) data.Collections_image = files.Collections_image[0].path;
+            if (files.OurStory_image) data.OurStory_image = files.OurStory_image[0].path;
         }
 
         const existing = await prisma.adminProfile.findFirst();
@@ -138,12 +118,12 @@ router.delete("/admin-profile/image/:field", authenticateAdmin, async (req, res)
             return res.status(404).json({ error: "Image not found" });
         }
 
-        const fileName = existing[field];
-        const filePath = path.join(uploadDir, fileName);
+        const imageUrl = existing[field];
+        const publicId = extractPublicId(imageUrl);
 
-        // Delete the file if it exists
-        if (fs.existsSync(filePath)) {
-            fs.unlinkSync(filePath);
+        // Delete from Cloudinary if publicId exists
+        if (publicId) {
+            await deleteFromCloudinary(publicId);
         }
 
         // Update database to nullify the field

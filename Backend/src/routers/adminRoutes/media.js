@@ -1,102 +1,89 @@
 import express from "express";
-import fs from "fs";
-import path from "path";
 import authenticateAdmin from "../../middleware/authentication/adminAuth.js";
 import upload from "../../media/Images.js";
+import { cloudinary, deleteFromCloudinary } from "../../utils/cloudinary.js";
 
 const router = express.Router();
-const uploadDir = path.join(process.cwd(), "uploads");
 
 // Get all uploaded images
 router.get("/", authenticateAdmin, async (req, res) => {
     try {
-        if (!fs.existsSync(uploadDir)) {
-            return res.json([]);
-        }
+        // List resources from the "Sweet_Tooth" folder
+        const result = await cloudinary.api.resources({
+            type: "upload",
+            prefix: "Sweet_Tooth/", // Folder name defined in cloudinary.js
+            max_results: 100,
+        });
 
-        const files = fs.readdirSync(uploadDir);
-        const images = files.filter(file => {
-            const ext = path.extname(file).toLowerCase();
-            return [".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif", ".svg"].includes(ext);
-        }).map(file => ({
-            filename: file,
-            url: `/uploads/${file}`,
-            size: fs.statSync(path.join(uploadDir, file)).size,
-            mtime: fs.statSync(path.join(uploadDir, file)).mtime
+        const images = result.resources.map(resource => ({
+            filename: resource.public_id,
+            url: resource.secure_url,
+            size: resource.bytes,
+            mtime: resource.created_at
         }));
-
-        // Sort by newest first
-        images.sort((a, b) => b.mtime - a.mtime);
 
         res.json(images);
     } catch (error) {
-        console.error("Error fetching media:", error);
-        res.status(500).json({ message: "Error fetching media" });
+        console.error("Error fetching media from Cloudinary:", error);
+        res.status(500).json({ message: "Error fetching media from Cloudinary" });
     }
 });
 
 // Delete an image
-router.delete("/:filename", authenticateAdmin, async (req, res) => {
+router.delete("/:publicId", authenticateAdmin, async (req, res) => {
     try {
-        const { filename } = req.params;
-        const filePath = path.join(uploadDir, filename);
-
-        if (!fs.existsSync(filePath)) {
-            return res.status(404).json({ message: "File not found" });
+        let publicId = decodeURIComponent(req.params.publicId);
+        if (publicId && publicId.startsWith("/")) {
+            publicId = publicId.substring(1);
+        }
+        
+        if (!publicId) {
+            return res.status(400).json({ message: "No publicId provided" });
         }
 
-        fs.unlinkSync(filePath);
+        await deleteFromCloudinary(publicId);
         res.json({ message: "File deleted successfully" });
     } catch (error) {
-        console.error("Error deleting media:", error);
-        res.status(500).json({ message: "Error deleting media" });
+        console.error("Error deleting media from Cloudinary:", error);
+        res.status(500).json({ message: "Error deleting media from Cloudinary" });
     }
 });
 
 // Bulk delete images
 router.post("/bulk-delete", authenticateAdmin, async (req, res) => {
     try {
-        const { filenames } = req.body;
-        if (!Array.isArray(filenames)) {
-            return res.status(400).json({ message: "Invalid request. Expected array of filenames." });
+        const { publicIds } = req.body;
+        if (!Array.isArray(publicIds)) {
+            return res.status(400).json({ message: "Invalid request. Expected array of publicIds." });
         }
 
-        const deleted = [];
-        const failed = [];
+        if (publicIds.length === 0) {
+            return res.json({ message: "No files to delete", deleted: [], failed: [] });
+        }
 
-        filenames.forEach(filename => {
-            try {
-                const filePath = path.join(uploadDir, filename);
-                if (fs.existsSync(filePath)) {
-                    fs.unlinkSync(filePath);
-                    deleted.push(filename);
-                } else {
-                    failed.push({ filename, reason: "File not found" });
-                }
-            } catch (err) {
-                failed.push({ filename, reason: err.message });
-            }
-        });
-
+        // Cloudinary supports deleting up to 100 resources at once
+        const result = await cloudinary.api.delete_resources(publicIds);
+        
         res.json({
-            message: `Deleted ${deleted.length} files. ${failed.length} failed.`,
-            deleted,
-            failed
+            message: `Batch delete completed.`,
+            result
         });
     } catch (error) {
-        console.error("Error bulk deleting media:", error);
-        res.status(500).json({ message: "Error during bulk delete" });
+        console.error("Error bulk deleting media from Cloudinary:", error);
+        res.status(500).json({ message: "Error during bulk delete from Cloudinary" });
     }
 });
 
-// Replace/Update an image (by uploading a new one and deleting the old one)
-router.post("/replace/:oldFilename", authenticateAdmin, upload.single("image"), async (req, res) => {
+// Replace/Update an image
+router.post("/replace/:oldPublicId", authenticateAdmin, upload.single("image"), async (req, res) => {
     try {
-        const { oldFilename } = req.params;
-        const oldPath = path.join(uploadDir, oldFilename);
+        let oldPublicId = decodeURIComponent(req.params.oldPublicId);
+        if (oldPublicId && oldPublicId.startsWith("/")) {
+            oldPublicId = oldPublicId.substring(1);
+        }
 
-        if (fs.existsSync(oldPath)) {
-            fs.unlinkSync(oldPath);
+        if (oldPublicId) {
+            await deleteFromCloudinary(oldPublicId);
         }
 
         if (!req.file) {
@@ -105,11 +92,11 @@ router.post("/replace/:oldFilename", authenticateAdmin, upload.single("image"), 
 
         res.json({
             message: "Image replaced successfully",
-            filename: req.file.filename
+            filename: req.file.path // Path is the URL in Cloudinary
         });
     } catch (error) {
-        console.error("Error replacing media:", error);
-        res.status(500).json({ message: "Error replacing media" });
+        console.error("Error replacing media in Cloudinary:", error);
+        res.status(500).json({ message: "Error replacing media in Cloudinary" });
     }
 });
 

@@ -4,6 +4,7 @@ import { useToast } from '../Context/ToastContext';
 import { useConfirm } from '../Context/ConfirmContext';
 import '../styles/Media.css';
 import { useNavigate } from 'react-router-dom';
+import { getImageUrl } from '../api/imageUtils.js';
 
 const MediaManager = () => {
     const [images, setImages] = useState([]);
@@ -55,7 +56,7 @@ const MediaManager = () => {
         if (!isConfirmed) return;
 
         try {
-            await api.delete(`/admin/media/${filename}`);
+            await api.delete(`/admin/media/${encodeURIComponent(filename)}`);
             showToast("Image deleted successfully", "success");
             setImages(images.filter(img => img.filename !== filename));
             setSelectedImages(selectedImages.filter(f => f !== filename));
@@ -75,7 +76,7 @@ const MediaManager = () => {
         if (!isConfirmed) return;
 
         try {
-            await api.post('/admin/media/bulk-delete', { filenames: selectedImages });
+            await api.post('/admin/media/bulk-delete', { publicIds: selectedImages });
             showToast(`Successfully deleted ${selectedImages.length} images`, "success");
             setImages(images.filter(img => !selectedImages.includes(img.filename)));
             setSelectedImages([]);
@@ -92,7 +93,7 @@ const MediaManager = () => {
         formData.append('image', file);
 
         try {
-            await api.post(`/admin/media/replace/${oldFilename}`, formData, {
+            await api.post(`/admin/media/replace/${encodeURIComponent(oldFilename)}`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             showToast("Image replaced successfully", "success");
@@ -150,7 +151,7 @@ const MediaManager = () => {
                             </div>
                             <div className="media-img-wrapper" onClick={() => toggleSelect(img.filename)}>
                                 <img
-                                    src={`${api.defaults.baseURL}${img.url}`}
+                                    src={getImageUrl(img.url, api.defaults.baseURL)}
                                     alt={img.filename}
                                 />
                             </div>

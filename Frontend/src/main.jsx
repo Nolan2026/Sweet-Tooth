@@ -5,6 +5,8 @@ import App from './App.jsx'
 import axios from 'axios';
 import { ConfirmProvider } from './Context/ConfirmContext.jsx';
 
+import { getImageUrl } from './api/imageUtils';
+
 const DynamicLogo = () => {
   useEffect(() => {
     const fetchLogo = async () => {
@@ -14,7 +16,7 @@ const DynamicLogo = () => {
         if (res.data.frontend_logo) {
           const link = document.querySelector("link[rel~='icon']");
           if (link) {
-            link.href = `${baseURL}/uploads/${res.data.frontend_logo}`;
+            link.href = getImageUrl(res.data.frontend_logo, baseURL);
           }
         }
       } catch (err) {

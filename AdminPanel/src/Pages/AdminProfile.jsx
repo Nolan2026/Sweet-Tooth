@@ -5,6 +5,7 @@ import { useToast } from "../Context/ToastContext";
 import { useConfirm } from "../Context/ConfirmContext";
 import { Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { getImageUrl } from "../api/imageUtils.js";
 
 const BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5016";
 
@@ -140,7 +141,7 @@ export default function AdminProfile() {
 
     const showImage = (field) => {
         if (preview[field]) return preview[field];
-        if (profile?.[field]) return `${BASE}/uploads/${profile[field]}`;
+        if (profile?.[field]) return getImageUrl(profile[field], BASE);
         return DEFAULT_IMAGES[field];
     };
 
